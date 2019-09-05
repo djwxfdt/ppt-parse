@@ -2,6 +2,8 @@ const { searchXML } = require('./utils')
 
 const XElement = require('./xelement')
 
+const ShapeTree = require('./components/ShapeTree')
+
 class SlideXML {
     constructor(xml) {
 
@@ -187,16 +189,14 @@ class SlideXML {
 
         let arry = []
 
+        /**
+         * TODO:改造中...
+         */
         if (Array.isArray(elements)) {
             elements.forEach(node => {
-                let id = node.selectFirst(["p:nvSpPr", "p:cNvPr", "attrs", "id"])
-                let name = node.selectFirst(['p:nvSpPr', 'p:cNvPr', 'attrs', 'name'])
-                /**
-                 * @type {string}
-                 */
-                let type = node.selectFirst(["p:nvSpPr", "p:nvPr", "p:ph", "attrs", "type"])
-                let idx = node.selectFirst(['p:nvSpPr', 'p:nvPr', 'p:ph', 'attrs', 'idx'])
-
+                let sp = ShapeTree.createSp(node)
+            
+                let type = sp.type
 
                 /**
                  * @type{XElement}
@@ -214,15 +214,20 @@ class SlideXML {
                 let xfrmLayout = layoutSp?layoutSp.selectFirst(['p:spPr', 'a:xfrm']):null
                 let shpType = node.selectFirst(['p:spPr', 'a:prstGeom', 'attrs', 'prst'])
                 let custShapType = node.selectFirst(['p:spPr', 'a:custGeom'])
-                let position = this.getPositionOfNode(xfrm)
-                let size = this.getSizeOfNode(xfrm)
 
                 let container = {
                     type:"container",
-                    size,
-                    position,
                     valign:this.getVerticalAlign(node)
                 }
+
+                if(sp.xfrm ){
+                    container.position = sp.xfrm.off
+                    container.size = {
+                        width:sp.xfrm.ext.cx,
+                        height:sp.xfrm.ext.cy,
+                    }
+                }
+                
 
                 arry.push(container)
 
@@ -235,6 +240,13 @@ class SlideXML {
                         container.type = shpType
                         container.fillColor = fillColor
                     }
+                }
+
+                let text = null
+                if(sp.txBody && sp.txBody.pList){
+                    text = sp.txBody.pList.map(p=>{
+
+                    })
                 }
                    
                 let text = this.getTextOfNode(node.selectFirst(['p:txBody']),type)

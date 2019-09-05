@@ -54,11 +54,23 @@ class XElement{
     }
 
     /**
-     * 
      * @returns {XElement} 
      */
     get(key){
         return this._map[key]
+    }
+
+    /**
+     * @returns {XElement} 
+     */
+    getSingle(key){
+        let res = this.get(key)
+       
+        if(Array.isArray(res)){
+            return res[0]
+        }
+
+        return res
     }
     
 
