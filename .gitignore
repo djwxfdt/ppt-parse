@@ -1,0 +1,7 @@
+node_modules
+*.lock
+.tmp
+example/pptOutput*
+example/*.pptx
+example/*.xml
+example/static/media
