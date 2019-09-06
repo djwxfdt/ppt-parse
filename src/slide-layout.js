@@ -1,9 +1,23 @@
 const XElement = require('./xelement')
 
+const {createSp} = require('./components/ShapeTree')
 
 class SlideLayoutXML {
     constructor(xml) {
         this.xml = XElement.init(xml).get("p:sldLayout")
+
+
+        this.shapes = this.xml.selectArray(['p:cSld', 'p:spTree','p:sp']).map(sp=>createSp(sp))
+    }
+
+    getTextSizeOfType(type){
+        let finded = this.shapes.find(sp=>sp.type == type)
+        if(finded && finded.txBody  && finded.txBody.textStyle){
+            let style = finded.txBody.textStyle.find('0')
+            if(style){
+                return style.size
+            }
+        }
     }
 
     get background() {

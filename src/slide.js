@@ -54,26 +54,6 @@ class SlideXML {
             }
         }
 
-        // shapes.map((key, value) => {
-        //     switch (key) {
-        //         case "p:nvGrpSpPr": {
-        //             break
-        //         }
-        //         case "p:pic": {
-        //             let obj = this.parsePic(value)
-        //             arry = [...arry,...obj]
-        //             break
-        //         }
-        //         case "p:sp": {
-        //             let obj = this.parseSp(value)
-        //             arry = [...arry,...obj]
-        //             break
-        //         }
-        //         default:{
-        //         }
-        //     }
-        // })
-
         obj.blocks = arry
 
         this._json = obj
@@ -209,8 +189,6 @@ class SlideXML {
                     layoutSp = this.layout.tables.typeTable[type]
                 }
 
-                let xfrm = node.selectFirst(['p:spPr', 'a:xfrm'])
-
                 let xfrmLayout = layoutSp?layoutSp.selectFirst(['p:spPr', 'a:xfrm']):null
                 let shpType = node.selectFirst(['p:spPr', 'a:prstGeom', 'attrs', 'prst'])
                 let custShapType = node.selectFirst(['p:spPr', 'a:custGeom'])
@@ -243,13 +221,48 @@ class SlideXML {
                 }
 
                 let text = null
+                let titleColor = this.master.titleColor
                 if(sp.txBody && sp.txBody.pList){
                     text = sp.txBody.pList.map(p=>{
+                        let container = {
+                            children:p.rList.map(r=>{
+                                let sz = r.fontSize || this.layout.getTextSizeOfType(type) || this.master.textStyles.getTextSizeOfType(type)
+                                if(r.rPr && r.rPr.baseline && !isNaN(sz)){
+                                    sz -= 10
+                                }
+                                if(!isNaN(sz)){
+                                    sz = sz / 3 * 4
+                                }
 
+                                let fontFamily = r.fontFamlily
+                                if(fontFamily && fontFamily.indexOf('+') == 0){
+                                    fontFamily = this.theme.getFontTheme(fontFamily)
+                                }
+                                if(!fontFamily){
+                                    fontFamily = this.theme.getFontFamily(sp.type)
+                                }
+
+                                return {
+                                    type: "span",
+                                    value: r.text,
+                                    size:sz,
+                                    color:r.solidFill,
+                                    fontFamily,
+                                    // valign:this.getTextVerticalAlign(r),
+                                    // decoration:this.getTextDecoration(r),
+                                    // fontStyle:this.getTextStyle(r)
+                                }
+                            })
+                        }
+
+                        if(type == "ctrTitle" && titleColor){
+                            container.color = titleColor
+                        }
+
+                        return container
                     })
                 }
                    
-                let text = this.getTextOfNode(node.selectFirst(['p:txBody']),type)
                 if (text) {
                     container.text = text
                 }
@@ -292,47 +305,6 @@ class SlideXML {
         return null
     }
 
-    /**
-     * @param {XElement} txNode 
-     */
-    getTextOfNode(txNode,type) {
-        if (!txNode) {
-            return null
-        }
-        let ps = txNode.selectArray(['a:p'])
-        let textStyles = this.master.textStyles
-        let texts = []
-        for (let p of ps) {
-            let rs = p.selectArray(['a:r'])
-            let align = this.getHorizontalAlign(p)
-            let container = {
-                align,
-                children:[]
-            }
-
-            let lvl = p.selectFirst(['a:pPr','attrs','lvl'])
-            if(lvl){
-                let c = this.master.getLvlFontColor(lvl)
-                container.color = c
-            }
-
-            texts.push(container)
-            for (let r of rs) {
-                let size = this.getFontSizeOfNode(r,type)
-                container.children.push({
-                    type: "span",
-                    value: r.selectFirst(['a:t']),
-                    size,
-                    color:this.getFontColorOfNode(r,type),
-                    fontFamily:this.getFontFamilyOfNode(r,type),
-                    valign:this.getTextVerticalAlign(r),
-                    decoration:this.getTextDecoration(r),
-                    fontStyle:this.getTextStyle(r)
-                })
-            }
-        }
-        return texts
-    }
 
     /**
      * @param {XElement} node 
@@ -342,7 +314,10 @@ class SlideXML {
         if(isNaN(size)){
             size = this.layout.getSizeOfType(type)
             if(isNaN(size)){
-                size = this.master.getTextSizeOfType(type)
+                size = this.master.textStyles.getTextSizeOfType(type)
+                if(size){
+                    size *= 100
+                }
             }
         }
         if(size){

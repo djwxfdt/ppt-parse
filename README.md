@@ -10,3 +10,4 @@
 参考文档：
 1. [Ecma-376](https://www.ecma-international.org/publications/standards/Ecma-376.htm)
 2. [officeopenxml](http://officeopenxml.com)
+3. [c-rex.net](https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_PresentationML_topic_ID0ETTBGB.html)

@@ -1,9 +1,24 @@
 const XElement = require('./xelement')
 
+const TextStyles = require('./components/text-styles')
+
+const {createSp} = require('./components/ShapeTree')
 
 class SlideMasterXML {
     constructor(xml) {
         this.xml = XElement.init(xml).get("p:sldMaster")
+
+        this.textStyles = new TextStyles(this.xml.getSingle("p:txStyles"))
+
+        this.shapes = this.xml.selectArray(['p:cSld', 'p:spTree','p:sp']).map(sp=>createSp(sp))
+
+    }
+
+    get titleColor(){
+        let titleSp = this.shapes.find(sp=>sp.type == "title")
+        if(titleSp && titleSp.txBody && titleSp.txBody.textStyle){
+            return titleSp.txBody.textStyle.getColor('0')
+        }
     }
 
     /**
@@ -36,9 +51,6 @@ class SlideMasterXML {
 
     }
 
-    get textStyles(){
-        return this.xml.selectFirst(['p:txStyles']) || {}
-    }
 
     get tables() {
         if (this._tables) {

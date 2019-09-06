@@ -1,5 +1,8 @@
 const XElement = require('../xelement')
 
+const {TextStyle} = require('./text-styles')
+
+const RPr = require('./elements/a:rpr')
 class SpElement{
 
 }
@@ -64,29 +67,7 @@ class SpPr{
     }
 }
 
-class RPr{
-     /**
-     * @param {XElement} node 
-     */
-    constructor(node){
-        
 
-        this.size = node.attributes.sz
-        if(!isNaN(this.size)){
-            this.size = +this.size
-        }
-
-        this.bold = node.attributes.b == "1"
-
-        this.italic = node.attributes.i == "1"
-
-        this.strike = node.attributes.strike
-
-        if(node.getSingle("a:solidFill")){
-            this.solidFill = node.selectFirst(["a:solidFill","a:srgbClr"]).attributes.val || node.selectFirst(["a:solidFill","a:schemeClr"]).attributes.val
-        }
-    }
-}
 
 class R{
     /**
@@ -100,6 +81,24 @@ class R{
         if(node.getSingle('a:rPr')){
             this.rPr = new RPr(node.getSingle('a:rPr'))
         } 
+    }
+
+    get fontSize(){
+        if(this.rPr){
+            return this.rPr.size
+        }
+    }
+
+    get solidFill(){
+        if(this.rPr){
+            return this.rPr.solidFill
+        }
+    }
+
+    get fontFamlily(){
+        if(this.rPr){
+            return this.rPr.typeface
+        }
     }
 }
 
@@ -122,6 +121,11 @@ class TxBody{
         
 
         this.pList = node.selectArray(["a:p"]).map(p=>new P(p))
+
+        let other = node.getSingle('a:lstStyle')
+        if(other){
+            this.textStyle = new TextStyle(other)
+        }
         
     }
 }
