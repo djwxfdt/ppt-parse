@@ -41,6 +41,9 @@ module.exports =  class RPr{
        this.baseline = node.attributes.baseline
 
        if(node.getSingle("a:latin")){
+           /**
+            * This element specifies that a Latin font be used for a specific run of text. This font will be specified with a typeface attribute much like the others but will specifically be classified as a Latin font.
+            */
            this.typeface = node.getSingle("a:latin").attributes.typeface
        }
        
