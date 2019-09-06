@@ -2,31 +2,9 @@ const XElement = require('../xelement')
 
 const Sp = require('./elements/p:sp')
 
-class SpElement{
-
-}
-
-class NvGrpSpPr extends SpElement{
-
-}
-
-
-class Pic extends SpElement{
-    /**
-     * @param {XElement} node 
-     */
-    constructor(node){
-        this.name = "p:pic"
-        
-        let spPr = node.selectFirst(["spPr"])
-        if(spPr){
-            this.spPr = new SpPr(spPr)
-        }
-    }
-}
+const Pic = require('./elements/p:pic')
 
 /**
- * 
  * @param {XElement} node 
  * @returns {Sp}
  */
@@ -36,8 +14,8 @@ module.exports.createSp = (node)=>{
 
 /**
  * @param {XElement} node 
- * @returns {Sp}
+ * @returns {Pic}
  */
 module.exports.createPic = node =>{
-
+    return new Pic(node)
 }
