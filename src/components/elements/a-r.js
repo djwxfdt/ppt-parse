@@ -1,5 +1,5 @@
 
-const RPr = require('./a:rpr')
+const RPr = require('./a-rpr')
 
 module.exports = class R{
     /**

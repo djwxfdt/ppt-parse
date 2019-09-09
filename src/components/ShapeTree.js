@@ -1,8 +1,8 @@
 const XElement = require('../xelement')
 
-const Sp = require('./elements/p:sp')
+const Sp = require('./elements/p-sp')
 
-const Pic = require('./elements/p:pic')
+const Pic = require('./elements/p-pic')
 
 /**
  * @param {XElement} node 

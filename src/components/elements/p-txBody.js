@@ -1,5 +1,5 @@
 const {TextStyle} = require('../text-styles')
-const P = require('./a:p')
+const P = require('./a-p')
 
 module.exports = class TxBody{
     /**

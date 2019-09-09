@@ -1,4 +1,4 @@
-const Xfrm = require('./a:xfrm')
+const Xfrm = require('./a-xfrm')
 
 module.exports = class SpPr{
     /**

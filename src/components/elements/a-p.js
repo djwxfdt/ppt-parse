@@ -1,4 +1,4 @@
-const R = require('./a:r')
+const R = require('./a-r')
 
 module.exports =  class P{
     /**

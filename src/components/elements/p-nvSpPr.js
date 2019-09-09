@@ -1,5 +1,5 @@
-const CNvPr = require('./p:cNvPr')
-const NvPr = require('./p:nvPr')
+const CNvPr = require('./p-cNvPr')
+const NvPr = require('./p-nvPr')
 
 /**
  * This element specifies all non-visual properties for a shape. 

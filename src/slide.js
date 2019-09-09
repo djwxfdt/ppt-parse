@@ -4,8 +4,8 @@ const XElement = require('./xelement')
 
 const ShapeTree = require('./components/ShapeTree')
 
-const Sp = require('./components/elements/p:sp')
-const Pic = require('./components/elements/p:pic')
+const Sp = require('./components/elements/p-sp')
+const Pic = require('./components/elements/p-pic')
 
 
 class SlideXML {

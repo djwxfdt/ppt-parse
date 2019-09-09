@@ -1,6 +1,6 @@
-const SpPr = require('./p:spPr')
-const NvSpPr = require('./p:nvSpPr')
-const TxBody = require('./p:txBody')
+const SpPr = require('./p-spPr')
+const NvSpPr = require('./p-nvSpPr')
+const TxBody = require('./p-txBody')
 
 
 module.exports = class Sp {

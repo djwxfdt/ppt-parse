@@ -1,6 +1,6 @@
 const XElement = require('../xelement')
 
-const RPr = require('./elements/a:rpr')
+const RPr = require('./elements/a-rpr')
 
 
 

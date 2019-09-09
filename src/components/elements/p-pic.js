@@ -1,9 +1,9 @@
 
-const SpPr = require('./p:spPr')
+const SpPr = require('./p-spPr')
 
 const XElement = require('../../xelement')
 
-const BlipFill = require('./p:blipFill')
+const BlipFill = require('./p-blipFill')
 
 module.exports = class Pic {
     /**
