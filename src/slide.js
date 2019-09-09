@@ -217,10 +217,10 @@ class SlideXML {
 
                         let fontFamily = r.fontFamlily
                         if (fontFamily && fontFamily.indexOf('+') == 0) {
-                            fontFamily = this.theme.getFontTheme(fontFamily)
+                            fontFamily = this.theme.fontScheme.getFont(fontFamily)
                         }
                         if (!fontFamily) {
-                            fontFamily = this.theme.getFontFamily(sp.type)
+                            fontFamily = this.theme.fontScheme.getFontByType(sp.type)
                         }
 
                         return {
@@ -229,6 +229,9 @@ class SlideXML {
                             size: sz,
                             color: r.solidFill,
                             fontFamily,
+                            bold:r.rPr && r.rPr.bold,
+                            italic:r.rPr && r.rPr.italic,
+
                             // valign:this.getTextVerticalAlign(r),
                             // decoration:this.getTextDecoration(r),
                             // fontStyle:this.getTextStyle(r)
@@ -252,107 +255,7 @@ class SlideXML {
 
     }
 
-    /**
-     * @param {XElement} xfrm 
-     */
-    getPositionOfNode(xfrm) {
-        if (xfrm) {
-            let off = xfrm.selectFirst(['a:off', 'attrs'])
-            if (off) {
-                return {
-                    x: Math.floor(+off.get('x') * 96 / 91440) / 10,
-                    y: Math.floor(+off.get('y') * 96 / 91440) / 10
-                }
-            }
-        }
-        return null
-    }
-
-    /**
-     * @param {XElement} xfrm 
-     */
-    getSizeOfNode(xfrm) {
-        if (xfrm) {
-            let ext = xfrm.selectFirst(['a:ext', 'attrs'])
-            if (ext) {
-                return {
-                    width: Math.floor(+ext.get('cx') * 96 / 91440) / 10,
-                    height: Math.floor(+ext.get('cy') * 96 / 91440) / 10
-                }
-            }
-        }
-        return null
-    }
-
-
-    /**
-     * @param {XElement} node 
-     */
-    getFontSizeOfNode(node, type) {
-        let size = node.selectFirst(["a:rPr", "attrs", "sz"])
-        if (isNaN(size)) {
-            size = this.layout.getSizeOfType(type)
-            if (isNaN(size)) {
-                size = this.master.textStyles.getTextSizeOfType(type)
-                if (size) {
-                    size *= 100
-                }
-            }
-        }
-        if (size) {
-            size = +size / 100
-        }
-
-        let baseline = node.selectFirst(['a:rPr', 'attrs', 'baseline'])
-        if (baseline && !isNaN(size)) {
-            size -= 10
-        }
-        if (!isNaN(size)) {
-            size = size / 3 * 4
-        }
-        return size
-    }
-
-    /**
-     * 
-     * @param {XElement} node 
-     * @param {*} type 
-     */
-    getFontColorOfNode(node, type) {
-        let fill = node.selectFirst(['a:rPr', 'a:solidFill'])
-        let color
-        if (!fill) {
-            // let colorMap = this.master.getColorMap("tx1")
-
-            return color
-        }
-
-        color = fill.selectFirst(['a:srgbClr', 'attrs', 'val'])
-        if (color) {
-            return color
-        }
-
-        color = fill.selectFirst(['a:schemeClr', 'attrs', 'val'])
-        if (color) {
-            return color
-        }
-    }
-
-    /**
-    * 
-    * @param {XElement} node 
-    * @param {*} type 
-    */
-    getFontFamilyOfNode(node, type) {
-        let family = node.selectFirst(['a:rPr', 'a:latin', 'attrs', 'typeface'])
-        if (family && family.indexOf('+') == 0) {
-            family = this.theme.getFontTheme(family)
-        }
-        if (!family) {
-            family = this.theme.getFontFamily(type)
-        }
-        return family
-    }
+   
 
     /**
      * @param {XElement} node 

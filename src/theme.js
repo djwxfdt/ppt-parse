@@ -2,11 +2,15 @@
 
 const XElement = require('./xelement')
 
+const FontScheme = require('./components/elements/a-fontScheme')
+
 
 class ThemeXML {
     constructor(xml) {
         
         this.xml = XElement.init(xml).selectFirst(["a:theme","a:themeElements"]) 
+
+        this.fontScheme = new FontScheme(this.xml.selectFirst(['a:fontScheme']))
     }
 
     getColor(rel){
@@ -20,52 +24,6 @@ class ThemeXML {
         }
     }
 
-    getFontFamily(type){
-        let fontSchemeNode = this.xml.selectFirst(['a:fontScheme'])
-        if(!fontSchemeNode){
-            return
-        }
-        switch(type){
-            case "title":
-            case "subTitle":
-            case "ctrTitle":{
-                return fontSchemeNode.selectFirst(['a:majorFont', 'a:latin', 'attrs', 'typeface'])
-            }
-            case "body":
-            default:{
-                return fontSchemeNode.selectFirst(['a:minorFont', 'a:latin', 'attrs', 'typeface'])
-            }
-        }
-    }
-
-    /**
-     * 
-     * @param {string} theme 
-     */
-    getFontTheme(theme){
-        let fontSchemeNode = this.xml.selectFirst(['a:fontScheme'])
-        if(!fontSchemeNode){
-            return
-        }
-
-        switch(theme){
-            case "+mj-ea":{
-                return fontSchemeNode.selectFirst(['a:majorFont', 'a:ea', 'attrs', 'typeface'])
-            }
-            case "+mn-ea":{
-                return fontSchemeNode.selectFirst(['a:minorFont', 'a:ea', 'attrs', 'typeface'])
-            }
-            case "+mj-lt":{
-                return fontSchemeNode.selectFirst(['a:majorFont', 'a:latin', 'attrs', 'typeface'])
-            }
-            case "+mn-lt":
-            default:
-            {
-                return fontSchemeNode.selectFirst(['a:minorFont', 'a:latin', 'attrs', 'typeface'])
-            }
-
-        }
-    }
 }
 
 

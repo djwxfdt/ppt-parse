@@ -79,8 +79,11 @@ for(let i = 0;i<slideJson.slides.length;i++){
                     if(t.decoration){
                         span.style.textDecoration = t.decoration
                     }
-                    if(t.fontStyle){
-                        span.style.fontStyle = t.fontStyle
+                    if(t.bold){
+                        span.style.fontWeight = "bold"
+                    }
+                    if(t.italic){
+                        span.style.fontStyle = "italic"
                     }
                     div.appendChild(span)
                 })

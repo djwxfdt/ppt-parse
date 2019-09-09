@@ -1,5 +1,6 @@
 
 const RPr = require('./a-rpr')
+const XElement = require('../../xelement')
 
 module.exports = class R{
     /**
