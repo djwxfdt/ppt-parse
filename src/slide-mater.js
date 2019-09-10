@@ -12,12 +12,44 @@ class SlideMasterXML {
 
         this.shapes = this.xml.selectArray(['p:cSld', 'p:spTree','p:sp']).map(sp=>createSp(sp))
 
+        this.typeMap = {
+            title:"title",
+            subTitle:"body",
+            ctrTitle:"title"
+        }
+
     }
 
     get titleColor(){
         let titleSp = this.shapes.find(sp=>sp.type == "title")
         if(titleSp && titleSp.txBody && titleSp.txBody.textStyle){
             return titleSp.txBody.textStyle.getColor('0')
+        }
+    }
+    
+    get titleSize(){
+        let finded = this.shapes.find(sp=>sp.type == "title")
+        if(finded && finded.txBody  && finded.txBody.textStyle){
+            let style = finded.txBody.textStyle.find('0')
+            if(style){
+                return style.size
+            }
+        }
+    }
+
+    
+
+    getTextSizeOfType(type){
+        if(!type){
+            return
+        }
+        type = this.typeMap[type] || type
+        let finded = this.shapes.find(sp=>sp.type == type)
+        if(finded && finded.txBody  && finded.txBody.textStyle){
+            let style = finded.txBody.textStyle.find('0')
+            if(style){
+                return style.size
+            }
         }
     }
 
@@ -102,27 +134,6 @@ class SlideMasterXML {
 
     get textStyle(){
         return this.xml.selectFirst(['p:txStyles'])
-    }
-
-    getTextSizeOfType(type){
-        switch(type){
-            case "title":
-            case "subTitle":
-            case "ctrTitle":{
-                return this.textStyle.selectFirst(['p:titleStyle', 'a:lvl1pPr', 'a:defRPr', 'attrs', 'sz'])
-            }
-            case "body":{
-                return this.textStyle.selectFirst(['p:bodyStyle', 'a:lvl1pPr', 'a:defRPr', 'attrs', 'sz'])
-            }
-            case "sldNum":
-            case "dt":{
-                return 1200
-            }
-            default:{
-                return this.textStyle.selectFirst(['p:otherStyle', 'a:lvl1pPr', 'a:defRPr', 'attrs', 'sz'])
-            }
-        }
-       
     }
 
     /**

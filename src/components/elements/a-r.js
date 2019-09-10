@@ -9,11 +9,16 @@ module.exports = class R{
     constructor(node){
         
 
+        /**
+         * @type {string}
+         */
         this.text = node.getSingle('a:t')
 
         if(node.getSingle('a:rPr')){
             this.rPr = new RPr(node.getSingle('a:rPr'))
         } 
+
+       
     }
 
     get fontSize(){

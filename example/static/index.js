@@ -59,16 +59,27 @@ for(let i = 0;i<slideJson.slides.length;i++){
                         return
                     }
 
+                    if(t.link){
+
+                    }
+
                     let span = document.createElement('span')
+
+                    if(t.link){
+                        span = document.createElement("a")
+                        span.setAttribute("href","#")
+                    }else{
+                        if(t.color){
+                            span.style.color = "#" + t.color
+                        }
+                    }
                     
                     let str = t.value.replace(/( )( )/g,"&nbsp&nbsp")
                     span.innerHTML = str
                     if(t.size){
                         span.style.fontSize  = t.size + "px"
                     }
-                    if(t.color){
-                        span.style.color = "#" + t.color
-                    }
+                    
                     if(t.fontFamily){
                         span.style.fontFamily = t.fontFamily
                         console.log(t.fontFamily)
@@ -76,15 +87,19 @@ for(let i = 0;i<slideJson.slides.length;i++){
                     if(t.valign){
                         span.style.verticalAlign = t.valign + "%"
                     }
-                    if(t.decoration){
-                        span.style.textDecoration = t.decoration
-                    }
+                   
                     if(t.bold){
                         span.style.fontWeight = "bold"
                     }
                     if(t.italic){
                         span.style.fontStyle = "italic"
                     }
+
+                    if(t.underline){
+                        span.style.textDecoration = "underline"
+                    }
+
+
                     div.appendChild(span)
                 })
                 

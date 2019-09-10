@@ -115,6 +115,9 @@ module.exports =  class TextStyles{
      * @returns {number}
      */
     getTextSizeOfType(type,lv="0"){
+        if(type == "title"){
+            debugger
+        }
         switch(type){
             case "title":
             case "subTitle":

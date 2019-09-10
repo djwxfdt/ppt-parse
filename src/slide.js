@@ -177,7 +177,7 @@ class SlideXML {
 
         let container = {
             type: "container",
-            // valign: this.getVerticalAlign(node)
+            valign: sp.txBody.anchor
         }
 
         if (sp.xfrm) {
@@ -207,7 +207,12 @@ class SlideXML {
             text = sp.txBody.pList.map(p => {
                 let container = {
                     children: p.rList.map(r => {
-                        let sz = r.fontSize || this.layout.getTextSizeOfType(type) || this.master.textStyles.getTextSizeOfType(type)
+
+                        if(r.text && r.text.indexOf('I am ') > -1){
+                            // debugger
+                        }
+                        
+                        let sz = r.fontSize || this.layout.getTextSizeOfType(type) || this.master.getTextSizeOfType(type)
                         if (r.rPr && r.rPr.baseline && !isNaN(sz)) {
                             sz -= 10
                         }
@@ -223,6 +228,8 @@ class SlideXML {
                             fontFamily = this.theme.fontScheme.getFontByType(sp.type)
                         }
 
+                      
+
                         return {
                             type: "span",
                             value: r.text,
@@ -231,15 +238,18 @@ class SlideXML {
                             fontFamily,
                             bold:r.rPr && r.rPr.bold,
                             italic:r.rPr && r.rPr.italic,
+                            underline:r.rPr && r.rPr.underline,
+                            strike:r.rPr && r.rPr.strike,
+                            link:r.rPr && r.rPr.link
+
 
                             // valign:this.getTextVerticalAlign(r),
-                            // decoration:this.getTextDecoration(r),
                             // fontStyle:this.getTextStyle(r)
                         }
                     })
                 }
 
-                if (type == "ctrTitle" && titleColor) {
+                if ((type == "ctrTitle" || type == "title") && titleColor) {
                     container.color = titleColor
                 }
 
@@ -267,22 +277,6 @@ class SlideXML {
         }
     }
 
-    /**
-     * @param {XElement} node 
-     */
-    getTextDecoration(node) {
-        let underline = node.selectFirst(["a:rPr", "attrs", "u"])
-        let strike = node.selectFirst(["a:rPr", "attrs", "strike"])
-        if (underline && strike) {
-            return "underline line-through"
-        }
-        if (underline) {
-            return "underline"
-        }
-        if (strike) {
-            return "line-through"
-        }
-    }
 
     /**
      * @param {XElement} node 
@@ -311,24 +305,6 @@ class SlideXML {
         }
     }
 
-    /**
-     * @param {XElement} shape 
-     * @param {*} type 
-     */
-    getVerticalAlign(shape, type) {
-        let anchor = shape.selectFirst(['p:txBody', 'a:bodyPr', 'attrs', 'anchor'])
-        switch (anchor) {
-            case "ctr": {
-                return "middle"
-            }
-            case "b": {
-                return "bottom"
-            }
-            default: {
-                return "top"
-            }
-        }
-    }
 
     /**
      * 

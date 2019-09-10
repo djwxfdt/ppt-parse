@@ -17,6 +17,7 @@ class SlideLayoutXML {
     }
 
     getTextSizeOfType(type){
+     
         let finded = this.shapes.find(sp=>sp.type == type)
         if(finded && finded.txBody  && finded.txBody.textStyle){
             let style = finded.txBody.textStyle.find('0')
