@@ -7,6 +7,11 @@
 3. visit http://localhost:9992/test.html
 
 
+### Todo
+
+1. 第四页，title按照实际大小显示的时候，会超出shape的宽高，需要对文字进行缩放，怎么做是个问题。
+
+
 参考文档：
 1. [Ecma-376](https://www.ecma-international.org/publications/standards/Ecma-376.htm)
 2. [officeopenxml](http://officeopenxml.com)

@@ -187,9 +187,6 @@ class SlideXML {
                 height: sp.xfrm.ext.cy,
             }
         }
-
-
-
         // if (custShapType) {
         //     // debugger
         // }
@@ -207,11 +204,9 @@ class SlideXML {
             text = sp.txBody.pList.map(p => {
                 let container = {
                     children: p.rList.map(r => {
-
-                        if(r.text && r.text.indexOf('I am ') > -1){
-                            // debugger
+                        if(!r.text){
+                            return
                         }
-                        
                         let sz = r.fontSize || this.layout.getTextSizeOfType(type) || this.master.getTextSizeOfType(type)
                         if (r.rPr && r.rPr.baseline && !isNaN(sz)) {
                             sz -= 10
@@ -227,9 +222,6 @@ class SlideXML {
                         if (!fontFamily) {
                             fontFamily = this.theme.fontScheme.getFontByType(sp.type)
                         }
-
-                      
-
                         return {
                             type: "span",
                             value: r.text,
@@ -241,12 +233,10 @@ class SlideXML {
                             underline:r.rPr && r.rPr.underline,
                             strike:r.rPr && r.rPr.strike,
                             link:r.rPr && r.rPr.link
-
-
                             // valign:this.getTextVerticalAlign(r),
                             // fontStyle:this.getTextStyle(r)
                         }
-                    })
+                    }).filter(t=>t)
                 }
 
                 if ((type == "ctrTitle" || type == "title") && titleColor) {
@@ -255,6 +245,12 @@ class SlideXML {
 
                 return container
             })
+
+            // let totalSize = text.reduce((p,c,i)=>{
+            //     return p + c.children[0].size
+            // },0)
+
+            // debugger
         }
 
         if (text) {

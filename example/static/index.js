@@ -46,7 +46,7 @@ for(let i = 0;i<slideJson.slides.length;i++){
            
 
             block.text.map(d=>{
-                let div = document.createElement('div')
+                let div = document.createElement('p')
                 // div.style.whiteSpace = "pre"
                 if(d.align == "center"){
                     div.style.textAlign = "center"

@@ -1,5 +1,6 @@
 const CNvPr = require('./p-cNvPr')
 const NvPr = require('./p-nvPr')
+const XElement = require('../../xelement')
 
 /**
  * This element specifies all non-visual properties for a shape. 
@@ -21,6 +22,14 @@ module.exports = class NvSpPr{
         let nvPr = node.getSingle("p:nvPr")
         if(nvPr){
             this.nvPr = new NvPr(nvPr)
+        }
+
+        let cNvSpPr = node.getSingle("p:cNvSpPr")
+        if(cNvSpPr){
+            /**
+             * Specifies that the corresponding shape is a text box and thus should be treated as such by the generating application. If this attribute is omitted then it is assumed that the corresponding shape is not specifically a text box.
+             */
+            this.txBox = cNvSpPr.attributes.txBox == "1"
         }
         
     }
