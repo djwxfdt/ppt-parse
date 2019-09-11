@@ -6,7 +6,10 @@ class SlideLayoutXML {
     constructor(xml) {
         this.xml = XElement.init(xml).get("p:sldLayout")
         this.shapes = this.xml.selectArray(['p:cSld', 'p:spTree','p:sp']).map(sp=>createSp(sp))
+
         this.pics = this.xml.selectArray(['p:cSld', 'p:spTree','p:pic']).map(sp=>createPic(sp))
+        this.placeholders = this.shapes.filter(sp=>!!sp.placeholder)
+        this.viewShapes = this.shapes.filter(sp=>!sp.placeholder)
     }
 
     getTextSizeOfType(type){
@@ -27,7 +30,7 @@ class SlideLayoutXML {
         if(!type){
             return
         }
-        let finded = this.shapes.find(sp=>sp.type == type)
+        let finded = this.placeholders.find(sp=>sp.type == type)
         if(finded && finded.txBody){
             return finded.txBody
         }

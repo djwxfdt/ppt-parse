@@ -12,6 +12,7 @@ const SlideLayoutRelXml = require('./slide-layout-rel')
 
 const ThemeXML = require('./theme')
 
+const PresentationXML = require('./presentation')
 
 class RelsXML {
     constructor(xml) {
@@ -33,22 +34,6 @@ class RelsXML {
 
 
 
-class PresentationXML {
-    constructor(xml) {
-        /**
-         * @type {{["p:sldSz"]}}
-         */
-        this.xml = xml["p:presentation"]
-
-    }
-
-    get slideSize() {
-        let w = +this.xml["p:sldSz"][0].attrs.cx
-        let h = +this.xml["p:sldSz"][0].attrs.cy
-
-        return { width: w * 96 / 914400, height: h * 96 / 914400 }
-    }
-}
 
 
 

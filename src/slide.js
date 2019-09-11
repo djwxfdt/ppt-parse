@@ -37,6 +37,10 @@ class SlideXML {
 
         let pics = [...this.pics, ...this.layout.pics]
 
+        this.layout.viewShapes.map(sp=>{
+            arry.push(this.parseSp(sp,true))
+        })
+
         this.shapes.map(sp => {
             let obj = this.parseSp(sp)
             arry.push(obj)
@@ -55,6 +59,17 @@ class SlideXML {
 
     get json() {
 
+    }
+
+    /**
+     * @param {import('./presentation')} v
+     */
+    set presentation(v){
+        this._presationXML = v
+    }
+
+    get presentation(){
+        return this._presationXML
     }
 
     /**
@@ -156,7 +171,7 @@ class SlideXML {
      * 
      * @param {Sp} sp 
      */
-    parseSp(sp) {
+    parseSp(sp,isLayout=false) {
         
         let type = sp.type
 
@@ -171,7 +186,6 @@ class SlideXML {
             layoutSp = this.layout.tables.typeTable[type]
         }
 
-        let xfrmLayout = layoutSp ? layoutSp.selectFirst(['p:spPr', 'a:xfrm']) : null
         // let shpType = node.selectFirst(['p:spPr', 'a:prstGeom', 'attrs', 'prst'])
         // let custShapType = node.selectFirst(['p:spPr', 'a:custGeom'])
 
@@ -207,7 +221,7 @@ class SlideXML {
                         if(!r.text){
                             return
                         }
-                        let sz = r.fontSize || this.layout.getTextSizeOfType(type) || this.master.getTextSizeOfType(type)
+                        let sz = r.fontSize || (!isLayout && this.layout.getTextSizeOfType(type)) || this.master.getTextSizeOfType(type)
                         if (r.rPr && r.rPr.baseline && !isNaN(sz)) {
                             sz -= 10
                         }
@@ -223,10 +237,15 @@ class SlideXML {
                             fontFamily = this.theme.fontScheme.getFontByType(sp.type)
                         }
 
+                        if(fontFamily && this.presentation.isEmbeddeFont(fontFamily)){
+                            fontFamily = undefined
+                        }
+                        
+
                         let color = r.solidFill
 
                         if(!color){
-                            color = this.layout.getTextColorOfType(sp.type) || this.master.getTextColorOfType(sp.type)
+                            color = (!isLayout && this.layout.getTextColorOfType(sp.type)) || this.master.getTextColorOfType(sp.type)
                             // if(color){
                             //     debugger
                             // }

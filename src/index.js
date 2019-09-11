@@ -45,6 +45,8 @@ class PPTParseSDK{
 
             XML.theme = themeXml
 
+            XML.presentation = presentationXML
+
             let layoutPath = XML.rel.layoutPath
             let layoutFile = files.find(f=>f.path == layoutPath)
             XML.layout = await xml.parseSlideLayoutXML(layoutFile.data.toString())
