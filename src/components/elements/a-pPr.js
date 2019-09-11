@@ -2,6 +2,30 @@ const XElement = require('../../xelement')
 
 const LnSpc = require('./a-lnSpc')
 
+/**
+ * This element specifies the amount of vertical white space that will be present before a paragraph. This space is specified in either percentage or points via the child elements <spcPct> and <spcPts>.
+ */
+class SpecBef{
+    /**
+     * @param {XElement} node 
+     */
+    constructor(node){
+        
+
+        let spcPct = node.getSingle("a:spcPct")
+        if(spcPct && spcPct.attributes.val){
+            this.spcPct = +spcPct.attributes.val / 1000
+        }
+
+        let spcPts = node.getSingle("a:spcPts")
+        if(spcPts && spcPts.attributes.val){
+            this.spcPts = +spcPts.attributes.val / 100 / 3 * 4
+        }
+    }
+}
+
+
+
 module.exports =  class PPr{
     /**
      * @param {XElement} node 
@@ -20,11 +44,22 @@ module.exports =  class PPr{
         if(lnSpc){
             this.lnSpc = new LnSpc(lnSpc)
         }
+
+        let spcBef = node.getSingle("a:spcBef")
+        if(spcBef){
+            this.spcBef = new SpecBef(spcBef)
+        }
     }
 
     get lineSpacePercent(){
         if(this.lnSpc){
             return this.lnSpc.spcPct
+        }
+    }
+
+    get spaceBefore(){
+        if(this.spcBef){
+            return this.spcBef.spcPts
         }
     }
 }

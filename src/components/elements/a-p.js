@@ -24,4 +24,10 @@ module.exports =  class P{
             return this.pPr.lineSpacePercent
         }
     }
+
+    get spaceBofore(){
+        if(this.pPr){
+            return this.pPr.spaceBefore
+        }
+    }
 }

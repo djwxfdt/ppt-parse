@@ -242,6 +242,10 @@ class SlideXML {
                 if(p.lineSpacePercent){
                     container.lnPt = p.lineSpacePercent
                 }
+
+                if(p.spaceBofore){
+                    container.spcBef = p.spaceBofore
+                }
                 // container.lnPt = p.lineSpacePercent || this.master.getLineSpacePercent(sp.type)
 
                 if ((type == "ctrTitle" || type == "title") && titleColor) {

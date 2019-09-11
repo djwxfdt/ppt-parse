@@ -45,7 +45,7 @@ for(let i = 0;i<slideJson.slides.length;i++){
             }
            
 
-            block.text.map(d=>{
+            block.text.map((d,index)=>{
                 let div = document.createElement('p')
                 // div.style.whiteSpace = "pre"
                 if(d.align == "center"){
@@ -57,7 +57,12 @@ for(let i = 0;i<slideJson.slides.length;i++){
                 if(d.lnPt){
                     div.style.lineHeight = d.lnPt / 100
                 }
-                d.children.map(t=>{
+
+                if(d.spcBef && index != 0){
+                    div.style.marginTop = d.spcBef + "px"
+                }
+
+                d.children.map((t)=>{
                     if(!t.value){
                         return
                     }
@@ -76,8 +81,14 @@ for(let i = 0;i<slideJson.slides.length;i++){
                             span.style.color = "#" + t.color
                         }
                     }
+
+                    
+
+                   
                     
                     let str = t.value.replace(/( )( )/g,"&nbsp&nbsp")
+
+                    
                     span.innerHTML = str
                     if(t.size){
                         span.style.fontSize  = t.size + "px"
