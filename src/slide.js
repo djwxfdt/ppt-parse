@@ -222,11 +222,21 @@ class SlideXML {
                         if (!fontFamily) {
                             fontFamily = this.theme.fontScheme.getFontByType(sp.type)
                         }
+
+                        let color = r.solidFill
+
+                        if(!color){
+                            color = this.layout.getTextColorOfType(sp.type) || this.master.getTextColorOfType(sp.type)
+                            // if(color){
+                            //     debugger
+                            // }
+                        }
+
                         return {
                             type: "span",
                             value: r.text,
                             size: sz,
-                            color: r.solidFill,
+                            color,
                             fontFamily,
                             bold:r.rPr && r.rPr.bold,
                             italic:r.rPr && r.rPr.italic,

@@ -48,15 +48,19 @@ class SlideMasterXML {
         }
     }
 
+    getTextColorOfType(type){
+        let txBody = this.getTxBodyOfType(type)
+        if(txBody && txBody.textStyle){
+            return txBody.textStyle.getColor('0')
+        }
+    }
+
     
 
     getTextSizeOfType(type){
         let txBody = this.getTxBodyOfType(type)
         if(txBody && txBody.textStyle){
-            let style = txBody.textStyle.find('0')
-            if(style){
-                return style.size
-            }
+            return txBody.textStyle.getSize('0')
         }
     }
 
@@ -153,41 +157,8 @@ class SlideMasterXML {
         return this.xml.selectFirst(['p:txStyles'])
     }
 
-    /**
-     * 
-     * @param {"tx1"|"tx2"|"bg1"|"bg2"} str 
-     */
-    getColorMap(str){
-        return this.xml.selectFirst(["p:clrMap","attrs",str])
-    } 
+   
 
-    /**
-     * 
-     * @param {*} lvl 
-     */
-    getLvlFontColor(lvl){
-        let styles =  this.xml.selectFirst(["p:cSld","p:spTree","p:sp","p:txBody","a:lstStyle"])
-
-        for(let key in styles.elements) {
-            let ele = styles.elements[key]
-            if(Array.isArray(ele)){
-                ele = ele[0]
-            }
-            if(ele.selectFirst(["attrs","lvl"]) == lvl){
-                return ele.selectFirst(["a:defRPr","a:solidFill","a:srgbClr","attrs","val"])
-            }
-        }
-        // debugger
-        // let 
-        //     `lvl${+lvl + 1}pPr`,])
-
-        // for(let lvl of lvls){
-        //     let styles = lvl.selectFirst([])
-        //     if(styles){
-        //         break
-        //     }
-        // }
-    }
 }
 
 module.exports = SlideMasterXML

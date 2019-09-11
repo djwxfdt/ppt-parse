@@ -5,27 +5,35 @@ const {createSp,createPic} = require('./components/ShapeTree')
 class SlideLayoutXML {
     constructor(xml) {
         this.xml = XElement.init(xml).get("p:sldLayout")
-
-
         this.shapes = this.xml.selectArray(['p:cSld', 'p:spTree','p:sp']).map(sp=>createSp(sp))
-
         this.pics = this.xml.selectArray(['p:cSld', 'p:spTree','p:pic']).map(sp=>createPic(sp))
-
-        
-
-
     }
 
     getTextSizeOfType(type){
-     
-        let finded = this.shapes.find(sp=>sp.type == type)
-        if(finded && finded.txBody  && finded.txBody.textStyle){
-            let style = finded.txBody.textStyle.find('0')
-            if(style){
-                return style.size
-            }
+        let txBody = this.getTxBodyOfType(type)
+        if(txBody  && txBody.textStyle){
+            return txBody.textStyle.getSize('0')
         }
     }
+
+    getTextColorOfType(type){
+        let txBody = this.getTxBodyOfType(type)
+        if(txBody  && txBody.textStyle){
+            return txBody.textStyle.getColor('0')
+        }
+    }
+
+    getTxBodyOfType(type){
+        if(!type){
+            return
+        }
+        let finded = this.shapes.find(sp=>sp.type == type)
+        if(finded && finded.txBody){
+            return finded.txBody
+        }
+    }
+
+
 
     get background() {
         let bgPr = this.xml.selectFirst(['p:cSld', 'p:bg', 'p:bgPr'])
