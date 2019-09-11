@@ -13,9 +13,9 @@ module.exports = class TxBody{
 
         this.pList = node.selectArray(["a:p"]).map(p=>new P(p))
 
-        let other = node.getSingle('a:lstStyle')
-        if(other){
-            this.textStyle = new TextStyle(other)
+        let lstStyle = node.getSingle('a:lstStyle')
+        if(lstStyle){
+            this.textStyle = new TextStyle(lstStyle)
         }
 
         let bodyPr = node.getSingle("a:bodyPr")

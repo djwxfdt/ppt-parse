@@ -54,6 +54,9 @@ for(let i = 0;i<slideJson.slides.length;i++){
                 if(d.color){
                     div.style.color = "#" + d.color
                 }
+                if(d.lnPt){
+                    div.style.lineHeight = d.lnPt / 100
+                }
                 d.children.map(t=>{
                     if(!t.value){
                         return
@@ -82,7 +85,6 @@ for(let i = 0;i<slideJson.slides.length;i++){
                     
                     if(t.fontFamily){
                         span.style.fontFamily = t.fontFamily
-                        console.log(t.fontFamily)
                     }
                     if(t.valign){
                         span.style.verticalAlign = t.valign + "%"

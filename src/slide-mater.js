@@ -37,18 +37,35 @@ class SlideMasterXML {
         }
     }
 
-    
-
-    getTextSizeOfType(type){
+    getTxBodyOfType(type){
         if(!type){
             return
         }
         type = this.typeMap[type] || type
         let finded = this.shapes.find(sp=>sp.type == type)
-        if(finded && finded.txBody  && finded.txBody.textStyle){
-            let style = finded.txBody.textStyle.find('0')
+        if(finded && finded.txBody){
+            return finded.txBody
+        }
+    }
+
+    
+
+    getTextSizeOfType(type){
+        let txBody = this.getTxBodyOfType(type)
+        if(txBody && txBody.textStyle){
+            let style = txBody.textStyle.find('0')
             if(style){
                 return style.size
+            }
+        }
+    }
+
+    getLineSpacePercent(type){
+        let txBody = this.getTxBodyOfType(type)
+        if(txBody && txBody.textStyle){
+            let style = txBody.textStyle.find('0')
+            if(style){
+                return style.lineSpacePercent
             }
         }
     }

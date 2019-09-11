@@ -2,6 +2,8 @@ const XElement = require('../xelement')
 
 const RPr = require('./elements/a-rpr')
 
+const LnSpc = require('./elements/a-lnSpc')
+
 
 
 class LvpPr{
@@ -18,6 +20,11 @@ class LvpPr{
         if(defPPr){
             this.defRpr = new RPr(defPPr)
         }
+
+        let lnSpc = node.getSingle("a:lnSpc")
+        if(lnSpc){
+            this.lnSpc = new LnSpc(lnSpc)
+        }
     }
 
     get size(){
@@ -32,6 +39,12 @@ class LvpPr{
     get color(){
         if(this.defRpr){
             return this.defRpr.solidFill
+        }
+    }
+
+    get lineSpacePercent(){
+        if(this.lnSpc){
+            return this.lnSpc.spcPct
         }
     }
 }
