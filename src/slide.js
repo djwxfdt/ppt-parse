@@ -201,6 +201,17 @@ class SlideXML {
                 height: sp.xfrm.ext.cy,
             }
         }
+
+        let fontSize = (!isLayout && this.layout.getTextSizeOfType(type)) || this.master.getTextSizeOfType(type)
+        if(fontSize){
+            container.fontSize = fontSize
+        }
+
+        let color = (!isLayout && this.layout.getTextColorOfType(sp.type)) || this.master.getTextColorOfType(sp.type)
+        if(color){
+            container.color = color
+        }
+
         // if (custShapType) {
         //     // debugger
         // }
@@ -221,12 +232,9 @@ class SlideXML {
                         if(!r.text){
                             return
                         }
-                        let sz = r.fontSize || (!isLayout && this.layout.getTextSizeOfType(type)) || this.master.getTextSizeOfType(type)
+                        let sz = r.fontSize
                         if (r.rPr && r.rPr.baseline && !isNaN(sz)) {
                             sz -= 10
-                        }
-                        if (!isNaN(sz)) {
-                            sz = sz / 3 * 4
                         }
 
                         let fontFamily = r.fontFamlily
@@ -243,13 +251,6 @@ class SlideXML {
                         
 
                         let color = r.solidFill
-
-                        if(!color){
-                            color = (!isLayout && this.layout.getTextColorOfType(sp.type)) || this.master.getTextColorOfType(sp.type)
-                            // if(color){
-                            //     debugger
-                            // }
-                        }
 
                         return {
                             type: "span",
@@ -274,6 +275,10 @@ class SlideXML {
 
                 if(p.spaceBofore){
                     container.spcBef = p.spaceBofore
+                }
+
+                if(p.bullet){
+                    container.bullet = p.bullet
                 }
                 // container.lnPt = p.lineSpacePercent || this.master.getLineSpacePercent(sp.type)
 

@@ -13,7 +13,7 @@ module.exports = class RPr {
             /**
              * Specifies the size of text within a text run. Whole points are specified in increments of 100 starting with 100 being a point size of 1. For instance a font point size of 12 would be 1200 and a font point size of 12.5 would be 1250. If this attribute is omitted, than the value in <defRPr> should be used.
              */
-            this.size = +this.size / 100
+            this.size = +this.size / 100 / 3 * 4
         }
 
         /**

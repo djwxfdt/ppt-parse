@@ -30,4 +30,13 @@ module.exports =  class P{
             return this.pPr.spaceBefore
         }
     }
+
+    get bullet(){
+        if(this.pPr && !this.pPr.buNone && this.pPr.buChar){
+            return {
+                char:this.pPr.buChar,
+                sz:this.pPr.buSzPts
+            }
+        }
+    }
 }

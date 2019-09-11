@@ -49,6 +49,23 @@ module.exports =  class PPr{
         if(spcBef){
             this.spcBef = new SpecBef(spcBef)
         }
+
+        this.buNone = !!node.getSingle("a:buNone")
+
+        let buChar = node.getSingle("a:buChar")
+        if(buChar){
+            /**
+             * This element specifies that a character be applied to a set of bullets. These bullets are allowed to be any character in any font that the system is able to support. If no bullet font is specified along with this element then the paragraph font will be used.
+             * @type {string}
+             */
+            this.buChar = buChar.attributes.char
+        }
+
+        let buSzPts = node.getSingle("a:buSzPts")
+        if(buSzPts && buSzPts.attributes.val){
+            this.buSzPts = +buSzPts.attributes.val / 100 / 3 * 4
+        }
+
     }
 
     get lineSpacePercent(){
@@ -62,4 +79,6 @@ module.exports =  class PPr{
             return this.spcBef.spcPts
         }
     }
+
+  
 }

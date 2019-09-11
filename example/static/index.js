@@ -43,26 +43,41 @@ for(let i = 0;i<slideJson.slides.length;i++){
                 text.style.flexDirection = "column"
                 text.style.justifyContent = "center"
             }
+
+            if(block.fontSize){
+                text.style.fontSize = block.fontSize + "px"
+            }
+
+            if(block.color){
+                text.style.color = "#" + block.color
+            }
            
 
-            block.text.map((d,index)=>{
+            block.text.map((p,index)=>{
                 let div = document.createElement('p')
                 // div.style.whiteSpace = "pre"
-                if(d.align == "center"){
+                if(p.align == "center"){
                     div.style.textAlign = "center"
                 }
-                if(d.color){
-                    div.style.color = "#" + d.color
+                if(p.color){
+                    div.style.color = "#" + p.color
                 }
-                if(d.lnPt){
-                    div.style.lineHeight = d.lnPt / 100
-                }
-
-                if(d.spcBef && index != 0){
-                    div.style.marginTop = d.spcBef + "px"
+                if(p.lnPt){
+                    div.style.lineHeight = p.lnPt / 100
                 }
 
-                d.children.map((t)=>{
+                if(p.spcBef && index != 0){
+                    div.style.marginTop = p.spcBef + "px"
+                }
+
+                if(p.bullet){
+                    let bullet = document.createElement("span")
+                    bullet.innerHTML = p.bullet.char
+                    bullet.style.fontSize = p.bullet.sz + "px"
+                    div.appendChild(bullet)
+                }
+
+                p.children.map((t)=>{
                     if(!t.value){
                         return
                     }
@@ -81,13 +96,8 @@ for(let i = 0;i<slideJson.slides.length;i++){
                             span.style.color = "#" + t.color
                         }
                     }
-
-                    
-
-                   
                     
                     let str = t.value.replace(/( )( )/g,"&nbsp&nbsp")
-
                     
                     span.innerHTML = str
                     if(t.size){
