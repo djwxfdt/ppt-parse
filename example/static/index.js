@@ -209,6 +209,10 @@ for(let i = 0;i<slideJson.slides.length;i++){
 
     let slide = slideJson.slides[i]
 
+    if(slide.backgroundImage){
+        el.style.backgroundImage = `url(${slide.backgroundImage.replace('ppt','')})`
+        el.style.backgroundSize = "cover"
+    }
     parseBlocks(slide.blocks,el)
    
 }

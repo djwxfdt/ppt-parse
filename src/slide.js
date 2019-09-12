@@ -7,6 +7,8 @@ const ShapeTree = require('./components/ShapeTree')
 const Sp = require('./components/elements/p-sp')
 const Pic = require('./components/elements/p-pic')
 
+const SlideBg = require("./components/elements/p-bg")
+
 
 class SlideXML {
     constructor(xml) {
@@ -21,6 +23,12 @@ class SlideXML {
 
         this.groupShapes = this.xml.selectArray(['p:cSld', 'p:spTree', 'p:grpSp']).map(sp => ShapeTree.createGroupSp(sp))
 
+        let bg = this.xml.selectFirst(['p:cSld',"p:bg"])
+
+        if(bg){
+            this.bg = new SlideBg(bg)
+            
+        }
     }
 
     get nodes() {
@@ -31,9 +39,10 @@ class SlideXML {
         }
 
         let obj = {
-            background: this.background,
+            backgroundImage: this.bg && this.bg.imageSrc,
             blocks: []
         }
+
 
         let arry = []
 
@@ -109,6 +118,10 @@ class SlideXML {
             }
             return p
         })
+
+        if(this.bg && this.bg.imageEmbed){
+            this.bg.imageSrc = this.rel.getRelationById(this.bg.imageEmbed)
+        }
     }
 
     get rel() {
@@ -300,7 +313,6 @@ class SlideXML {
                             strike: r.rPr && r.rPr.strike,
                             link: r.rPr && r.rPr.link
                             // valign:this.getTextVerticalAlign(r),
-                            // fontStyle:this.getTextStyle(r)
                         }
                     }).filter(t => t)
                 }
@@ -347,32 +359,7 @@ class SlideXML {
     }
 
 
-    /**
-     * @param {XElement} node 
-     */
-    getTextStyle(node) {
-        return node.selectFirst(["a:rPr", "attrs", "i"]) ? "italic" : undefined
-    }
 
-
-    /**
-     * @param {XElement} shape 
-     * @param {*} type 
-     */
-    getHorizontalAlign(shape, type) {
-        let align = shape.selectFirst(['a:pPr', 'attrs', 'algn'])
-        switch (align) {
-            case "ctr": {
-                return "center"
-            }
-            case "r": {
-                return "right"
-            }
-            default: {
-                return "left"
-            }
-        }
-    }
 
 
     /**
