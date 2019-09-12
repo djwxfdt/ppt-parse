@@ -18,6 +18,9 @@ let total = slideJson.slides.length
 for(let i = 0;i<slideJson.slides.length;i++){
     
     let el = document.createElement('div')
+    app.appendChild(el)
+
+
     el.style.position = "absolute"
     el.style.width = "100%"
     el.style.height = "100%"
@@ -33,6 +36,8 @@ for(let i = 0;i<slideJson.slides.length;i++){
         let block = slide.blocks[j]
         if(block.type == "container"){
             let text = document.createElement('div')
+            el.appendChild(text)
+
             text.style.position = "absolute"
             text.style.left = block.position.x + "px"
             text.style.top = block.position.y + "px"
@@ -51,7 +56,33 @@ for(let i = 0;i<slideJson.slides.length;i++){
             if(block.color){
                 text.style.color = "#" + block.color
             }
+
+            if(block.rot){
+                text.style.transform = `rotate(${block.rot}deg)`
+            }
            
+            if(block.svgs){
+                block.svgs.map(svg=>{
+                    let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
+                    text.appendChild(s)
+
+                    let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,svg.width,svg.height)
+
+                    let str = svg.points.map(g=>{
+                        if(g.t == "moveTo"){
+                            return `M ${g.x} ${g.y}`
+                        }else if(g.t == "lnTo"){
+                            return `L ${g.x} ${g.y}`
+                        }else if(g.t == "close"){
+                            return "z"
+                        }
+                    }).join(" ")
+                    let ps = ele.path(str)
+                    if(block.fill){
+                        ps.fill("#" + block.fill)
+                    }
+                })
+            }
 
             block.text.map((p,index)=>{
                 let div = document.createElement('p')
@@ -77,6 +108,8 @@ for(let i = 0;i<slideJson.slides.length;i++){
                     div.appendChild(bullet)
                 }
 
+               
+
                 p.children.map((t)=>{
                     if(!t.value){
                         return
@@ -96,7 +129,7 @@ for(let i = 0;i<slideJson.slides.length;i++){
                             span.style.color = "#" + t.color
                         }
                     }
-                    
+                    console.log(t.value)
                     let str = t.value.replace(/( )( )/g,"&nbsp&nbsp")
                     
                     span.innerHTML = str
@@ -129,7 +162,6 @@ for(let i = 0;i<slideJson.slides.length;i++){
                 text.appendChild(div)
             })
 
-            el.appendChild(text)
         }else if(block.type == "image"){
             let image = document.createElement('img')
             image.style.position = "absolute"
@@ -154,7 +186,6 @@ for(let i = 0;i<slideJson.slides.length;i++){
         }
     }
 
-    app.appendChild(el)
 }
 
 

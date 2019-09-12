@@ -53,7 +53,7 @@ module.exports = class RPr {
             this.underline = null
         }
         if (this.underline) {
-            console.log(this.underline)
+            // console.log(this.underline)
         }
 
         let hilink = node.getSingle("a:hlinkClick")

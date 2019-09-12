@@ -200,6 +200,17 @@ class SlideXML {
                 width: sp.xfrm.ext.cx,
                 height: sp.xfrm.ext.cy,
             }
+            if(sp.xfrm.rot){
+                container.rot = sp.xfrm.rot
+            }
+        }
+
+        if(sp.custGeom){
+            container.svgs = sp.custGeom.paths
+        }
+
+        if(sp.solidFill){
+            container.fill = sp.solidFill
         }
 
         let fontSize = (!isLayout && this.layout.getTextSizeOfType(type)) || this.master.getTextSizeOfType(type)

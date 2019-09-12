@@ -20,7 +20,6 @@ class RelsXML {
          * @type {Array<{attrs:{Type:string,Target}}>}
          */
         this.xml = xml.Relationships.Relationship
-
     }
 
     get themePath() {

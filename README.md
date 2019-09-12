@@ -13,6 +13,8 @@
 
 2. 第二页，当按照xml解析的规则把line-height设置为1.15的时候，会造成行高偏小。
 
+3. 第六页，bullet char 的样式有点问题
+
 参考文档：
 1. [Ecma-376](https://www.ecma-international.org/publications/standards/Ecma-376.htm)
 2. [officeopenxml](http://officeopenxml.com)

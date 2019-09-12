@@ -58,5 +58,17 @@ module.exports = class Sp {
         }
     }
 
+    get custGeom(){
+        if(this.spPr){
+            return this.spPr.custGeom
+        }
+    }
+
+    get solidFill(){
+        if(this.spPr){
+            return this.spPr.solidFill
+        }
+    }
+
 
 }

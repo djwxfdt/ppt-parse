@@ -7,7 +7,9 @@ const parseString = Type => str => {
     return new Promise((resolve, reject) => {
         xml2js.parseString(str, {
             attrkey: "attrs",
-            childkey: "children"
+            childkey: "children",
+            explicitChildren:true,
+            preserveChildrenOrder:true
         }, (err, res) => {
             if (err) {
                 reject(err)
@@ -18,6 +20,16 @@ const parseString = Type => str => {
     })
 
 }
+
+// class Test{
+//     constructor(n){
+//         debugger
+//     }
+// }
+
+// parseString(Test)(`<a:r>
+// <a:t>1</a:t>
+// </a:r>`)
 
 const searchXML = xml => arry => {
 

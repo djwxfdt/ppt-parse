@@ -34,5 +34,10 @@ module.exports =  class Xfrm{
             this.off.x = Math.floor(this.off.x * 96 / 91440) / 10
             this.off.y = Math.floor(this.off.y * 96 / 91440) / 10
         }
+
+        let rot = node.attributes.rot
+        if(rot){
+            this.rot = Math.floor(+rot * 96 / 91440) / 10
+        }
     }
 }

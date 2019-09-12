@@ -8,10 +8,19 @@ class XElement{
         this._rawXml = xml
         this._attrs = {}
 
+        /**
+         * @type {Array<{#name:string}>}
+         */
+        this.children = []
+
         if(typeof xml  === "object"){
             for(let key in xml){
                 if(key == "attrs"){
                     this._attrs = xml[key]
+                }
+                if(key == "children"){
+                    this.children = xml[key]
+                    continue
                 }
                 this._map[key] = XElement.init(xml[key])
             }
@@ -34,6 +43,9 @@ class XElement{
             return xml.map(item=>XElement.init(item)).filter(i=>i)
         }
         if(typeof xml === "object"){
+            if(Object.keys(xml).length == 0){
+                return null
+            }
             return new XElement(xml)
         }
         return xml
