@@ -27,5 +27,13 @@ module.exports = class SpPr {
         if (node.getSingle("a:solidFill")) {
             this.solidFill = node.selectFirst(["a:solidFill", "a:srgbClr"]).attributes.val || node.selectFirst(["a:solidFill", "a:schemeClr"]).attributes.val
         }
+
+        let prstGeom = node.getSingle("a:prstGeom")
+        if(prstGeom){
+            /**
+             * This element specifies when a preset geometric shape should be used instead of a custom geometric shape. The generating application should be able to render all preset geometries enumerated in the <ST_ShapeType> list.
+             */
+            this.prstGeom = prstGeom.attributes.prst
+        }
     }
 }

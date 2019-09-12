@@ -65,9 +65,15 @@ class TextStyle{
         node.map((key,ppr)=>{
             this.lvPprs[key.replace("a:","")] = new LvpPr(ppr[0])
         })
+
     }
 
     find(lvl){
+        let keys = Object.keys(this.lvPprs)
+        if( keys.length == 1){
+            return this.lvPprs[keys[0]]
+        }
+
         for(let key in this.lvPprs){
             if(key == "defPPr"){
                 continue

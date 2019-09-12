@@ -66,6 +66,15 @@ const parseBlock = (block,el) =>{
             })
         }
 
+        if(block.prstShape){
+            if(block.prstShape == "rect" && block.fill){
+                let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
+                text.appendChild(s)
+                let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,block.size.width,block.size.height)
+                ele.rect( block.size.width,block.size.height).fill("#" + block.fill)
+            }
+        }
+
         block.text.map((p,index)=>{
             let div = document.createElement('p')
             // div.style.whiteSpace = "pre"
@@ -168,23 +177,30 @@ const parseBlock = (block,el) =>{
     }
 }
 
-const parseBlocks = (blocks,el)=>{
+const parseBlocks = (blocks,el,chOff)=>{
     for(let j=0;j<blocks.length;j++){
         let block = blocks[j]
         if(block.type == "group"){
             let group = document.createElement("div")
-            // group.style.position = "absolute"
-            // group.style.left = block.position.x + "px"
-            // group.style.top = block.position.y + "px"
-            // group.style.width = block.size.width + "px"
-            // group.style.height = block.size.height + "px"
-
-            group.setAttribute("data-type","group")
-            
+            group.style.position = "absolute"
+            group.style.left = block.position.x + "px"
+            group.style.top = block.position.y + "px"
+            group.style.width = block.size.width + "px"
+            group.style.height = block.size.height + "px"
 
             el.appendChild(group)
 
             parseBlocks(block.children,group)
+
+            if(block.chOff){
+                group.childNodes.forEach(n=>{
+                    n.style.marginLeft = `-${block.chOff.x}px`
+                    n.style.marginTop = `-${block.chOff.y}px`
+
+                })
+                // group.style.paddingLeft = `-${block.chOff.x}px`
+                // group.style.paddingTop = `-${block.chOff.y}px`
+            }
         }else{
             parseBlock(block,el)
         }

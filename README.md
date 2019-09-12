@@ -15,7 +15,7 @@
 
 3. 第六页，bullet char 的样式有点问题
 
-4. 第七页, 星球和火箭的位置需要重新计算
+4. 第七页, 星球和火箭的大小需要自动放大到最佳大小
 
 参考文档：
 1. [Ecma-376](https://www.ecma-international.org/publications/standards/Ecma-376.htm)

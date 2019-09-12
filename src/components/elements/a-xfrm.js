@@ -39,5 +39,21 @@ module.exports =  class Xfrm{
         if(rot){
             this.rot = Math.floor(+rot * 96 / 91440) / 10
         }
+
+        let chOff = node.getSingle("a:chOff")
+        if(chOff){
+            /**
+             * This element specifies the location of the child extents rectangle and is used for calculations of grouping, scaling, and rotation behavior of shapes placed within a group.
+             */
+            this.chOff = {
+                x:this.toPix(chOff.attributes.x),
+                y:this.toPix(chOff.attributes.y)
+            }
+        }
+
+    }
+
+    toPix(pt){
+        return Math.floor(+pt * 96 / 91440) / 10
     }
 }

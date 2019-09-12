@@ -69,6 +69,11 @@ module.exports = class Sp {
             return this.spPr.solidFill
         }
     }
+    get prstGeom(){
+        if(this.spPr){
+            return this.spPr.prstGeom
+        }
+    }
 
 
 }

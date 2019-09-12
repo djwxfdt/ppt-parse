@@ -48,6 +48,28 @@ class SlideMasterXML {
         }
     }
 
+    getTxStyleOfType(type){
+        if(!type){
+            return
+        }
+        type = this.typeMap[type] || type
+        let finded = this.shapes.find(sp=>sp.type == type)
+        let style = finded && finded.txBody && finded.txBody.textStyle
+        if(!style){
+            switch(type){
+                case "title":{
+                    return this.textStyles.titleStyle
+                }
+                case "body":{
+                    return this.textStyles.bodyStyle
+                }
+                case "other":{
+                    return this.textStyles.bodyStyle
+                }
+            } 
+        }
+    }
+
     getTextColorOfType(type){
         let txBody = this.getTxBodyOfType(type)
         if(txBody && txBody.textStyle){
@@ -58,9 +80,9 @@ class SlideMasterXML {
     
 
     getTextSizeOfType(type){
-        let txBody = this.getTxBodyOfType(type)
-        if(txBody && txBody.textStyle){
-            return txBody.textStyle.getSize('0')
+        let style = this.getTxStyleOfType(type)
+        if(style){
+            return style.getSize('0')
         }
     }
 
@@ -123,41 +145,10 @@ class SlideMasterXML {
          */
         let typeTable = {}
 
-        let nodes = this.xml.selectFirst(['p:cSld', 'p:spTree'])
-        for (let key in nodes.elements) {
-            if (key === 'p:nvGrpSpPr' || key === 'p:grpSpPr') {
-                continue
-            }
-            let node = nodes.selectArray([key])
-            node.map(sp=>{
-                const id = sp.selectFirst(['p:nvSpPr','p:cNvPr', 'attrs', 'id'])
-                const idx = sp.selectFirst(['p:nvSpPr','p:nvPr', 'p:ph', 'attrs', 'idx'])
-                const type = sp.selectFirst(['p:nvSpPr','p:nvPr', 'p:ph', 'attrs', 'type'])
-                if(id){
-                    idTable[id] = sp
-                }
-                if(idx){
-                    idxTable[idx] = sp
-                }
-                if(type){
-                    typeTable[type] = sp
-                }
-            })
-
-            // for(let sp of node){
-                
-            // }
-        }
-
         this._tables = {idTable,idxTable,typeTable}
         return this._tables
     }
 
-    get textStyle(){
-        return this.xml.selectFirst(['p:txStyles'])
-    }
-
-   
 
 }
 

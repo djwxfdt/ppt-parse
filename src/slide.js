@@ -75,6 +75,9 @@ class SlideXML {
                 if (gp.xfrm.rot) {
                     container.rot = gp.xfrm.rot
                 }
+                if(gp.xfrm.chOff){
+                    container.chOff = gp.xfrm.chOff
+                }
             }
 
             arry.push(container)
@@ -245,6 +248,10 @@ class SlideXML {
 
         if (sp.custGeom) {
             container.svgs = sp.custGeom.paths
+        }
+
+        if(sp.prstGeom){
+            container.prstShape = sp.prstGeom
         }
 
         if (sp.solidFill) {

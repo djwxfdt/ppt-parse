@@ -32,7 +32,13 @@ module.exports = class RPr {
         this.strike = node.attributes.strike
 
         if (node.getSingle("a:solidFill")) {
-            this.solidFill = node.selectFirst(["a:solidFill", "a:srgbClr"]).attributes.val || node.selectFirst(["a:solidFill", "a:schemeClr"]).attributes.val
+            let srgbClr = node.selectFirst(["a:solidFill", "a:srgbClr"]) 
+            let schemeClr = node.selectFirst(["a:solidFill", "a:schemeClr"])
+            if(srgbClr && srgbClr.attributes){
+                this.solidFill = srgbClr.attributes.val
+            } else if(schemeClr && schemeClr.attributes){
+                this.solidFill = schemeClr.attributes.val
+            }
         }
 
         /**
