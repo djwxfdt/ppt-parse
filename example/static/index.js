@@ -99,8 +99,6 @@ const parseBlock = (block,el) =>{
                 div.appendChild(bullet)
             }
 
-           
-
             p.children.map((t)=>{
                 if(!t.value){
                     return
@@ -177,6 +175,12 @@ const parseBlock = (block,el) =>{
     }
 }
 
+/**
+ * 
+ * @param {Array<{type:string,position,size,chOff,children:Array}>} blocks 
+ * @param {*} el 
+ * @param {*} chOff 
+ */
 const parseBlocks = (blocks,el,chOff)=>{
     for(let j=0;j<blocks.length;j++){
         let block = blocks[j]
@@ -196,11 +200,37 @@ const parseBlocks = (blocks,el,chOff)=>{
                 group.childNodes.forEach(n=>{
                     n.style.marginLeft = `-${block.chOff.x}px`
                     n.style.marginTop = `-${block.chOff.y}px`
-
                 })
                 // group.style.paddingLeft = `-${block.chOff.x}px`
                 // group.style.paddingTop = `-${block.chOff.y}px`
             }
+
+            let rect = {}
+
+            block.children.map(c=>{
+                if(rect.x == undefined){
+                    rect.x = c.position.x
+                    rect.y = c.position.y
+                    rect.r = c.size.width + rect.x
+                    rect.b = c.size.height + rect.y
+                }
+                
+                rect.x = Math.min(rect.x,c.position.x)
+                rect.y = Math.min(rect.y,c.position.y)
+                rect.r = Math.max(rect.r,c.position.x + c.size.width)
+                rect.b = Math.max(rect.b,c.position.y + c.size.height)
+            })
+
+            if(rect.x != undefined){
+                let w = rect.r - rect.x
+                let h = rect.b - rect.y
+                let scale = Math.min(block.size.width / w,block.size.height / h)
+                scale =Math.floor(scale * 10) / 10
+                group.style.transform = `scale(${scale})`
+                group.style.transformOrigin = "left top"
+            }
+
+
         }else{
             parseBlock(block,el)
         }
