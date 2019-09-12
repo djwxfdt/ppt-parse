@@ -19,6 +19,8 @@ class SlideXML {
 
         this.pics = this.xml.selectArray(['p:cSld', 'p:spTree', 'p:pic']).map(sp => ShapeTree.createPic(sp))
 
+        this.groupShapes = this.xml.selectArray(['p:cSld', 'p:spTree', 'p:grpSp']).map(sp => ShapeTree.createGroupSp(sp))
+
     }
 
     get nodes() {
@@ -37,13 +39,36 @@ class SlideXML {
 
         let pics = [...this.pics, ...this.layout.pics]
 
-        this.layout.viewShapes.map(sp=>{
-            arry.push(this.parseSp(sp,true))
+        this.layout.viewShapes.map(sp => {
+            arry.push(this.parseSp(sp, true))
         })
 
         this.shapes.map(sp => {
             let obj = this.parseSp(sp)
             arry.push(obj)
+        })
+
+        this.groupShapes.map(gp => {
+
+            let container = {
+                children: gp.shapes.map(sp => {
+                    return this.parseSp(sp)
+                }),
+                type:"group"
+            }
+
+            if (gp.xfrm) {
+                container.position = gp.xfrm.off
+                container.size = {
+                    width: gp.xfrm.ext.cx,
+                    height: gp.xfrm.ext.cy,
+                }
+                if (gp.xfrm.rot) {
+                    container.rot = gp.xfrm.rot
+                }
+            }
+
+            arry.push(container)
         })
 
         pics.map(sp => {
@@ -64,11 +89,11 @@ class SlideXML {
     /**
      * @param {import('./presentation')} v
      */
-    set presentation(v){
+    set presentation(v) {
         this._presationXML = v
     }
 
-    get presentation(){
+    get presentation() {
         return this._presationXML
     }
 
@@ -78,8 +103,8 @@ class SlideXML {
     set rel(v) {
         this.relxml = v
 
-        this.pics.filter(p=>p.embed).map(p=>{
-            if(!p.src){
+        this.pics.filter(p => p.embed).map(p => {
+            if (!p.src) {
                 p.src = this.rel.getRelationById(p.embed)
             }
             return p
@@ -156,9 +181,9 @@ class SlideXML {
             type: "image"
         }
 
-        if(pic.spPr && pic.spPr.xfrm){
+        if (pic.spPr && pic.spPr.xfrm) {
             item.position = pic.spPr.xfrm.off
-            item.size  = {
+            item.size = {
                 width: pic.spPr.xfrm.ext.cx,
                 height: pic.spPr.xfrm.ext.cy,
             }
@@ -171,8 +196,8 @@ class SlideXML {
      * 
      * @param {Sp} sp 
      */
-    parseSp(sp,isLayout=false) {
-        
+    parseSp(sp, isLayout = false) {
+
         let type = sp.type
 
         /**
@@ -200,26 +225,26 @@ class SlideXML {
                 width: sp.xfrm.ext.cx,
                 height: sp.xfrm.ext.cy,
             }
-            if(sp.xfrm.rot){
+            if (sp.xfrm.rot) {
                 container.rot = sp.xfrm.rot
             }
         }
 
-        if(sp.custGeom){
+        if (sp.custGeom) {
             container.svgs = sp.custGeom.paths
         }
 
-        if(sp.solidFill){
+        if (sp.solidFill) {
             container.fill = sp.solidFill
         }
 
         let fontSize = (!isLayout && this.layout.getTextSizeOfType(type)) || this.master.getTextSizeOfType(type)
-        if(fontSize){
+        if (fontSize) {
             container.fontSize = fontSize
         }
 
         let color = (!isLayout && this.layout.getTextColorOfType(sp.type)) || this.master.getTextColorOfType(sp.type)
-        if(color){
+        if (color) {
             container.color = color
         }
 
@@ -240,7 +265,7 @@ class SlideXML {
             text = sp.txBody.pList.map(p => {
                 let container = {
                     children: p.rList.map(r => {
-                        if(!r.text){
+                        if (!r.text) {
                             return
                         }
                         let sz = r.fontSize
@@ -256,10 +281,10 @@ class SlideXML {
                             fontFamily = this.theme.fontScheme.getFontByType(sp.type)
                         }
 
-                        if(fontFamily && this.presentation.isEmbeddeFont(fontFamily)){
+                        if (fontFamily && this.presentation.isEmbeddeFont(fontFamily)) {
                             fontFamily = undefined
                         }
-                        
+
 
                         let color = r.solidFill
 
@@ -269,26 +294,26 @@ class SlideXML {
                             size: sz,
                             color,
                             fontFamily,
-                            bold:r.rPr && r.rPr.bold,
-                            italic:r.rPr && r.rPr.italic,
-                            underline:r.rPr && r.rPr.underline,
-                            strike:r.rPr && r.rPr.strike,
-                            link:r.rPr && r.rPr.link
+                            bold: r.rPr && r.rPr.bold,
+                            italic: r.rPr && r.rPr.italic,
+                            underline: r.rPr && r.rPr.underline,
+                            strike: r.rPr && r.rPr.strike,
+                            link: r.rPr && r.rPr.link
                             // valign:this.getTextVerticalAlign(r),
                             // fontStyle:this.getTextStyle(r)
                         }
-                    }).filter(t=>t)
+                    }).filter(t => t)
                 }
 
-                if(p.lineSpacePercent){
+                if (p.lineSpacePercent) {
                     container.lnPt = p.lineSpacePercent
                 }
 
-                if(p.spaceBofore){
+                if (p.spaceBofore) {
                     container.spcBef = p.spaceBofore
                 }
 
-                if(p.bullet){
+                if (p.bullet) {
                     container.bullet = p.bullet
                 }
                 // container.lnPt = p.lineSpacePercent || this.master.getLineSpacePercent(sp.type)
@@ -299,12 +324,6 @@ class SlideXML {
 
                 return container
             })
-
-            // let totalSize = text.reduce((p,c,i)=>{
-            //     return p + c.children[0].size
-            // },0)
-
-            // debugger
         }
 
         if (text) {
@@ -315,7 +334,7 @@ class SlideXML {
 
     }
 
-   
+
 
     /**
      * @param {XElement} node 
