@@ -68,6 +68,7 @@ class SlideMasterXML {
                 }
             } 
         }
+        return style
     }
 
     getTextColorOfType(type){
