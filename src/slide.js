@@ -6,6 +6,7 @@ const ShapeTree = require('./components/ShapeTree')
 
 const Sp = require('./components/elements/p-sp')
 const Pic = require('./components/elements/p-pic')
+const GroupSp = require("./components/elements/p-grpSp")
 
 const SlideBg = require("./components/elements/p-bg")
 
@@ -50,6 +51,10 @@ class SlideXML {
             arry.push(this.parseSp(sp, true))
         })
 
+        this.layout.groupShapes.map(gp=>{
+            arry.push(this.parseGrp(gp,true))
+        })
+
         this.layout.pics.map(sp=>arry.push(this.parsePic(sp)))
 
         this.shapes.map(sp => {
@@ -58,30 +63,10 @@ class SlideXML {
         })
 
         this.groupShapes.map(gp => {
-
-            let container = {
-                children: gp.shapes.map(sp => {
-                    return this.parseSp(sp)
-                }),
-                type:"group"
-            }
-
-            if (gp.xfrm) {
-                container.position = gp.xfrm.off
-                container.size = {
-                    width: gp.xfrm.ext.cx,
-                    height: gp.xfrm.ext.cy,
-                }
-                if (gp.xfrm.rot) {
-                    container.rot = gp.xfrm.rot
-                }
-                if(gp.xfrm.chOff){
-                    container.chOff = gp.xfrm.chOff
-                }
-            }
-
-            arry.push(container)
+            arry.push(this.parseGrp(gp,false))
         })
+
+        
 
         this.pics.map(sp => {
             arry.push(this.parsePic(sp))
@@ -208,6 +193,37 @@ class SlideXML {
         return item
     }
 
+
+    /**
+     * 
+     * @param {GroupSp} gp 
+     */
+    parseGrp(gp,isLayout=false){
+        let container = {
+            children: [...gp.shapes.map(sp => {
+                return this.parseSp(sp,isLayout)
+            }),...gp.pics.map(sp=>{
+                return this.parsePic(sp)
+            })],
+            type:"group"
+        }
+
+        if (gp.xfrm) {
+            container.position = gp.xfrm.off
+            container.size = {
+                width: gp.xfrm.ext.cx,
+                height: gp.xfrm.ext.cy,
+            }
+            if (gp.xfrm.rot) {
+                container.rot = gp.xfrm.rot
+            }
+            if(gp.xfrm.chOff){
+                container.chOff = gp.xfrm.chOff
+            }
+        }
+        return container
+    }
+
     /**
      * 
      * @param {Sp} sp 
@@ -232,7 +248,7 @@ class SlideXML {
 
         let container = {
             type: "container",
-            valign: sp.txBody.anchor
+            valign: sp.txBody && sp.txBody.anchor
         }
 
         if (sp.xfrm) {
@@ -279,7 +295,7 @@ class SlideXML {
         //     }
         // }
 
-        let text = null
+        let text = []
         let titleColor = this.master.titleColor
         if (sp.txBody && sp.txBody.pList) {
             text = sp.txBody.pList.map(p => {

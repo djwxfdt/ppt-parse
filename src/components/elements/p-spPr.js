@@ -3,6 +3,8 @@ const XElement = require('../../xelement')
 
 const CustGeom = require("./a-custGeom")
 
+const SolidFill = require("./a-solidFill")
+
 module.exports = class SpPr {
     /**
     * @param {XElement} node 
@@ -24,8 +26,11 @@ module.exports = class SpPr {
             this.custGeom = new CustGeom(custGeom)
         }
 
-        if (node.getSingle("a:solidFill")) {
-            this.solidFill = node.selectFirst(["a:solidFill", "a:srgbClr"]).attributes.val || node.selectFirst(["a:solidFill", "a:schemeClr"]).attributes.val
+        let solidFill = node.getSingle("a:solidFill")
+
+        if (solidFill) {
+            this.solidFill = new SolidFill(solidFill)
+            // this.solidFill = node.selectFirst(["a:solidFill", "a:srgbClr"]).attributes.val || node.selectFirst(["a:solidFill", "a:schemeClr"]).attributes.val
         }
 
         let prstGeom = node.getSingle("a:prstGeom")

@@ -1,6 +1,6 @@
 const XElement = require('./xelement')
 
-const {createSp,createPic} = require('./components/ShapeTree')
+const {createSp,createPic,createGroupSp} = require('./components/ShapeTree')
 
 class SlideLayoutXML {
     constructor(xml) {
@@ -10,6 +10,9 @@ class SlideLayoutXML {
         this.pics = this.xml.selectArray(['p:cSld', 'p:spTree','p:pic']).map(sp=>createPic(sp))
         this.placeholders = this.shapes.filter(sp=>!!sp.placeholder)
         this.viewShapes = this.shapes.filter(sp=>!sp.placeholder)
+
+        this.groupShapes = this.xml.selectArray(['p:cSld', 'p:spTree', 'p:grpSp']).map(sp => createGroupSp(sp))
+
     }
 
     getTextSizeOfType(type){
@@ -54,6 +57,15 @@ class SlideLayoutXML {
                 p.src = this.rel.getRelationById(p.embed)
             }
             return p
+        })
+
+        this.groupShapes.map(gp=>{
+            gp.pics.filter(p=>p.embed).map(p=>{
+                if(!p.src){
+                    p.src = this.rel.getRelationById(p.embed)
+                }
+                return p
+            })
         })
     }
 

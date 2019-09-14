@@ -177,7 +177,7 @@ const parseBlock = (block,el,pageIndex) =>{
             text.appendChild(div)
         })
 
-    }else if(block.type == "image"){
+    }else if(block.type == "image" && block.src){
         let image = document.createElement('img')
         image.style.position = "absolute"
         image.style.left = block.position.x + "px"

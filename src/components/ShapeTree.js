@@ -4,23 +4,7 @@ const Sp = require('./elements/p-sp')
 
 const Pic = require('./elements/p-pic')
 
-const Xfrm = require('./elements/a-xfrm')
-
-class GroupShape{
-
-    /**
-     * @param {XElement} node 
-     */
-    constructor(node){
-        this.shapes = node.selectArray(["p:sp"]).map(n=>new Sp(n))
-
-        let xfrm = node.selectFirst(["p:grpSpPr","a:xfrm"])
-
-        if(xfrm){
-            this.xfrm = new Xfrm(xfrm)
-        }
-    }
-}
+const GroupShape = require("./elements/p-grpSp")
 
 /**
  * @param {XElement} node 

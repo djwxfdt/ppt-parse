@@ -65,8 +65,8 @@ module.exports = class Sp {
     }
 
     get solidFill(){
-        if(this.spPr){
-            return this.spPr.solidFill
+        if(this.spPr && this.spPr.solidFill){
+            return this.spPr.solidFill.color
         }
     }
     get prstGeom(){
