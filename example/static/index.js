@@ -19,7 +19,7 @@ const valignMap = {
     "bottom":"flex-end"
 }
 
-const parseBlock = (block,el) =>{
+const parseBlock = (block,el,pageIndex) =>{
     if(block.type == "container"){
         let text = document.createElement('div')
         el.appendChild(text)
@@ -115,6 +115,10 @@ const parseBlock = (block,el) =>{
                 div.appendChild(bullet)
             }
 
+            if(p.algn == "r"){
+                div.style.textAlign = "right"
+            }
+
             p.children.map((t)=>{
                 if(!t.value){
                     return
@@ -134,7 +138,6 @@ const parseBlock = (block,el) =>{
                         span.style.color = "#" + t.color
                     }
                 }
-                console.log(t.value)
                 let str = t.value.replace(/( )( )/g,"&nbsp&nbsp")
                 
                 span.innerHTML = str
@@ -163,6 +166,13 @@ const parseBlock = (block,el) =>{
 
                 div.appendChild(span)
             })
+
+            if(p.isSlideNum){
+                let slideNum = document.createElement("span")
+                slideNum.innerHTML = `${pageIndex + 1}`
+                div.appendChild(slideNum)
+                console.log(pageIndex)
+            }
             
             text.appendChild(div)
         })
@@ -195,9 +205,9 @@ const parseBlock = (block,el) =>{
  * 
  * @param {Array<{type:string,position,size,chOff,children:Array}>} blocks 
  * @param {*} el 
- * @param {*} chOff 
+ * @param {*} pageIndex 
  */
-const parseBlocks = (blocks,el,chOff)=>{
+const parseBlocks = (blocks,el,pageIndex)=>{
     for(let j=0;j<blocks.length;j++){
         let block = blocks[j]
         if(block.type == "group"){
@@ -216,7 +226,7 @@ const parseBlocks = (blocks,el,chOff)=>{
 
             el.appendChild(group)
 
-            parseBlocks(block.children,wrapper)
+            parseBlocks(block.children,wrapper,pageIndex)
 
             if(block.chOff){
                 group.childNodes.forEach(n=>{
@@ -254,7 +264,7 @@ const parseBlocks = (blocks,el,chOff)=>{
 
 
         }else{
-            parseBlock(block,el)
+            parseBlock(block,el,pageIndex)
         }
     }
 
@@ -286,7 +296,7 @@ for(let i = 0;i<slideJson.slides.length;i++){
         el.style.backgroundColor = "#" + slide.backgroundColor
     }
 
-    parseBlocks(slide.blocks,el)
+    parseBlocks(slide.blocks,el,i)
    
 }
 

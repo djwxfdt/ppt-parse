@@ -66,6 +66,8 @@ module.exports =  class PPr{
             this.buSzPts = +buSzPts.attributes.val / 100 / 3 * 4
         }
 
+        this.algn = node.attributes.algn
+
     }
 
     get lineSpacePercent(){

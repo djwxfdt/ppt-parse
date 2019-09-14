@@ -2,6 +2,7 @@ const R = require('./a-r')
 const XElement = require('../../xelement')
 
 const PPr = require('./a-pPr')
+const Fld = require("./a-fld")
 
 module.exports =  class P{
     /**
@@ -16,6 +17,11 @@ module.exports =  class P{
 
         if(pPr){
             this.pPr = new PPr(pPr)
+        }
+
+        let fld = node.getSingle("a:fld")
+        if(fld){
+            this.fld = new Fld(fld)
         }
     }
 
@@ -38,5 +44,13 @@ module.exports =  class P{
                 sz:this.pPr.buSzPts
             }
         }
+    }
+
+    get isSlideNum(){
+        return this.fld && this.fld.isSlideNum
+    }
+
+    get align(){
+        return this.pPr && this.pPr.algn
     }
 }

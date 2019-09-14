@@ -341,6 +341,14 @@ class SlideXML {
                     container.color = titleColor
                 }
 
+                if(type == "sldNum" && p.isSlideNum){
+                    container.isSlideNum = true
+                }
+
+                if(p.align){
+                    container.algn = p.align
+                }
+
                 return container
             })
         }
