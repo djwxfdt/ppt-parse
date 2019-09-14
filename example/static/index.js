@@ -15,6 +15,10 @@ app.style.height = slideJson.size.height + "px"
 let current = 0
 let total = slideJson.slides.length
 
+const valignMap = {
+    "bottom":"flex-end"
+}
+
 const parseBlock = (block,el) =>{
     if(block.type == "container"){
         let text = document.createElement('div')
@@ -28,7 +32,8 @@ const parseBlock = (block,el) =>{
         if(block.valign != "top"){
             text.style.display = "flex"
             text.style.flexDirection = "column"
-            text.style.justifyContent = "center"
+
+            text.style.justifyContent = valignMap[block.valign] || "center"
         }
 
         if(block.fontSize){
