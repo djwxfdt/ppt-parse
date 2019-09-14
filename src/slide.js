@@ -46,11 +46,11 @@ class SlideXML {
 
         let arry = []
 
-        let pics = [...this.pics, ...this.layout.pics]
-
         this.layout.viewShapes.map(sp => {
             arry.push(this.parseSp(sp, true))
         })
+
+        this.layout.pics.map(sp=>arry.push(this.parsePic(sp)))
 
         this.shapes.map(sp => {
             let obj = this.parseSp(sp)
@@ -83,7 +83,7 @@ class SlideXML {
             arry.push(container)
         })
 
-        pics.map(sp => {
+        this.pics.map(sp => {
             arry.push(this.parsePic(sp))
         })
 

@@ -66,12 +66,23 @@ const parseBlock = (block,el) =>{
             })
         }
 
-        if(block.prstShape){
-            if(block.prstShape == "rect" && block.fill){
+        if(block.prstShape  && block.fill ){
+            if(block.prstShape == "rect" ){
                 let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
                 text.appendChild(s)
                 let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,block.size.width,block.size.height)
                 ele.rect( block.size.width,block.size.height).fill("#" + block.fill)
+            }
+            else if(block.prstShape == "roundRect"){
+                let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
+                text.appendChild(s)
+                let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,block.size.width,block.size.height)
+                ele.rect( block.size.width,block.size.height).fill("#" + block.fill).radius(block.size.width / 2)
+            }else if(block.prstShape == "ellipse"){
+                let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
+                text.appendChild(s)
+                let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,block.size.width,block.size.height)
+                ele.ellipse( block.size.width,block.size.height).fill("#" + block.fill)
             }
         }
 
@@ -192,9 +203,15 @@ const parseBlocks = (blocks,el,chOff)=>{
             group.style.width = block.size.width + "px"
             group.style.height = block.size.height + "px"
 
+
+            let wrapper  = document.createElement("div")
+            wrapper.setAttribute("data-type","group")
+            wrapper.style.position = "relative"
+            group.appendChild(wrapper)
+
             el.appendChild(group)
 
-            parseBlocks(block.children,group)
+            parseBlocks(block.children,wrapper)
 
             if(block.chOff){
                 group.childNodes.forEach(n=>{
@@ -205,30 +222,30 @@ const parseBlocks = (blocks,el,chOff)=>{
                 // group.style.paddingTop = `-${block.chOff.y}px`
             }
 
-            let rect = {}
+            // let rect = {}
 
-            block.children.map(c=>{
-                if(rect.x == undefined){
-                    rect.x = c.position.x
-                    rect.y = c.position.y
-                    rect.r = c.size.width + rect.x
-                    rect.b = c.size.height + rect.y
-                }
+            // block.children.map(c=>{
+            //     if(rect.x == undefined){
+            //         rect.x = c.position.x
+            //         rect.y = c.position.y
+            //         rect.r = c.size.width + rect.x
+            //         rect.b = c.size.height + rect.y
+            //     }
                 
-                rect.x = Math.min(rect.x,c.position.x)
-                rect.y = Math.min(rect.y,c.position.y)
-                rect.r = Math.max(rect.r,c.position.x + c.size.width)
-                rect.b = Math.max(rect.b,c.position.y + c.size.height)
-            })
+            //     rect.x = Math.min(rect.x,c.position.x)
+            //     rect.y = Math.min(rect.y,c.position.y)
+            //     rect.r = Math.max(rect.r,c.position.x + c.size.width)
+            //     rect.b = Math.max(rect.b,c.position.y + c.size.height)
+            // })
 
-            if(rect.x != undefined){
-                let w = rect.r - rect.x
-                let h = rect.b - rect.y
-                let scale = Math.min(block.size.width / w,block.size.height / h)
-                scale =Math.floor(scale * 10) / 10
-                group.style.transform = `scale(${scale})`
-                group.style.transformOrigin = "left top"
-            }
+            // if(rect.x != undefined){
+            //     let w = rect.r - rect.x
+            //     let h = rect.b - rect.y
+            //     let scale = Math.min(block.size.width / w,block.size.height / h)
+            //     scale =Math.floor(scale * 10) / 10
+            //     // group.style.transform = `scale(${scale})`
+            //     group.style.transformOrigin = "left top"
+            // }
 
 
         }else{

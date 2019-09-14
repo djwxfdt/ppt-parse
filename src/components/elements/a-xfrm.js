@@ -37,7 +37,10 @@ module.exports =  class Xfrm{
 
         let rot = node.attributes.rot
         if(rot){
-            this.rot = Math.floor(+rot * 96 / 91440) / 10
+            /**
+             * Roation is specified with the rot attribute. Values are in 60,000ths of a degree, with positive angles moving clockwise or towards the positive y-axis
+             */
+            this.rot = Math.floor(+rot / 60000)
         }
 
         let chOff = node.getSingle("a:chOff")
