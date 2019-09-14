@@ -27,7 +27,6 @@ class SlideXML {
 
         if(bg){
             this.bg = new SlideBg(bg)
-            
         }
     }
 
@@ -40,7 +39,8 @@ class SlideXML {
 
         let obj = {
             backgroundImage: this.bg && this.bg.imageSrc,
-            blocks: []
+            blocks: [],
+            backgroundColor: this.bg && this.bg.color
         }
 
 

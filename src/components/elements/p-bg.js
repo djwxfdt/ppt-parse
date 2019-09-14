@@ -2,6 +2,8 @@ const XElement = require('../../xelement')
 
 const BlipFill = require("./p-blipFill")
 
+const SolidFill = require("./a-solidFill")
+
 /**
  * This element specifies visual effects used to render the slide background. This includes any fill, image, or effects that are to make up the background of the slide.
  */
@@ -14,6 +16,13 @@ class BgPr{
         if(blipFill){
             this.blipFill = new BlipFill(blipFill)
         }
+
+        let solidFill = node.getSingle("a:solidFill")
+
+        if (solidFill) {
+            this.solidFill = new SolidFill(solidFill)
+        }
+
     }
 }
 
@@ -41,5 +50,11 @@ module.exports = class Bg{
 
     set imageSrc(v){
         this._src = v
+    }
+
+    get color(){
+        if(this.bgPr && this.bgPr.solidFill){
+            return this.bgPr.solidFill.color
+        }
     }
 }

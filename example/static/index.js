@@ -276,6 +276,11 @@ for(let i = 0;i<slideJson.slides.length;i++){
         el.style.backgroundImage = `url(${slide.backgroundImage.replace('ppt','')})`
         el.style.backgroundSize = "cover"
     }
+
+    if(slide.backgroundColor){
+        el.style.backgroundColor = "#" + slide.backgroundColor
+    }
+
     parseBlocks(slide.blocks,el)
    
 }
