@@ -29,11 +29,15 @@ const parseBlock = (block,el,pageIndex) =>{
         text.style.top = block.position.y + "px"
         text.style.width = block.size.width + "px"
         text.style.height = block.size.height + "px"
+        text.style.boxSizing = "border-box"
         if(block.valign != "top"){
             text.style.display = "flex"
             text.style.flexDirection = "column"
 
             text.style.justifyContent = valignMap[block.valign] || "center"
+        }
+        if(block.padding){
+            text.style.padding = `${block.padding.t}px ${block.padding.r}px ${block.padding.b}px ${block.padding.l}px`
         }
 
         if(block.fontSize){
@@ -52,7 +56,10 @@ const parseBlock = (block,el,pageIndex) =>{
             block.svgs.map(svg=>{
                 let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
                 text.appendChild(s)
-
+                s.style.position = "absolute"
+                s.style.left = "0"
+                s.style.top = "0"
+    
                 let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,svg.width,svg.height)
 
                 let str = svg.points.map(g=>{
@@ -72,20 +79,20 @@ const parseBlock = (block,el,pageIndex) =>{
         }
 
         if(block.prstShape  && block.fill ){
+            let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
+            text.appendChild(s)
+            s.style.position = "absolute"
+            s.style.left = "0"
+            s.style.top = "0"
+
             if(block.prstShape == "rect" ){
-                let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
-                text.appendChild(s)
                 let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,block.size.width,block.size.height)
                 ele.rect( block.size.width,block.size.height).fill("#" + block.fill)
             }
             else if(block.prstShape == "roundRect"){
-                let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
-                text.appendChild(s)
                 let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,block.size.width,block.size.height)
                 ele.rect( block.size.width,block.size.height).fill("#" + block.fill).radius(block.size.width / 2)
             }else if(block.prstShape == "ellipse"){
-                let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
-                text.appendChild(s)
                 let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,block.size.width,block.size.height)
                 ele.ellipse( block.size.width,block.size.height).fill("#" + block.fill)
             }
@@ -93,15 +100,16 @@ const parseBlock = (block,el,pageIndex) =>{
 
         block.text.map((p,index)=>{
             let div = document.createElement('p')
+            div.style.zIndex = "1"
             // div.style.whiteSpace = "pre"
-            if(p.align == "center"){
+            if( p.algn == "ctr"){
                 div.style.textAlign = "center"
             }
             if(p.color){
                 div.style.color = "#" + p.color
             }
-            if(p.lnPt){
-                div.style.lineHeight = p.lnPt / 100
+            if(p.lnPct){
+                div.style.lineHeight = p.lnPct / 100
             }
 
             if(p.spcBef && index != 0){
@@ -151,6 +159,7 @@ const parseBlock = (block,el,pageIndex) =>{
                 if(t.valign){
                     span.style.verticalAlign = t.valign + "%"
                 }
+                
                
                 if(t.bold){
                     span.style.fontWeight = "bold"

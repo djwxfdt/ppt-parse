@@ -30,4 +30,8 @@ module.exports = class TxBody{
             return this.bodyPr.anchor
         }
     }
+
+    get padding(){
+        return this.bodyPr && this.bodyPr.padding
+    }
 }

@@ -31,6 +31,10 @@ module.exports =  class P{
         }
     }
 
+    get lineSpacePix(){
+        return this.pPr && this.pPr.lineSpacePix
+    }
+
     get spaceBofore(){
         if(this.pPr){
             return this.pPr.spaceBefore

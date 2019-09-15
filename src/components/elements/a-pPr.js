@@ -66,6 +66,13 @@ module.exports =  class PPr{
             this.buSzPts = +buSzPts.attributes.val / 100 / 3 * 4
         }
 
+        /**
+         * ctr:center
+         * dist:Distributes the text words across an entire text line.
+         * just:Align text so that it is justified across the whole line. It is smart in the sense that it will not justify sentences which are short.
+         * 
+         * @type {"ctr"|"dist"|"just"|"l"|"r"|"justLow"}
+         */
         this.algn = node.attributes.algn
 
     }
@@ -73,6 +80,12 @@ module.exports =  class PPr{
     get lineSpacePercent(){
         if(this.lnSpc){
             return this.lnSpc.spcPct
+        }
+    }
+
+    get lineSpacePix(){
+        if(this.lnSpc){
+            return this.lnSpc.spcPts
         }
     }
 

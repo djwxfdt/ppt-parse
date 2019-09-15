@@ -248,7 +248,8 @@ class SlideXML {
 
         let container = {
             type: "container",
-            valign: sp.txBody && sp.txBody.anchor
+            valign: sp.txBody && sp.txBody.anchor,
+            padding:sp.txBody && sp.txBody.padding
         }
 
         if (sp.xfrm) {
@@ -341,7 +342,11 @@ class SlideXML {
                 }
 
                 if (p.lineSpacePercent) {
-                    container.lnPt = p.lineSpacePercent
+                    container.lnPct = p.lineSpacePercent
+                }
+
+                if(p.lineSpacePix){
+                    container.lnPx = p.lineSpacePix
                 }
 
                 if (p.spaceBofore) {
