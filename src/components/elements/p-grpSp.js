@@ -16,6 +16,8 @@ module.exports = class GroupShape{
 
         this.pics = node.selectArray(["p:pic"]).map(n=>new Pic(n))
 
+        this.groupShapes = node.selectArray(["p:grpSp"]).map(n=>new GroupShape(n))
+
         let xfrm = node.selectFirst(["p:grpSpPr","a:xfrm"])
 
         if(xfrm){

@@ -15,27 +15,45 @@ class SlideLayoutXML {
 
     }
 
-    getTextSizeOfType(type){
-        let txBody = this.getTxBodyOfType(type)
-        if(txBody  && txBody.textStyle){
-            return txBody.textStyle.getSize('0')
+    getTextSize(idx,type){
+        let finded = this.getPlaceholder(idx,type)
+        if(finded && finded.txBody  && finded.txBody.textStyle){
+            return finded.txBody.textStyle.getSize('0')
         }
     }
 
-    getTextColorOfType(type){
-        let txBody = this.getTxBodyOfType(type)
-        if(txBody  && txBody.textStyle){
-            return txBody.textStyle.getColor('0')
+    getTextColor(idx,type){
+        let finded = this.getPlaceholder(idx,type)
+        if(finded && finded.txBody  && finded.txBody.textStyle){
+            return finded.txBody.textStyle.getColor('0')
         }
     }
 
-    getTxBodyOfType(type){
-        if(!type){
+    getTxBody(idx,type){
+        let finded = this.getPlaceholder(idx,type)
+        return finded && finded.txBody
+    }
+
+
+    getPlaceholder(idx,type){
+        if(!idx && !type){
             return
         }
-        let finded = this.placeholders.find(sp=>sp.type == type)
-        if(finded && finded.txBody){
-            return finded.txBody
+        let finded = this.placeholders.find(sp=>{
+            if(idx){
+                return sp.idx == idx
+            }
+            return sp.type == type
+        })
+
+        return finded
+
+    }
+
+    getXfrm(idx,type){
+        let finded = this.getPlaceholder(idx,type)
+        if(finded && finded.xfrm){
+            return finded.xfrm
         }
     }
 
@@ -46,27 +64,15 @@ class SlideLayoutXML {
         let bgRef = this.xml.selectFirst(['p:cSld', 'p:bg', 'p:bgRef'])
     }
 
+    getRelationById(rid){
+        return this.rel.getRelationById(rid)
+    }
+
     /**
      * @param {import('./slide-layout-rel')} v
      */
     set rel(v) {
         this._relXml = v
-
-        this.pics.filter(p=>p.embed).map(p=>{
-            if(!p.src){
-                p.src = this.rel.getRelationById(p.embed)
-            }
-            return p
-        })
-
-        this.groupShapes.map(gp=>{
-            gp.pics.filter(p=>p.embed).map(p=>{
-                if(!p.src){
-                    p.src = this.rel.getRelationById(p.embed)
-                }
-                return p
-            })
-        })
     }
 
     get rel() {

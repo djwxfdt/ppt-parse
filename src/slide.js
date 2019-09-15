@@ -55,7 +55,7 @@ class SlideXML {
             arry.push(this.parseGrp(gp,true))
         })
 
-        this.layout.pics.map(sp=>arry.push(this.parsePic(sp)))
+        this.layout.pics.map(sp=>arry.push(this.parsePic(sp,true)))
 
         this.shapes.map(sp => {
             let obj = this.parseSp(sp)
@@ -99,14 +99,6 @@ class SlideXML {
      */
     set rel(v) {
         this.relxml = v
-
-        this.pics.filter(p => p.embed).map(p => {
-            if (!p.src) {
-                p.src = this.rel.getRelationById(p.embed)
-            }
-            return p
-        })
-
         if(this.bg && this.bg.imageEmbed){
             this.bg.imageSrc = this.rel.getRelationById(this.bg.imageEmbed)
         }
@@ -175,10 +167,10 @@ class SlideXML {
     /**
      * @param {Pic} pic 
      */
-    parsePic(pic) {
+    parsePic(pic,isLayout = false ) {
 
         let item = {
-            src: pic.src,
+            src: isLayout ? this.layout.rel.getRelationById(pic.embed) : this.rel.getRelationById(pic.embed),
             type: "image"
         }
 
@@ -203,8 +195,8 @@ class SlideXML {
             children: [...gp.shapes.map(sp => {
                 return this.parseSp(sp,isLayout)
             }),...gp.pics.map(sp=>{
-                return this.parsePic(sp)
-            })],
+                return this.parsePic(sp,isLayout)
+            }),...gp.groupShapes.map(sp=>this.parseGrp(sp,isLayout))],
             type:"group"
         }
 
@@ -235,19 +227,6 @@ class SlideXML {
 
         let type = sp.type
 
-        /**
-         * @type{XElement}
-         */
-        let masterSp = null
-        let layoutSp = masterSp
-
-        if (type) {
-            masterSp = this.master.tables.typeTable[type]
-            layoutSp = this.layout.tables.typeTable[type]
-        }
-
-        // let shpType = node.selectFirst(['p:spPr', 'a:prstGeom', 'attrs', 'prst'])
-        // let custShapType = node.selectFirst(['p:spPr', 'a:custGeom'])
 
         let container = {
             type: "container",
@@ -255,14 +234,16 @@ class SlideXML {
             padding:sp.txBody && sp.txBody.padding
         }
 
-        if (sp.xfrm) {
-            container.position = sp.xfrm.off
+        let xfrm = sp.xfrm || (!isLayout && this.layout.getXfrm(sp.idx,sp.type))
+
+        if (xfrm) {
+            container.position = xfrm.off
             container.size = {
-                width: sp.xfrm.ext.cx,
-                height: sp.xfrm.ext.cy,
+                width: xfrm.ext.cx,
+                height: xfrm.ext.cy,
             }
-            if (sp.xfrm.rot) {
-                container.rot = sp.xfrm.rot
+            if (xfrm.rot) {
+                container.rot = xfrm.rot
             }
         }
 
@@ -278,12 +259,12 @@ class SlideXML {
             container.fill = sp.solidFill
         }
 
-        let fontSize = (!isLayout && this.layout.getTextSizeOfType(type)) || this.master.getTextSizeOfType(type)
+        let fontSize = (!isLayout && this.layout.getTextSize(sp.idx,sp.type)) || this.master.getTextSizeOfType(type)
         if (fontSize) {
             container.fontSize = fontSize
         }
 
-        let color = (!isLayout && this.layout.getTextColorOfType(sp.type)) || this.master.getTextColorOfType(sp.type)
+        let color = (!isLayout && this.layout.getTextColor(sp.idx,sp.type)) || this.master.getTextColorOfType(sp.type)
         if (color) {
             container.color = color
         }

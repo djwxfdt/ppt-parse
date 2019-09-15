@@ -52,6 +52,10 @@ module.exports = class Sp {
         }
     }
 
+    get idx(){
+        return this.placeholder && this.placeholder.idx
+    }
+
     get xfrm(){
         if(this.spPr ){
             return this.spPr.xfrm

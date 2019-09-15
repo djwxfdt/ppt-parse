@@ -25,10 +25,16 @@ const parseBlock = (block,el,pageIndex) =>{
         el.appendChild(text)
 
         text.style.position = "absolute"
-        text.style.left = block.position.x + "px"
-        text.style.top = block.position.y + "px"
-        text.style.width = block.size.width + "px"
-        text.style.height = block.size.height + "px"
+        if(block.position){
+            text.style.left = block.position.x + "px"
+            text.style.top = block.position.y + "px"
+        }
+        if(block.size){
+            text.style.width = block.size.width + "px"
+            text.style.height = block.size.height + "px"
+        }
+       
+        
         text.style.boxSizing = "border-box"
         if(block.valign != "top"){
             text.style.display = "flex"
@@ -60,7 +66,11 @@ const parseBlock = (block,el,pageIndex) =>{
                 s.style.left = "0"
                 s.style.top = "0"
     
-                let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,svg.width,svg.height)
+                let ele = SVG.adopt(s).size("100%","100%")
+                if(svg.width && svg.height){
+                    ele.viewbox(0,0,svg.width,svg.height)
+                    
+                }
 
                 let str = svg.points.map(g=>{
                     if(g.t == "moveTo"){
