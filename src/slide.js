@@ -220,6 +220,9 @@ class SlideXML {
             if(gp.xfrm.chOff){
                 container.chOff = gp.xfrm.chOff
             }
+            if(gp.xfrm.chExt){
+                container.chExt = gp.xfrm.chExt
+            }
         }
         return container
     }

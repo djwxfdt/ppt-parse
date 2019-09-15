@@ -237,13 +237,25 @@ const parseBlocks = (blocks,el,pageIndex)=>{
 
             parseBlocks(block.children,wrapper,pageIndex)
 
+            let childTransform = []
+
+            
+            if(block.chExt && block.chExt.width && block.chExt.height){
+                let scaleX = block.size.width / block.chExt.width
+                let scaleY = block.size.height / block.chExt.height
+                /**
+                 * 先scale再translate
+                 */
+                childTransform.push(`scale(${scaleX},${scaleY})`) 
+            }
+
             if(block.chOff){
-                group.childNodes.forEach(n=>{
-                    n.style.marginLeft = `-${block.chOff.x}px`
-                    n.style.marginTop = `-${block.chOff.y}px`
-                })
-                // group.style.paddingLeft = `-${block.chOff.x}px`
-                // group.style.paddingTop = `-${block.chOff.y}px`
+                childTransform.push(`translate(-${block.chOff.x}px, -${block.chOff.y}px)`)
+            }
+
+            if(childTransform.length){
+                wrapper.style.transform =  childTransform.join(" ")
+                wrapper.style.transformOrigin = "left top"
             }
 
             // let rect = {}

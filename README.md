@@ -5,6 +5,7 @@
 1. npm install
 2. node example/index.js
 3. visit http://localhost:9992/test.html
+4. 左右键切换页码
 
 
 ### Issue

@@ -13,13 +13,9 @@ module.exports =  class Xfrm{
              * This element specifies the size of the bounding box enclosing the referenced object.
              */
             this.ext = {
-                cx:+ext.attributes.cx,
-                cy:+ext.attributes.cy
+                cx:this.toPix(ext.attributes.cx),
+                cy:this.toPix(ext.attributes.cy)
             }
-
-            this.ext.cx = Math.floor(this.ext.cx * 96 / 91440) / 10
-            this.ext.cy = Math.floor(this.ext.cy * 96 / 91440) / 10
-
         }
 
         let off = node.getSingle("a:off")
@@ -28,11 +24,9 @@ module.exports =  class Xfrm{
              * This element specifies the location of the bounding box of an object. Effects on an object are not included in this bounding box.
              */
             this.off = {
-                x:+off.attributes.x,
-                y:+off.attributes.y
+                x:this.toPix(off.attributes.x),
+                y:this.toPix(off.attributes.y)
             }
-            this.off.x = Math.floor(this.off.x * 96 / 91440) / 10
-            this.off.y = Math.floor(this.off.y * 96 / 91440) / 10
         }
 
         let rot = node.attributes.rot
@@ -51,6 +45,17 @@ module.exports =  class Xfrm{
             this.chOff = {
                 x:this.toPix(chOff.attributes.x),
                 y:this.toPix(chOff.attributes.y)
+            }
+        }
+
+        let chExt = node.getSingle("a:chExt")
+        if(chExt){
+            /**
+             * Specifies the length of the extents rectangle in EMUs. This rectangle shall dictate the size of the object as displayed (the result of any scaling to the original object).
+             */
+            this.chExt = {
+                width:this.toPix(chExt.attributes.cx),
+                height:this.toPix(chExt.attributes.cy)
             }
         }
 
