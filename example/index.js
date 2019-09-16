@@ -20,7 +20,9 @@ app.use('/test.html',(req,res)=>{
     sdk.parsePPT(path.join(__dirname,'../example/test.pptx')).then(()=>{
         let json = JSON.stringify(sdk.json)
         let filename = path.join(__dirname,'output.json')
-        fs.writeFile(filename,json)
+        fs.writeFile(filename,json,()=>{
+            
+        })
         res.render(path.join(__dirname,'index.pug'),{json})
     })
 })
