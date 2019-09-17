@@ -6,7 +6,7 @@ module.exports = class PresentationXML {
 
     constructor(xml) {
        
-        this.xml = XElement.init(xml).get("p:presentation")
+        this.xml = XElement.init(xml)
 
         let lst = this.xml.getSingle("p:embeddedFontLst")
         if(lst){

@@ -1,6 +1,6 @@
 const XElement = require('../../xelement')
 
-const {searchXML} = require("../../utils")
+// const {searchXML} = require("../../utils")
 
 class Path{
     /**
@@ -13,8 +13,8 @@ class Path{
         this.width = +node.attributes.w / 100 / 3 * 4
 
         this.actions = node.children.map(c=>{
-            let t = c["#name"].replace("a:","")
-            let attrs = searchXML(c)(["a:pt","attrs"])
+            let t = c.name.replace("a:","")
+            let attrs = c.selectFirst(["a:pt"],{}).attributes
 
             /**
              * @type {{t:string,x:number,y:number}}

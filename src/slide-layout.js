@@ -4,7 +4,7 @@ const {createSp,createPic,createGroupSp} = require('./components/ShapeTree')
 
 class SlideLayoutXML {
     constructor(xml) {
-        this.xml = XElement.init(xml).get("p:sldLayout")
+        this.xml = XElement.init(xml)
         this.shapes = this.xml.selectArray(['p:cSld', 'p:spTree','p:sp']).map(sp=>createSp(sp))
 
         this.pics = this.xml.selectArray(['p:cSld', 'p:spTree','p:pic']).map(sp=>createPic(sp))

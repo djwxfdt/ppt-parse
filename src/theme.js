@@ -8,7 +8,7 @@ const FontScheme = require('./components/elements/a-fontScheme')
 class ThemeXML {
     constructor(xml) {
         
-        this.xml = XElement.init(xml).selectFirst(["a:theme","a:themeElements"]) 
+        this.xml = XElement.init(xml).selectFirst(["a:themeElements"]) 
 
         this.fontScheme = new FontScheme(this.xml.selectFirst(['a:fontScheme']))
     }

@@ -21,7 +21,7 @@ app.use('/test.html',(req,res)=>{
         let json = JSON.stringify(sdk.json)
         let filename = path.join(__dirname,'output.json')
         fs.writeFile(filename,json,()=>{
-            
+
         })
         res.render(path.join(__dirname,'index.pug'),{json})
     })

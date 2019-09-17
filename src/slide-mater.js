@@ -6,7 +6,7 @@ const {createSp} = require('./components/ShapeTree')
 
 class SlideMasterXML {
     constructor(xml) {
-        this.xml = XElement.init(xml).get("p:sldMaster")
+        this.xml = XElement.init(xml)
 
         this.textStyles = new TextStyles(this.xml.getSingle("p:txStyles"))
 

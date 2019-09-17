@@ -1,20 +1,45 @@
 const xml2js = require('xml2js')
 
+const XElement = require("./xelement")
+
+let xmlParser = null
+
+try {
+    xmlParser = require("../build/Release/rapidxml")
+} catch (error) {
+    console.warn(error,"rapidxml 不存在，将使用xml2js替代")
+}
+
+
 /**
  * @param {*} str 
  */
 const parseString = Type => str => {
+
+    /**
+     * 使用c++解析会加快解析速度，并且在节点为空格的时候不会丢弃
+     */
+    if(xmlParser){
+        let jsonObj = xmlParser.parseString(str)
+        return new Promise((r)=>r(new Type(jsonObj)))
+    }
+
     return new Promise((resolve, reject) => {
         xml2js.parseString(str, {
             attrkey: "attrs",
             childkey: "children",
             explicitChildren:true,
-            preserveChildrenOrder:true
+            preserveChildrenOrder:true,
+            includeWhiteChars:true,
+            normalize:false,
+            // explicitCharkey:true,
+            trim:false,
         }, (err, res) => {
             if (err) {
                 reject(err)
             } else {
-                resolve(new Type(res))
+                let obj = res[Object.keys(res)[0]]
+                resolve(new Type(obj))
             }
         })
     })

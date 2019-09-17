@@ -62,9 +62,12 @@ class TextStyle{
             
         }
 
-        node.map((key,ppr)=>{
-            this.lvPprs[key.replace("a:","")] = new LvpPr(ppr[0])
+        node.children.map(ppr=>{
+            this.lvPprs[ppr.name.replace("a:","")] = new LvpPr(ppr)
         })
+        // node.map((key,ppr)=>{
+        //     this.lvPprs[key.replace("a:","")] = new LvpPr(ppr[0])
+        // })
 
     }
 

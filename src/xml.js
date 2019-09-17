@@ -14,22 +14,7 @@ const ThemeXML = require('./theme')
 
 const PresentationXML = require('./presentation')
 
-class RelsXML {
-    constructor(xml) {
-        /**
-         * @type {Array<{attrs:{Type:string,Target}}>}
-         */
-        this.xml = xml.Relationships.Relationship
-    }
-
-    get themePath() {
-        let find = this.xml.find(item => item.attrs.Type.indexOf('relationships/theme') > -1)
-        if (find) {
-            return find.attrs.Target
-        }
-        return null
-    }
-}
+const PresentationRelXML = require("./presentation-rel")
 
 
 
@@ -37,9 +22,9 @@ class RelsXML {
 
 
 /**
- * @returns {Promise<RelsXML>}
+ * @returns {Promise<PresentationRelXML>}
  */
-const parseRelsXML = str => parseString(RelsXML)(str)
+const parseRelsXML = str => parseString(PresentationRelXML)(str)
 
 /**
  * @returns {Promise<ThemeXML>}

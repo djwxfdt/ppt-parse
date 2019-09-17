@@ -7,3 +7,11 @@ example/*.xml
 example/static/media
 
 example/output.json
+
+build
+
+lib/*.o
+
+lib/test
+
+package-lock.json

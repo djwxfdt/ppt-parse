@@ -14,7 +14,7 @@ const SlideBg = require("./components/elements/p-bg")
 class SlideXML {
     constructor(xml) {
 
-        this.xml = XElement.init(xml).get('p:sld')
+        this.xml = XElement.init(xml)
 
         // this.shapes = this.xml.selectFirst(['p:cSld', 'p:spTree'])
 
@@ -286,9 +286,6 @@ class SlideXML {
             text = sp.txBody.pList.map(p => {
                 let container = {
                     children: p.rList.map(r => {
-                        if (!r.text) {
-                            return
-                        }
                         let sz = r.fontSize
                         if (r.rPr && r.rPr.baseline && !isNaN(sz)) {
                             sz -= 10

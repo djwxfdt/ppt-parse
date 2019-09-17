@@ -9,10 +9,16 @@ module.exports = class R{
     constructor(node){
         
 
-        /**
-         * @type {string}
-         */
-        this.text = node.getSingle('a:t')
+        let t = node.getSingle('a:t')
+
+        if(t){
+            if(t.value){
+                this.text = t.value
+            }else{
+                this.text = (t.children[0] || {}).value
+            }
+        }
+        
         if(node.getSingle('a:rPr')){
             this.rPr = new RPr(node.getSingle('a:rPr'))
         } 

@@ -6,31 +6,27 @@ class SlideRelXML {
         /**
          * @type {Array<XElement>}
          */
-        this.relations = XElement.init(xml.Relationships.Relationship)
+        // this.relations = XElement.init(xml.Relationships.Relationship)
+        this.relations = XElement.init(xml).selectArray(["Relationship"])
+
 
     }
 
     get layoutPath() {
-        if(Array.isArray(this.relations)){
-            for(let item of this.relations){
-                let p = item.selectFirst(['attrs','Type'])
-                if(p && p.indexOf('relationships/slideLayout') > -1){
-                    p = item.selectFirst(["attrs",'Target'])
-                    return p.replace('../', 'ppt/')
-                }
+        for(let item of this.relations){
+            let p = item.attributes.Type
+            if(p && p.indexOf('relationships/slideLayout') > -1){
+                return item.attributes.Target.replace('../', 'ppt/')
             }
         }
         return null
     }
 
     getRelationById(rid){
-        if(Array.isArray(this.relations)){
-            for(let item of this.relations){
-                let p = item.selectFirst(['attrs','Id'])
-                if(p == rid){
-                    p = item.selectFirst(["attrs",'Target'])
-                    return p.replace('../', 'ppt/')
-                }
+        for(let item of this.relations){
+            let p = item.attributes.Id
+            if(p == rid){
+                return item.attributes.Target.replace('../', 'ppt/')
             }
         }
         return null

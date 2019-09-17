@@ -1,47 +1,52 @@
 class XElement{
+
+    /**
+     * 
+     * @param {{name:string,children:Array,attrs,value}} xml 
+     */
     constructor(xml) {
         /**
          * @private
          * @type {{[key:string]:XElement}}
          */
-        this._map = {}
-        this._rawXml = xml
-        this._attrs = {}
+        // this._map = {}
+        // this._rawXml = xml
+        this._attrs = xml.attrs || {}
 
-        /**
-         * @type {Array<{#name:string}>}
-         */
-        this.children = []
+        this.name = xml.name || xml["#name"]
+        
+        this.value = xml.value || xml._
 
-        if(typeof xml  === "object"){
-            for(let key in xml){
-                if(key == "attrs"){
-                    this._attrs = xml[key]
-                }
-                if(key == "children"){
-                    this.children = xml[key]
-                    continue
-                }
-                this._map[key] = XElement.init(xml[key])
-            }
-        }
+        
+        this.children = (xml.children || []).map(c=>XElement.init(c))
+
+        // if(typeof xml  === "object"){
+        //     for(let key in xml){
+        //         if(key == "attrs"){
+        //             this._attrs = xml[key]
+        //         }
+        //         if(key == "children"){
+        //             this.children = xml[key]
+        //             continue
+        //         }
+        //         this._map[key] = XElement.init(xml[key])
+        //     }
+        // }
     }
 
     get attributes(){
         return this._attrs
     }
-    
+
     /**
-     * 
+     * @param {{name:string,children:Array,attrs}} xml
      * @returns {XElement}
      */
     static init(xml){
         if(!xml){
             return null
         }
-        if(Array.isArray(xml)){
-            return xml.map(item=>XElement.init(item)).filter(i=>i)
-        }
+
         if(typeof xml === "object"){
             if(Object.keys(xml).length == 0){
                 return null
@@ -51,25 +56,26 @@ class XElement{
         return xml
     }
 
-    get elements(){
-        return this._map
-    }
+    // get elements(){
+    //     return this._map
+    // }
 
-    /**
-     * 
-     * @param {(key:string,x:XElement)=>void} callback 
-     */
-    map(callback){
-        for(let key in this._map){
-            callback(key,this.get(key))
-        }
-    }
+    // /**
+    //  * 
+    //  * @param {(key:string,x:XElement)=>void} callback 
+    //  */
+    // map(callback){
+    //     for(let key in this._map){
+    //         callback(key,this.get(key))
+    //     }
+    // }
 
     /**
      * @returns {XElement} 
      */
     get(key){
-        return this._map[key]
+        return this.children.filter(c=>c.name == key)
+        // return this._map[key]
     }
 
     /**
@@ -88,11 +94,12 @@ class XElement{
 
     /**
      * @param {Array<string>} arry 
+     * @param {any} def 默认返回值
      * @returns {XElement}
      */
-    selectFirst(arry){
+    selectFirst(arry,def=undefined){
         let tmp = this.selectArray(arry)
-        return tmp[0]
+        return tmp[0] || def
     }
 
     /**

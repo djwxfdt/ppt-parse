@@ -1,11 +1,14 @@
 ## 使用nodejs解析pptx
 
+    xml解析部分使用了c++解析引擎 pugixml，为了解决xml2js在空节点丢弃空格的问题，并加快解析速度
+
 ### demo运行
 
 1. npm install
-2. node example/index.js
-3. visit http://localhost:9992/test.html
-4. 左右键切换页码
+2. npm run build
+3. node example/index.js
+4. visit http://localhost:9992/test.html
+5. 左右键切换页码
 
 
 ### Issue
