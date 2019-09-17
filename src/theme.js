@@ -16,14 +16,18 @@ class ThemeXML {
     getColor(rel){
         let val = this.xml.selectFirst(["a:clrScheme",rel])
         if(val){
-            let color =  val.selectFirst(['a:srgbClr', 'attrs', 'val'])
-            if(!color){
-                color = val.selectFirst(['a:sysClr', 'attrs', 'lastClr'])
+            let srgbClr = val.getSingle('a:srgbClr')
+            if(srgbClr){
+                return srgbClr.attributes.val
             }
-            return color
+
+            let sysClr = val.getSingle('a:sysClr')
+            if(sysClr){
+                return srgbClr.attributes.lastClr
+            }
+
         }
     }
-
 }
 
 

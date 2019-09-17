@@ -4,6 +4,8 @@ const BlipFill = require("./p-blipFill")
 
 const SolidFill = require("./a-solidFill")
 
+const GradFill = require("./a-gradFill")
+
 /**
  * This element specifies visual effects used to render the slide background. This includes any fill, image, or effects that are to make up the background of the slide.
  */
@@ -21,6 +23,12 @@ class BgPr{
 
         if (solidFill) {
             this.solidFill = new SolidFill(solidFill)
+        }
+
+        let gradFill = node.getSingle("a:gradFill")
+
+        if(gradFill){
+            this.gradFill = new GradFill(gradFill)
         }
 
     }
@@ -52,9 +60,25 @@ module.exports = class Bg{
         this._src = v
     }
 
+    /**
+     * @returns {{type:"solid"|"grad",value:"FFFFFF"|Array<{color:{type:"srgbClr"|"schemeClr",value},pos}>}}
+     */
     get color(){
-        if(this.bgPr && this.bgPr.solidFill){
-            return this.bgPr.solidFill.color
+        if(!this.bgPr){
+            return
+        }
+        
+        if(this.bgPr.solidFill){
+            return {
+                type:"solid",
+                value:this.bgPr.solidFill.color
+            }
+        }
+        if(this.bgPr.gradFill){
+            return {
+                type:"grad",
+                value:this.bgPr.gradFill.color
+            }
         }
     }
 }

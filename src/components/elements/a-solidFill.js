@@ -19,7 +19,7 @@ module.exports = class SolidFill{
 
 
     get color(){
-        return this.srgbClr || this.schemeClr
+        return this.srgbClr
     }
 
    

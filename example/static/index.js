@@ -324,7 +324,14 @@ for(let i = 0;i<slideJson.slides.length;i++){
     }
 
     if(slide.backgroundColor){
-        el.style.backgroundColor = "#" + slide.backgroundColor
+        if(slide.backgroundColor.type == "grad"){
+            let str = `linear-gradient(to right,${slide.backgroundColor.value.map(c=>{
+                return `#${c.color} ${c.pos}%`
+            }).join(",")})`
+            el.style.background = str
+        }else{
+            el.style.backgroundColor = "#" + slide.backgroundColor.value
+        }
     }
 
     parseBlocks(slide.blocks,el,i)

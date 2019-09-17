@@ -4,6 +4,8 @@ const TextStyles = require('./components/text-styles')
 
 const {createSp} = require('./components/ShapeTree')
 
+const SlideBg = require("./components/elements/p-bg")
+
 class SlideMasterXML {
     constructor(xml) {
         this.xml = XElement.init(xml)
@@ -11,6 +13,12 @@ class SlideMasterXML {
         this.textStyles = new TextStyles(this.xml.getSingle("p:txStyles"))
 
         this.shapes = this.xml.selectArray(['p:cSld', 'p:spTree','p:sp']).map(sp=>createSp(sp))
+
+        let bg = this.xml.selectFirst(['p:cSld',"p:bg"])
+
+        if(bg){
+            this.bg = new SlideBg(bg)
+        }
 
         this.typeMap = {
             title:"title",

@@ -16,6 +16,9 @@ module.exports = class TxBody{
         let lstStyle = node.getSingle('a:lstStyle')
         if(lstStyle){
             this.textStyle = new TextStyle(lstStyle)
+            if(this.textStyle.isEmpty){
+                this.textStyle = null
+            }
         }
 
         let bodyPr = node.getSingle("a:bodyPr")

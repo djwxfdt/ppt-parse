@@ -5,12 +5,12 @@ class XElement{
      * @param {{name:string,children:Array,attrs,value}} xml 
      */
     constructor(xml) {
-        /**
-         * @private
-         * @type {{[key:string]:XElement}}
-         */
         // this._map = {}
         // this._rawXml = xml
+
+        /**
+         * @type {{val:string}}
+         */
         this._attrs = xml.attrs || {}
 
         this.name = xml.name || xml["#name"]

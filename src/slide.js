@@ -41,7 +41,22 @@ class SlideXML {
         let obj = {
             backgroundImage: this.bg && this.bg.imageSrc,
             blocks: [],
-            backgroundColor: this.bg && this.bg.color
+            backgroundColor: (this.bg && this.bg.color) || (this.master.bg && this.master.bg.color)
+        }
+
+        
+        if(obj.backgroundColor){
+            if(obj.backgroundColor.type == "grad"){
+                obj.backgroundColor.value = obj.backgroundColor.value.map(c=>{
+                    let obj = {pos:c.pos}
+                    if(c.color.type == "schemeClr"){
+                        obj.color =  this.theme.getColor("a:" + c.color.value)
+                    }else{
+                        obj.color = c.color.value
+                    }
+                    return obj
+                }).filter(c=>!!c.color)
+            }
         }
 
 
