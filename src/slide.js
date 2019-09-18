@@ -355,6 +355,9 @@ class SlideXML {
 
                 if (p.bullet) {
                     container.bullet = p.bullet
+                    if(!p.bullet.color){
+                        container.bullet.color = this.master.getBulletColorOfType(sp.type)
+                    }
                 }
                 // container.lnPt = p.lineSpacePercent || this.master.getLineSpacePercent(sp.type)
 

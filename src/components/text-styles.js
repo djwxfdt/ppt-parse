@@ -25,6 +25,11 @@ class LvpPr{
         if(lnSpc){
             this.lnSpc = new LnSpc(lnSpc)
         }
+
+        let buClr = node.selectFirst(["a:buClr","a:srgbClr"])
+        if(buClr){
+            this.buClr = buClr.attributes.val
+        }
     }
 
     get size(){
@@ -105,6 +110,13 @@ class TextStyle{
         let ppr = this.find(lvl)
         if(ppr && ppr.defRpr){
             return ppr.defRpr.solidFill
+        }
+    }
+
+    getBulletColor(lvl){
+        let ppr = this.find(lvl)
+        if(ppr){
+            return ppr.buClr
         }
     }
 }

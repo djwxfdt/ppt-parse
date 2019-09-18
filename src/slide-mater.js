@@ -86,6 +86,12 @@ class SlideMasterXML {
         }
     }
 
+    getBulletColorOfType(type){
+        let txBody = this.getTxBodyOfType(type)
+        if(txBody && txBody.textStyle){
+            return txBody.textStyle.getBulletColor('0')
+        }
+    }
     
 
     getTextSizeOfType(type){

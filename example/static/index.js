@@ -126,16 +126,33 @@ const parseBlock = (block,el,pageIndex) =>{
                 div.style.marginTop = p.spcBef + "px"
             }
 
+            let container = div
+
             if(p.bullet){
                 let bullet = document.createElement("span")
                 bullet.innerHTML = p.bullet.char
                 bullet.style.fontSize = p.bullet.sz + "px"
+                // bullet.style.height = p.bullet.sz + "px"
+                // bullet.style.display = "flex"
+                // bullet.style.alignItems = "center"
                 div.appendChild(bullet)
+
+                if(p.bullet.color){
+                    bullet.style.color = "#" + p.bullet.color
+                }
+
+                div.style.display = "flex"
+
+                container = document.createElement("span")
+
+                div.appendChild(container)
             }
 
             if(p.algn == "r"){
                 div.style.textAlign = "right"
             }
+            
+
 
             p.children.map((t)=>{
                 if(!t.value){
@@ -182,7 +199,7 @@ const parseBlock = (block,el,pageIndex) =>{
                 }
 
 
-                div.appendChild(span)
+                container.appendChild(span)
             })
 
             if(p.isSlideNum){

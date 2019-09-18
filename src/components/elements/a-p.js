@@ -45,7 +45,8 @@ module.exports =  class P{
         if(this.pPr && !this.pPr.buNone && this.pPr.buChar){
             return {
                 char:this.pPr.buChar,
-                sz:this.pPr.buSzPts
+                sz:this.pPr.buSzPts,
+                color:this.pPr.buClr
             }
         }
     }

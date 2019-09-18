@@ -66,6 +66,11 @@ module.exports =  class PPr{
             this.buSzPts = +buSzPts.attributes.val / 100 / 3 * 4
         }
 
+        let buClr = node.selectFirst(["a:buClr","a:srgbClr"])
+        if(buClr){
+            this.buClr = buClr.attributes.val
+        }
+
         /**
          * ctr:center
          * dist:Distributes the text words across an entire text line.
@@ -74,6 +79,13 @@ module.exports =  class PPr{
          * @type {"ctr"|"dist"|"just"|"l"|"r"|"justLow"}
          */
         this.algn = node.attributes.algn
+
+
+        let marL = node.attributes.marL
+
+        if(marL){
+            this.marL = Math.floor(+marL * 96 / 91440) / 10
+        }
 
     }
 
