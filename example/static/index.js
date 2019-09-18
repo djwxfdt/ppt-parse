@@ -151,10 +151,9 @@ const parseBlock = (block,el,pageIndex) =>{
                 if(t.link){
                     span = document.createElement("a")
                     span.setAttribute("href","#")
-                }else{
-                    if(t.color){
-                        span.style.color = "#" + t.color
-                    }
+                }
+                if(t.color){
+                    span.style.color = "#" + t.color
                 }
                 let str = t.value.replace(/( )( )/g,"&nbsp&nbsp")
                 

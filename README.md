@@ -19,7 +19,10 @@
 
 3. 第六页，bullet char 的样式有点问题
 
-4. 超链接的颜色
+4. 14页的地图
+
+5. 13页的表格
+
 
 参考文档：
 1. [Ecma-376](https://www.ecma-international.org/publications/standards/Ecma-376.htm)

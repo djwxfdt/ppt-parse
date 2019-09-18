@@ -321,6 +321,10 @@ class SlideXML {
 
                         let color = r.solidFill
 
+                        if(r.rPr && r.rPr.link){
+                            color = this.theme.getColor("a:hlink") || color
+                        }
+
                         return {
                             type: "span",
                             value: r.text,
