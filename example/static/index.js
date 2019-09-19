@@ -94,17 +94,26 @@ const parseBlock = (block,el,pageIndex) =>{
             s.style.position = "absolute"
             s.style.left = "0"
             s.style.top = "0"
+            let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,block.size.width,block.size.height)
 
             if(block.prstShape == "rect" ){
-                let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,block.size.width,block.size.height)
                 ele.rect( block.size.width,block.size.height).fill("#" + block.fill)
             }
             else if(block.prstShape == "roundRect"){
-                let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,block.size.width,block.size.height)
                 ele.rect( block.size.width,block.size.height).fill("#" + block.fill).radius(block.size.width / 2)
             }else if(block.prstShape == "ellipse"){
-                let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,block.size.width,block.size.height)
                 ele.ellipse( block.size.width,block.size.height).fill("#" + block.fill)
+            }else if(block.prstShape == "donut"){
+                let grad = ele.gradient("radial",stop=>{
+                    stop.at(0,"transparent")
+                    stop.at(0.1,"white")
+                    stop.at(0.3,"white")
+                    stop.at(0.3,"#" + block.fill)
+                    stop.at(0.8,"#" + block.fill)
+                    stop.at(0.8,"white")
+                    stop.at(1,"white")
+                })
+                ele.circle(block.size.width).center(block.size.width / 2,block.size.height / 2).fill(grad)
             }
         }
 
