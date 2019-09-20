@@ -25,6 +25,16 @@ class SlideMasterXML {
             subTitle:"body",
             ctrTitle:"title"
         }
+        
+        this.clrMap = {}
+
+        let clrMap = this.xml.getSingle("p:clrMap")
+
+        if(clrMap){
+            Object.keys(clrMap.attributes).map(k=>{
+                this.clrMap[k] = clrMap.attributes[k]
+            })
+        }
 
     }
 
@@ -112,56 +122,11 @@ class SlideMasterXML {
     }
 
     /**
-     * @param {ThemeXML} themeXml 
+     * schemeClr的映射
+     * @returns {string}
      */
-    getBackground(themeXml) {
-        let bgPr = this.xml.selectFirst(['p:cSld', 'p:bg', 'p:bgPr'])
-        let bgRef = this.xml.selectFirst(['p:cSld', 'p:bg', 'p:bgRef'])
-        let bgColor = null
-
-        if (bgPr) {
-
-        } else if (bgRef) {
-
-            let phCl = bgRef.selectFirst(['a:srgbClr', 'a:srgbClr', 'attrs', 'val'])
-            if (!phCl) {
-                let c = bgRef.selectFirst(['a:schemeClr', 'attrs', 'val'])
-                let theme = "a:" + bgRef.selectFirst(['p:clrMap', 'attrs',c]) 
-                bgColor = themeXml.getColor(theme)
-            }
-
-            let idx = bgRef.selectFirst(["attrs", "idx"])
-            if (+idx > 1000) {
-                // console.log('bgColor:', bgColor)
-            } else {
-                bgColor = null
-            }
-        }
-        return bgColor
-
-    }
-
-
-    get tables() {
-        if (this._tables) {
-            return this._tables
-        }
-
-        /**
-         * @type {{[key:string]:XElement}}
-         */
-        let idTable = {}
-        /**
-         * @type {{[key:string]:XElement}}
-         */
-        let idxTable = {}
-        /**
-         * @type {{[key:string]:XElement}}
-         */
-        let typeTable = {}
-
-        this._tables = {idTable,idxTable,typeTable}
-        return this._tables
+    findSchemeClr(k){
+        return this.clrMap[k]
     }
 
 

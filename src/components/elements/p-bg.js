@@ -61,7 +61,7 @@ module.exports = class Bg{
     }
 
     /**
-     * @returns {{type:"solid"|"grad",value:"FFFFFF"|Array<{color:{type:"srgbClr"|"schemeClr",value},pos}>}}
+     * @returns {{type:"srgbClr"|"schemeClr"|"grad",value:"FFFFFF"|Array<{color:{type:"srgbClr"|"schemeClr",value},pos}>}}
      */
     get color(){
         if(!this.bgPr){
@@ -69,10 +69,7 @@ module.exports = class Bg{
         }
         
         if(this.bgPr.solidFill){
-            return {
-                type:"solid",
-                value:this.bgPr.solidFill.color
-            }
+            return this.bgPr.solidFill
         }
         if(this.bgPr.gradFill){
             return {

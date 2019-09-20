@@ -23,7 +23,7 @@ class ThemeXML {
 
             let sysClr = val.getSingle('a:sysClr')
             if(sysClr){
-                return srgbClr.attributes.lastClr
+                return sysClr.attributes.lastClr
             }
 
         }

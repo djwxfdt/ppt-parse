@@ -41,7 +41,7 @@ class SlideXML {
         let obj = {
             backgroundImage: this.bg && this.bg.imageSrc,
             blocks: [],
-            backgroundColor: (this.bg && this.bg.color) || (this.master.bg && this.master.bg.color)
+            backgroundColor: (this.bg && this.bg.color) ||  (this.master.bg && this.master.bg.color)
         }
 
         
@@ -49,13 +49,11 @@ class SlideXML {
             if(obj.backgroundColor.type == "grad"){
                 obj.backgroundColor.value = obj.backgroundColor.value.map(c=>{
                     let obj = {pos:c.pos}
-                    if(c.color.type == "schemeClr"){
-                        obj.color =  this.theme.getColor("a:" + c.color.value)
-                    }else{
-                        obj.color = c.color.value
-                    }
+                    obj.color = this.getSolidFill(c.color)
                     return obj
                 }).filter(c=>!!c.color)
+            }else if(obj.backgroundColor.type == "schemeClr"){
+                obj.backgroundColor.value = this.getSolidFill( obj.backgroundColor)
             }
         }
 
@@ -156,28 +154,6 @@ class SlideXML {
         return this.materxml
     }
 
-    get background() {
-        if (this._background) {
-            return this._background
-        }
-
-        let bgPr = searchXML(this.xml)(['p:cSld', 'p:bg', 'p:bgPr'])
-        let bgRef = searchXML(this.xml)(['p:cSld', 'p:bg', 'p:bgRef'])
-
-        if (bgPr) {
-
-        } else if (bgRef) {
-
-        } else if (this.layout.background) {
-
-        } else {
-            if (this.master) {
-                this._background = this.master.getBackground(this._theme)
-            }
-        }
-
-        return this._background
-    }
 
     /**
      * @param {Pic} pic 
@@ -271,7 +247,8 @@ class SlideXML {
         }
 
         if (sp.solidFill) {
-            container.fill = sp.solidFill
+            container.fill = this.getSolidFill(sp.solidFill)
+           
         }
 
         let fontSize = (!isLayout && this.layout.getTextSize(sp.idx,sp.type)) || this.master.getTextSizeOfType(type)
@@ -281,7 +258,7 @@ class SlideXML {
 
         let color = (!isLayout && this.layout.getTextColor(sp.idx,sp.type)) || this.master.getTextColorOfType(sp.type)
         if (color) {
-            container.color = color
+            container.color = this.getSolidFill(color)
         }
 
         // if (custShapType) {
@@ -296,7 +273,9 @@ class SlideXML {
         // }
 
         let text = []
-        let titleColor = this.master.titleColor
+        let titleColor = this.getSolidFill(this.master.titleColor)
+    
+       
         if (sp.txBody && sp.txBody.pList) {
             text = sp.txBody.pList.map(p => {
                 let container = {
@@ -319,10 +298,10 @@ class SlideXML {
                         }
 
 
-                        let color = r.solidFill
+                        let color = this.getSolidFill(r.solidFill)
 
                         if(r.rPr && r.rPr.link){
-                            color = this.theme.getColor("a:hlink") || color
+                            color = this.getSolidFill("schemeClr","hlink") || color
                         }
 
                         return {
@@ -415,6 +394,26 @@ class SlideXML {
         }
         return undefined
     }
+    
+
+    /**
+     * 
+     * @param {{type:"schemeClr"|"schemeClr",value:string}} solid 
+     */
+    getSolidFill(solid){
+        if(!solid){
+            return
+        }
+        if(solid.type == "schemeClr"){
+            let k = this.master.findSchemeClr(solid.value) || solid.value
+            if(k){
+                return this.theme.getColor("a:" + k)
+            }
+        }else{
+            return solid.value
+        }
+    }
+
 }
 
 

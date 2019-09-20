@@ -1,6 +1,8 @@
 const SpPr = require('./p-spPr')
 const NvSpPr = require('./p-nvSpPr')
 const TxBody = require('./p-txBody')
+const XElement = require('../../xelement')
+const Style = require("./p-style")
 
 
 module.exports = class Sp {
@@ -25,7 +27,10 @@ module.exports = class Sp {
         if(txBody){
             this.txBody = new TxBody(txBody)
         }
-        
+        let style = node.getSingle("p:style")
+        if(style){
+            this.style = new Style(style)
+        }
     }
 
     get id(){
@@ -70,7 +75,9 @@ module.exports = class Sp {
 
     get solidFill(){
         if(this.spPr && this.spPr.solidFill){
-            return this.spPr.solidFill.color
+            return this.spPr.solidFill
+        }else if(this.style && this.style.fillRef){
+            return this.style.fillRef
         }
     }
     get prstGeom(){

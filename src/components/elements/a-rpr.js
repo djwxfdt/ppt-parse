@@ -1,5 +1,8 @@
 const XElement = require('../../xelement')
 
+const SolidFill = require("./a-solidFill")
+
+
 module.exports = class RPr {
     /**
     * @param {XElement} node 
@@ -31,14 +34,10 @@ module.exports = class RPr {
          */
         this.strike = node.attributes.strike
 
-        if (node.getSingle("a:solidFill")) {
-            let srgbClr = node.selectFirst(["a:solidFill", "a:srgbClr"]) 
-            let schemeClr = node.selectFirst(["a:solidFill", "a:schemeClr"])
-            if(srgbClr && srgbClr.attributes){
-                this.solidFill = srgbClr.attributes.val
-            } else if(schemeClr && schemeClr.attributes){
-                this.solidFill = schemeClr.attributes.val
-            }
+        let solidFill = node.getSingle("a:solidFill")
+
+        if (solidFill) {
+            this.solidFill = new SolidFill(solidFill)
         }
 
         /**

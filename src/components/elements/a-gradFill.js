@@ -5,22 +5,19 @@ const Color = require("./c-color")
 /**
  * This element defines a gradient stop. A gradient stop consists of a position where the stop appears in the color band.
  */
-class Gs {
+class Gs extends Color{
     /**
     * @param {XElement} node 
     */
     constructor(node) {
+
+        super(node)
 
         /**
          * Specifies where this gradient stop should appear in the color band. This position is specified in the range [0%, 100%], which corresponds to the beginning and the end of the color band respectively.
          */
         this.pos = +(node.attributes.pos || 0) / 1000
 
-        let cColor = new Color(node)
-
-        if(cColor.color){
-            this.color = cColor.color
-        }
     }
 }
 

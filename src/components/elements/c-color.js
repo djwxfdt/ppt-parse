@@ -13,16 +13,16 @@ module.exports = class Color {
         let srgbClr = node.getSingle("a:srgbClr")
         let schemeClr = node.getSingle("a:schemeClr")
 
-        if(srgbClr){
-            this.color = {
-                type:"srgbClr",
-                value:srgbClr.attributes.val
-            }
-        }else if(schemeClr){
-            this.color = {
-                type:"schemeClr",
-                value:schemeClr.attributes.val
-            }
+        if (srgbClr) {
+            /**
+             * @type {"srgbClr"|"schemeClr"}
+             */
+            this.type = "srgbClr"
+            this.value = srgbClr.attributes.val
+
+        } else if (schemeClr) {
+            this.type = "schemeClr"
+            this.value = schemeClr.attributes.val
         }
     }
 }

@@ -84,6 +84,8 @@ const parseBlock = (block,el,pageIndex) =>{
                 let ps = ele.path(str)
                 if(block.fill){
                     ps.fill("#" + block.fill)
+                }else{
+                    ps.fill("black")
                 }
             })
         }
