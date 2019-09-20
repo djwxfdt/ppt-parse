@@ -11,6 +11,14 @@
 5. 左右键切换页码
 
 
+#### 解析效果
+
+http://pptx.dornt.com/test.html 
+
+#### 第三方解析效果
+
+https://ppt2h5-1259648581.file.myqcloud.com/g4f7d5qqc0jcqk8n11mb/index.html
+
 ### Issue
 
 1. 第二页，当按照xml解析的规则把line-height设置为1.15的时候，会造成行高偏小。
