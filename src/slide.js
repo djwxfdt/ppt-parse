@@ -301,7 +301,7 @@ class SlideXML {
                         let color = this.getSolidFill(r.solidFill)
 
                         if(r.rPr && r.rPr.link){
-                            color = this.getSolidFill("schemeClr","hlink") || color
+                            color = this.getSolidFill({type:"schemeClr",value:"hlink"}) || color
                         }
 
                         return {
