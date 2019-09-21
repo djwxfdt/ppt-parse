@@ -86,5 +86,10 @@ module.exports = class Sp {
         }
     }
 
+    get ln(){
+        if(this.spPr && this.spPr.ln && this.spPr.ln.exsist){
+            return this.spPr.ln
+        }
+    }
 
 }

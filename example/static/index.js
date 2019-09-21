@@ -72,6 +72,22 @@ const parseBlock = (block,el,pageIndex) =>{
                     
                 }
 
+                if(block.ln){
+                    if(block.ln.color){
+                        ele.attr("stroke","#" + block.ln.color)
+                    }
+                    if(block.ln.width){
+                        ele.attr("stroke-width",block.ln.width )
+                        ele.attr("stroke-linecap","butt")
+                    }
+                    if(block.ln.round){
+                        ele.attr("stroke-linejoin","round")
+                    }
+                    if(block.ln.prstDash == "dot"){
+                        ele.attr("stroke-dasharray","3,6")
+                    }
+                }
+
                 let str = svg.points.map(g=>{
                     if(g.t == "moveTo"){
                         return `M ${g.x} ${g.y}`
@@ -85,7 +101,7 @@ const parseBlock = (block,el,pageIndex) =>{
                 if(block.fill){
                     ps.fill("#" + block.fill)
                 }else{
-                    ps.fill("black")
+                    ps.fill("transparent")
                 }
             })
         }

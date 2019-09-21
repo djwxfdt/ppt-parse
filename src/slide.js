@@ -248,7 +248,15 @@ class SlideXML {
 
         if (sp.solidFill) {
             container.fill = this.getSolidFill(sp.solidFill)
-           
+        }
+
+        if(sp.ln){
+            container.ln = {
+                color:sp.ln.solidFill && this.getSolidFill(sp.ln.solidFill),
+                round:sp.ln.round,
+                prstDash:sp.ln.prstDash,
+                width:sp.ln.width
+            }
         }
 
         let fontSize = (!isLayout && this.layout.getTextSize(sp.idx,sp.type)) || this.master.getTextSizeOfType(type)

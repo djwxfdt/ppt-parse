@@ -25,4 +25,11 @@ module.exports = class Color {
             this.value = schemeClr.attributes.val
         }
     }
+
+    toJSON(){
+        return {
+            type:this.type,
+            value:this.value
+        }
+    }
 }

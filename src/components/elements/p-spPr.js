@@ -5,6 +5,8 @@ const CustGeom = require("./a-custGeom")
 
 const SolidFill = require("./a-solidFill")
 
+const Ln = require("./a-ln")
+
 module.exports = class SpPr {
     /**
     * @param {XElement} node 
@@ -39,6 +41,11 @@ module.exports = class SpPr {
              * This element specifies when a preset geometric shape should be used instead of a custom geometric shape. The generating application should be able to render all preset geometries enumerated in the <ST_ShapeType> list.
              */
             this.prstGeom = prstGeom.attributes.prst
+        }
+
+        let ln = node.getSingle("a:ln")
+        if(ln){
+            this.ln = new Ln(ln)
         }
     }
 }
