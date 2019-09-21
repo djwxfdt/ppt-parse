@@ -21,17 +21,9 @@ https://ppt2h5-1259648581.file.myqcloud.com/g4f7d5qqc0jcqk8n11mb/index.html
 
 ### Issue
 
-1. 第二页，当按照xml解析的规则把line-height设置为1.15的时候，会造成行高偏小。
-
 1. 第六页，bullet char 的样式有点问题
 
-1. 14页的地图
-
 1. 13页的表格
-
-1. 第16页，文字有点以底部对齐摆放的时候，文字偏下。（和wps解析出来的效果一致，keynote可能做了优化，所以暂不处理）
-
-
 
 参考文档：
 1. [Ecma-376](https://www.ecma-international.org/publications/standards/Ecma-376.htm)
