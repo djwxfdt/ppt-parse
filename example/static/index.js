@@ -30,6 +30,105 @@ const valignMap = {
     "bottom":"flex-end"
 }
 
+const parseTxBody = (p,index) =>{
+    let div = document.createElement('p')
+    div.style.zIndex = "1"
+    // div.style.whiteSpace = "pre"
+    if( p.algn == "ctr"){
+        div.style.textAlign = "center"
+    }
+    if(p.color){
+        div.style.color = "#" + p.color
+    }
+    if(p.lnPct){
+        div.style.lineHeight = p.lnPct / 100
+    }
+
+    if(p.spcBef && index != 0){
+        div.style.marginTop = p.spcBef + "px"
+    }
+
+    let container = div
+
+    if(p.bullet){
+        let bullet = document.createElement("span")
+        bullet.innerHTML = p.bullet.char
+        bullet.style.fontSize = p.bullet.sz + "px"
+        // bullet.style.height = p.bullet.sz + "px"
+        // bullet.style.display = "flex"
+        // bullet.style.alignItems = "center"
+        div.appendChild(bullet)
+
+        if(p.bullet.color){
+            bullet.style.color = "#" + p.bullet.color
+        }
+
+        div.style.display = "flex"
+
+        container = document.createElement("span")
+
+        div.appendChild(container)
+    }
+
+    if(p.algn == "r"){
+        div.style.textAlign = "right"
+    }
+    
+
+
+    p.children.map((t)=>{
+        if(!t.value){
+            return
+        }
+
+        if(t.link){
+
+        }
+
+        let span = document.createElement('span')
+
+        if(t.link){
+            span = document.createElement("a")
+            span.setAttribute("href","#")
+        }
+        if(t.color){
+            span.style.color = "#" + t.color
+        }
+        let str = t.value.replace(/( )( )/g,"&nbsp&nbsp")
+        
+        span.innerHTML = str
+        if(t.size){
+            span.style.fontSize  = t.size + "px"
+        }
+        
+        if(t.fontFamily){
+            span.style.fontFamily = t.fontFamily + ",Helvetica"
+        }
+        if(t.valign){
+            span.style.verticalAlign = t.valign + "%"
+        }
+        
+       
+        if(t.bold){
+            span.style.fontWeight = "bold"
+        }
+        if(t.italic){
+            span.style.fontStyle = "italic"
+        }
+
+        if(t.underline){
+            span.style.textDecoration = "underline"
+        }
+
+
+        container.appendChild(span)
+    })
+
+   
+
+    return div
+}
+
 const parseBlock = (block,el,pageIndex) =>{
     if(block.type == "container"){
         let text = document.createElement('div')
@@ -147,106 +246,13 @@ const parseBlock = (block,el,pageIndex) =>{
         }
 
         block.text.map((p,index)=>{
-            let div = document.createElement('p')
-            div.style.zIndex = "1"
-            // div.style.whiteSpace = "pre"
-            if( p.algn == "ctr"){
-                div.style.textAlign = "center"
-            }
-            if(p.color){
-                div.style.color = "#" + p.color
-            }
-            if(p.lnPct){
-                div.style.lineHeight = p.lnPct / 100
-            }
-
-            if(p.spcBef && index != 0){
-                div.style.marginTop = p.spcBef + "px"
-            }
-
-            let container = div
-
-            if(p.bullet){
-                let bullet = document.createElement("span")
-                bullet.innerHTML = p.bullet.char
-                bullet.style.fontSize = p.bullet.sz + "px"
-                // bullet.style.height = p.bullet.sz + "px"
-                // bullet.style.display = "flex"
-                // bullet.style.alignItems = "center"
-                div.appendChild(bullet)
-
-                if(p.bullet.color){
-                    bullet.style.color = "#" + p.bullet.color
-                }
-
-                div.style.display = "flex"
-
-                container = document.createElement("span")
-
-                div.appendChild(container)
-            }
-
-            if(p.algn == "r"){
-                div.style.textAlign = "right"
-            }
-            
-
-
-            p.children.map((t)=>{
-                if(!t.value){
-                    return
-                }
-
-                if(t.link){
-
-                }
-
-                let span = document.createElement('span')
-
-                if(t.link){
-                    span = document.createElement("a")
-                    span.setAttribute("href","#")
-                }
-                if(t.color){
-                    span.style.color = "#" + t.color
-                }
-                let str = t.value.replace(/( )( )/g,"&nbsp&nbsp")
-                
-                span.innerHTML = str
-                if(t.size){
-                    span.style.fontSize  = t.size + "px"
-                }
-                
-                if(t.fontFamily){
-                    span.style.fontFamily = t.fontFamily + ",Helvetica"
-                }
-                if(t.valign){
-                    span.style.verticalAlign = t.valign + "%"
-                }
-                
-               
-                if(t.bold){
-                    span.style.fontWeight = "bold"
-                }
-                if(t.italic){
-                    span.style.fontStyle = "italic"
-                }
-
-                if(t.underline){
-                    span.style.textDecoration = "underline"
-                }
-
-
-                container.appendChild(span)
-            })
-
+            let div = parseTxBody(p,index)
             if(p.isSlideNum){
                 let slideNum = document.createElement("span")
                 slideNum.innerHTML = `${pageIndex + 1}`
                 div.appendChild(slideNum)
                 console.log(pageIndex)
             }
-            
             text.appendChild(div)
         })
 
@@ -270,6 +276,53 @@ const parseBlock = (block,el,pageIndex) =>{
             <rect x="0" y="0" fill="#${block.fillColor}" width="${block.size.width}" height="${block.size.height}"></rect>
         </svg>`
         el.appendChild(div)
+
+    }else if(block.type == "table"){
+        let table = document.createElement("table")
+        table.setAttribute("cellspacing",0)
+        let cols = block.table.cols
+
+        table.style.position = "absolute"
+        if(block.position){
+            table.style.left = block.position.x + "px"
+            table.style.top = block.position.y + "px"
+        }
+        // if(block.size){
+        //     table.style.width = block.size.width + "px"
+        //     table.style.height = block.size.height + "px"
+        // }
+
+
+        block.table.trs.map((tr,j)=>{
+            let trEl = document.createElement("tr")
+            tr.tcs.map((tc,i)=>{
+                let tdEl = document.createElement("td")
+                if(cols[i]){
+                    tdEl.style.width = cols[i] + "px"
+                }
+                tc.body.map((p,index)=>{
+                    let div = parseTxBody(p,index)
+                    tdEl.appendChild(div)
+                })
+                if(tc.ln){
+                    tdEl.style.border = `dashed 1px #${tc.ln.color || "FFF"}`
+                    tdEl.style.boxSizing = "border-box"
+                    if(j != (block.table.trs.length - 1)){
+                        tdEl.style.borderBottom = "none"
+                    }
+                    if(i != (tr.tcs.length - 1)){
+                        tdEl.style.borderRight = "none"
+                    }
+                }
+                trEl.appendChild(tdEl)
+            })
+            if(tr.height){
+                trEl.style.height = tr.height + "px"
+            }
+            table.appendChild(trEl)
+        })
+
+        el.appendChild(table)
 
     }
 }

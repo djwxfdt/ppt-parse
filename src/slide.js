@@ -8,7 +8,11 @@ const Sp = require('./components/elements/p-sp')
 const Pic = require('./components/elements/p-pic')
 const GroupSp = require("./components/elements/p-grpSp")
 
+const GraphicFrame = require("./components/elements/p-graphicFrame")
+
 const SlideBg = require("./components/elements/p-bg")
+
+const TxBody = require("./components/elements/p-txBody")
 
 
 class SlideXML {
@@ -73,6 +77,8 @@ class SlideXML {
                 arry.push(this.parsePic(sp))
             }else if(sp.tag == "p:grpSp"){
                 arry.push(this.parseGrp(sp,false))
+            }else if(sp.tag == "p:graphicFrame"){
+                arry.push(this.parseGraphic(sp))
             }
         })
 
@@ -203,12 +209,56 @@ class SlideXML {
 
     /**
      * 
+     * @param {GraphicFrame} frame 
+     */
+    parseGraphic(frame){
+        let item =  {
+            type:frame.graphic.type
+        }
+
+        if (frame.xfrm) {
+            item.position = frame.xfrm.off
+            item.size = {
+                width: frame.xfrm.ext.cx,
+                height: frame.xfrm.ext.cy,
+            }
+            if (frame.xfrm.rot) {
+                item.rot = frame.xfrm.rot
+            }
+        }
+
+        if(item.type == "table"){
+            let table = frame.graphic.table
+            item.table = {
+                cols:table.gridCols,
+                trs:table.trs.map(tr=>{
+                    return {
+                        tcs:tr.tcs.map(tc=>{
+                            let content =  {
+                                body:this.parseTxBody(tc.txBody),
+                                ln:tc.tcPr && tc.tcPr.ln
+                            }
+                            if(content.ln && content.ln.color){
+                                content.ln.color = this.getSolidFill(content.ln.color)
+                            }
+                            return content
+                        }),
+                        height:tr.height
+                    }
+                })
+            }
+        }
+
+        return item
+    }
+
+    /**
+     * 
      * @param {Sp} sp 
      */
     parseSp(sp, isLayout = false) {
 
         let type = sp.type
-
 
         let container = {
             type: "container",
@@ -271,105 +321,114 @@ class SlideXML {
         //     }
         // }
 
-        let text = []
-        let titleColor = this.getSolidFill(this.master.titleColor)
+        let text = this.parseTxBody(sp.txBody,sp.type)
     
-       
-        if (sp.txBody && sp.txBody.pList) {
-            text = sp.txBody.pList.map(p => {
-                let container = {
-                    children: p.rList.map(r => {
-                        let sz = r.fontSize
-                        if (r.rPr && r.rPr.baseline && !isNaN(sz)) {
-                            sz -= 10
-                        }
-
-                        let fontFamily = r.fontFamlily
-                        if (fontFamily && fontFamily.indexOf('+') == 0) {
-                            fontFamily = this.theme.fontScheme.getFont(fontFamily)
-                        }
-
-                        if(!fontFamily){
-                            fontFamily = this.master.getTextFontOfType(sp.type)
-                        }
-
-                        if (!fontFamily) {
-                            fontFamily = this.theme.fontScheme.getFontByType(sp.type)
-                        }
-
-                        if (fontFamily && this.presentation.isEmbeddeFont(fontFamily)) {
-                            // fontFamily = undefined
-                        }
-
-                        if(fontFamily){
-                            fontFamily = mapFont(fontFamily)
-                        }
-
-
-                        let color = this.getSolidFill(r.solidFill)
-
-                        if(r.rPr && r.rPr.link){
-                            color = this.getSolidFill({type:"schemeClr",value:"hlink"}) || color
-                        }
-
-                        return {
-                            type: "span",
-                            value: r.text,
-                            size: sz,
-                            color,
-                            fontFamily,
-                            bold: r.rPr && r.rPr.bold,
-                            italic: r.rPr && r.rPr.italic,
-                            underline: r.rPr && r.rPr.underline,
-                            strike: r.rPr && r.rPr.strike,
-                            link: r.rPr && r.rPr.link
-                            // valign:this.getTextVerticalAlign(r),
-                        }
-                    }).filter(t => t)
-                }
-
-                if (p.lineSpacePercent) {
-                    container.lnPct = p.lineSpacePercent
-                }
-
-                if(p.lineSpacePix){
-                    container.lnPx = p.lineSpacePix
-                }
-
-                if (p.spaceBofore) {
-                    container.spcBef = p.spaceBofore
-                }
-
-                if (p.bullet) {
-                    container.bullet = p.bullet
-                    if(!p.bullet.color){
-                        container.bullet.color = this.master.getBulletColorOfType(sp.type)
-                    }
-                }
-                // container.lnPt = p.lineSpacePercent || this.master.getLineSpacePercent(sp.type)
-
-                if ((type == "ctrTitle" || type == "title") && titleColor) {
-                    container.color = titleColor
-                }
-
-                if(type == "sldNum" && p.isSlideNum){
-                    container.isSlideNum = true
-                }
-
-                if(p.align){
-                    container.algn = p.align
-                }
-
-                return container
-            })
-        }
-
         if (text) {
             container.text = text
         }
 
         return container
 
+    }
+
+    /**
+     * @param {TxBody} txBody 
+     */
+    parseTxBody(txBody,type){
+        if(!txBody){
+            return
+        }
+        let titleColor = this.getSolidFill(this.master.titleColor)
+        return txBody.pList.map(p => {
+            let container = {
+                children: p.rList.map(r => {
+                    let sz = r.fontSize
+                    if (r.rPr && r.rPr.baseline && !isNaN(sz)) {
+                        sz -= 10
+                    }
+
+                    let fontFamily = r.fontFamlily
+                    if (fontFamily && fontFamily.indexOf('+') == 0) {
+                        fontFamily = this.theme.fontScheme.getFont(fontFamily)
+                    }
+
+                    if(type){
+                        if(!fontFamily){
+                            fontFamily = this.master.getTextFontOfType(type)
+                        }
+                        if (!fontFamily) {
+                            fontFamily = this.theme.fontScheme.getFontByType(type)
+                        }
+                    }
+                   
+
+                    if (fontFamily && this.presentation.isEmbeddeFont(fontFamily)) {
+                        // fontFamily = undefined
+                    }
+
+                    if(fontFamily){
+                        fontFamily = mapFont(fontFamily)
+                    }
+
+
+                    let color = this.getSolidFill(r.solidFill)
+
+                    if(r.rPr && r.rPr.link){
+                        color = this.getSolidFill({type:"schemeClr",value:"hlink"}) || color
+                    }
+
+                    return {
+                        type: "span",
+                        value: r.text,
+                        size: sz,
+                        color,
+                        fontFamily,
+                        bold: r.rPr && r.rPr.bold,
+                        italic: r.rPr && r.rPr.italic,
+                        underline: r.rPr && r.rPr.underline,
+                        strike: r.rPr && r.rPr.strike,
+                        link: r.rPr && r.rPr.link
+                        // valign:this.getTextVerticalAlign(r),
+                    }
+                }).filter(t => t)
+            }
+
+            if (p.lineSpacePercent) {
+                container.lnPct = p.lineSpacePercent
+            }
+
+            if(p.lineSpacePix){
+                container.lnPx = p.lineSpacePix
+            }
+
+            if (p.spaceBofore) {
+                container.spcBef = p.spaceBofore
+            }
+
+            if (p.bullet) {
+                container.bullet = p.bullet
+                if(!p.bullet.color){
+                    if(type){
+                        container.bullet.color = this.master.getBulletColorOfType(type)
+                    }
+                }
+            }
+            // container.lnPt = p.lineSpacePercent || this.master.getLineSpacePercent(type)
+
+            if ((type == "ctrTitle" || type == "title") && titleColor) {
+                container.color = titleColor
+            }
+
+            if(type == "sldNum" && p.isSlideNum){
+                container.isSlideNum = true
+            }
+
+            if(p.align){
+                container.algn = p.align
+            }
+
+            return container
+        })
     }
 
     /**

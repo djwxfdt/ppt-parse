@@ -6,6 +6,8 @@ const Pic = require('./elements/p-pic')
 
 const GroupShape = require("./elements/p-grpSp")
 
+const GraphicFrame = require("./elements/p-graphicFrame")
+
 /**
  * @param {XElement} node 
  * @returns {Sp}
@@ -40,6 +42,9 @@ module.exports.createElement = node=>{
         }
         case "p:grpSp":{
             return new GroupShape(node)
+        }
+        case "p:graphicFrame":{
+            return new GraphicFrame(node)
         }
     }
     
