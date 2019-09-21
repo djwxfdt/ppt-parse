@@ -14,6 +14,18 @@ module.exports = class PresentationXML {
         }
     }
 
+     /**
+     * @param {import('./presentation-rel')} v
+     */
+    set rel(v) {
+        this._relXml = v
+    }
+
+    get rel() {
+        return this._relXml
+    }
+
+
     get slideSize() {
         let sldSz = this.xml.getSingle("p:sldSz") 
         let w = +sldSz.attributes.cx
@@ -28,5 +40,14 @@ module.exports = class PresentationXML {
      */
     isEmbeddeFont(fnt){
         return this.embeddedFontLst && this.embeddedFontLst.isEmebed(fnt)
+    }
+
+    get fonts(){
+        return this.embeddedFontLst.list.map(f=>{
+            return {
+                name:f.name,
+                url:this.rel.getRelationById(f.regular)
+            }
+        })
     }
 }

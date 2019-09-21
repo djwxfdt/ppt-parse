@@ -45,4 +45,8 @@ module.exports = class EmbeddedFontLst{
     isEmebed(type){
         return !!this._list.find(l=>l.name == type)
     }
+
+    get list(){
+        return this._list || []
+    }
 }

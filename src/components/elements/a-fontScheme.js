@@ -1,6 +1,7 @@
 const XElement = require('../../xelement')
 
 
+
 class MFont{
     /**
      * @param {XElement} node 
@@ -87,10 +88,10 @@ class FontScheme{
         let font = this.minorFont
         let rname = "lt"
 
-        if(name.indexOf("+mj-")){
+        if(name.indexOf("+mj-") > -1){
             font = this.majorFont
-            rname = name.replace("mj-","")
-        }else if(name.indexOf("+mn-")){
+            rname = name.replace("+mj-","")
+        }else if(name.indexOf("+mn-") > -1){
             rname = name.replace("+mn-","")
         }
 

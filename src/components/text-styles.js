@@ -38,6 +38,12 @@ class LvpPr{
         }
     }
 
+    get typeface(){
+        if(this.defRpr){
+            return this.defRpr.typeface
+        }
+    }
+
     /**
      * 文字颜色
      */
@@ -117,6 +123,13 @@ class TextStyle{
         let ppr = this.find(lvl)
         if(ppr){
             return ppr.buClr
+        }
+    }
+
+    getTypeface(lvl){
+        let ppr = this.find(lvl)
+        if(ppr){
+            return ppr.typeface
         }
     }
 }

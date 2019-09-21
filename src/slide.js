@@ -1,4 +1,4 @@
-const { searchXML } = require('./utils')
+const { mapFont } = require('./utils')
 
 const XElement = require('./xelement')
 
@@ -288,12 +288,21 @@ class SlideXML {
                         if (fontFamily && fontFamily.indexOf('+') == 0) {
                             fontFamily = this.theme.fontScheme.getFont(fontFamily)
                         }
+
+                        if(!fontFamily){
+                            fontFamily = this.master.getTextFontOfType(sp.type)
+                        }
+
                         if (!fontFamily) {
                             fontFamily = this.theme.fontScheme.getFontByType(sp.type)
                         }
 
                         if (fontFamily && this.presentation.isEmbeddeFont(fontFamily)) {
-                            fontFamily = undefined
+                            // fontFamily = undefined
+                        }
+
+                        if(fontFamily){
+                            fontFamily = mapFont(fontFamily)
                         }
 
 

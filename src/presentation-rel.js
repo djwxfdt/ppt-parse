@@ -18,4 +18,14 @@ module.exports = class PresentationRelXML {
         }
         return null
     }
+
+    getRelationById(rid){
+        for(let item of this.relations){
+            let p = item.attributes.Id
+            if(p == rid){
+                return item.attributes.Target.replace('../', 'ppt/')
+            }
+        }
+        return null
+    }
 }

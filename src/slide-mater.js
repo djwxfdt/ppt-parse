@@ -55,6 +55,7 @@ class SlideMasterXML {
         }
     }
 
+
     getTxBodyOfType(type){
         if(!type){
             return
@@ -65,6 +66,8 @@ class SlideMasterXML {
             return finded.txBody
         }
     }
+
+    
 
     getTxStyleOfType(type){
         if(!type){
@@ -87,6 +90,13 @@ class SlideMasterXML {
             } 
         }
         return style
+    }
+
+    getTextFontOfType(type){
+        let txBody = this.getTxBodyOfType(type)
+        if(txBody && txBody.textStyle){
+            return txBody.textStyle.getTypeface('0')
+        }
     }
 
     getTextColorOfType(type){

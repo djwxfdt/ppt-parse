@@ -30,7 +30,7 @@ class PPTParseSDK{
         })
 
         this.presentationXML = presentationXML
-        this.relXml = relXml
+        this.presentationXML.rel = relXml
         this.themeXml = themeXml
 
         /**
@@ -87,7 +87,8 @@ class PPTParseSDK{
             size:this.presentationXML.slideSize,
             slides:this.slideXmlS.map(xml=>{
                 return xml.nodes
-            })
+            }),
+            fonts:this.presentationXML.fonts
         }
     }
 

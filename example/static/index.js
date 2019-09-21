@@ -15,6 +15,17 @@ app.style.height = slideJson.size.height + "px"
 let current = 0
 let total = slideJson.slides.length
 
+
+// if(slideJson.fonts){
+//     slideJson.fonts.map(f=>{
+//         let font = new FontFace(f.name,`url(${f.url})`)
+//         font.load().then(loaded_face=>{
+//             document.fonts.add(loaded_face)
+//             debugger
+//         })
+//     })
+// }
+
 const valignMap = {
     "bottom":"flex-end"
 }
@@ -207,7 +218,7 @@ const parseBlock = (block,el,pageIndex) =>{
                 }
                 
                 if(t.fontFamily){
-                    span.style.fontFamily = t.fontFamily
+                    span.style.fontFamily = t.fontFamily + ",Helvetica"
                 }
                 if(t.valign){
                     span.style.verticalAlign = t.valign + "%"

@@ -72,4 +72,13 @@ const searchXML = xml => arry => {
     return xml
 }
 
-module.exports = {searchXML,parseString}
+const FONT_MAP = {
+    "楷体":"cursive",
+    "华文行楷":"cursive"
+}
+
+const mapFont = name =>{
+    return FONT_MAP[name] || name
+}
+
+module.exports = {searchXML,parseString,mapFont}

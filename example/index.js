@@ -23,7 +23,17 @@ app.use('/test.html',(req,res)=>{
         fs.writeFile(filename,json,()=>{
 
         })
-        res.render(path.join(__dirname,'index.pug'),{json})
+
+        let  links = sdk.json.fonts.map(c=>{
+            if(c.name.indexOf(" Light") > -1){
+                c.name = c.name.replace(" Light",":300,400")
+            }
+            return c
+        }).map(c=>{
+            return `<link href="https://fonts.googleapis.com/css?family=${c.name}&display=swap" rel="stylesheet">`
+        }).join("\n")
+
+        res.render(path.join(__dirname,'index.pug'),{json:json,links})
     })
 })
 
