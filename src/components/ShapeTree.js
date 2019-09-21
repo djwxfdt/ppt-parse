@@ -26,3 +26,21 @@ module.exports.createPic = node =>{
 module.exports.createGroupSp = node =>{
     return new GroupShape(node)
 }
+
+/**
+ * @param {XElement} node 
+ */
+module.exports.createElement = node=>{
+    switch(node.name){
+        case "p:sp":{
+            return new Sp(node)
+        }
+        case "p:pic":{
+            return new Pic(node)
+        }
+        case "p:grpSp":{
+            return new GroupShape(node)
+        }
+    }
+    
+}

@@ -12,6 +12,9 @@ module.exports = class GroupShape{
      * @param {XElement} node 
      */
     constructor(node){
+
+        this.tag = "p:grpSp"
+
         this.shapes = node.selectArray(["p:sp"]).map(n=>new Sp(n))
 
         this.pics = node.selectArray(["p:pic"]).map(n=>new Pic(n))

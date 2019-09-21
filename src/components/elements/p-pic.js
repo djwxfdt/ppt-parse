@@ -10,7 +10,7 @@ module.exports = class Pic {
      * @param {XElement} node 
      */
     constructor(node){
-        this.name = "p:pic"
+        this.tag = "p:pic"
         
         let spPr = node.selectFirst(["p:spPr"])
         if(spPr){

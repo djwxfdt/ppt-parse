@@ -1,19 +1,20 @@
 const XElement = require('./xelement')
 
-const {createSp,createPic,createGroupSp} = require('./components/ShapeTree')
+const ShapeTree = require('./components/ShapeTree')
 
 const SlideBg = require("./components/elements/p-bg")
 
 class SlideLayoutXML {
     constructor(xml) {
         this.xml = XElement.init(xml)
-        this.shapes = this.xml.selectArray(['p:cSld', 'p:spTree','p:sp']).map(sp=>createSp(sp))
 
-        this.pics = this.xml.selectArray(['p:cSld', 'p:spTree','p:pic']).map(sp=>createPic(sp))
-        this.placeholders = this.shapes.filter(sp=>!!sp.placeholder)
-        this.viewShapes = this.shapes.filter(sp=>!sp.placeholder)
+        let spTree = this.xml.selectFirst(['p:cSld', 'p:spTree'])
 
-        this.groupShapes = this.xml.selectArray(['p:cSld', 'p:spTree', 'p:grpSp']).map(sp => createGroupSp(sp))
+        this.elements = spTree.children.map(el=>ShapeTree.createElement(el)).filter(e=>!!e)
+
+        this.placeholders = this.elements.filter(sp=>!!sp.placeholder)
+
+        this.viewElements = this.elements.filter(sp=>!sp.placeholder)
 
         let bg = this.xml.selectFirst(['p:cSld',"p:bg"])
 

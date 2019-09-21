@@ -16,13 +16,10 @@ class SlideXML {
 
         this.xml = XElement.init(xml)
 
-        // this.shapes = this.xml.selectFirst(['p:cSld', 'p:spTree'])
 
-        this.shapes = this.xml.selectArray(['p:cSld', 'p:spTree', 'p:sp']).map(sp => ShapeTree.createSp(sp))
-
-        this.pics = this.xml.selectArray(['p:cSld', 'p:spTree', 'p:pic']).map(sp => ShapeTree.createPic(sp))
-
-        this.groupShapes = this.xml.selectArray(['p:cSld', 'p:spTree', 'p:grpSp']).map(sp => ShapeTree.createGroupSp(sp))
+        let spTree = this.xml.selectFirst(['p:cSld', 'p:spTree'])
+        
+        this.elements = spTree.children.map(el=>ShapeTree.createElement(el)).filter(e=>!!e)
 
         let bg = this.xml.selectFirst(['p:cSld',"p:bg"])
 
@@ -32,7 +29,6 @@ class SlideXML {
     }
 
     get nodes() {
-        // this.shapes.
 
         if (this._json) {
             return this._json
@@ -60,29 +56,24 @@ class SlideXML {
 
         let arry = []
 
-        this.layout.viewShapes.map(sp => {
-            arry.push(this.parseSp(sp, true))
+        this.layout.viewElements.map(sp=>{
+            if(sp.tag == "p:sp"){
+                arry.push(this.parseSp(sp,true))
+            }else if(sp.tag == "p:pic"){
+                arry.push(this.parsePic(sp,true))
+            }else if(sp.tag == "p:grpSp"){
+                arry.push(this.parseGrp(sp,true))
+            }
         })
 
-        this.layout.groupShapes.map(gp=>{
-            arry.push(this.parseGrp(gp,true))
-        })
-
-        this.layout.pics.map(sp=>arry.push(this.parsePic(sp,true)))
-
-        this.shapes.map(sp => {
-            let obj = this.parseSp(sp)
-            arry.push(obj)
-        })
-
-        this.groupShapes.map(gp => {
-            arry.push(this.parseGrp(gp,false))
-        })
-
-        
-
-        this.pics.map(sp => {
-            arry.push(this.parsePic(sp))
+        this.elements.map(sp=>{
+            if(sp.tag == "p:sp"){
+                arry.push(this.parseSp(sp))
+            }else if(sp.tag == "p:pic"){
+                arry.push(this.parsePic(sp))
+            }else if(sp.tag == "p:grpSp"){
+                arry.push(this.parseGrp(sp,false))
+            }
         })
 
         obj.blocks = arry
@@ -372,8 +363,6 @@ class SlideXML {
 
     }
 
-
-
     /**
      * @param {XElement} node 
      */
@@ -383,10 +372,6 @@ class SlideXML {
             return +baseline / 1000
         }
     }
-
-
-
-
 
     /**
      * 
