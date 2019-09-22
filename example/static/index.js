@@ -131,47 +131,42 @@ const parseTxBody = (p,index) =>{
 
 const parseBlock = (block,el,pageIndex) =>{
     if(block.type == "container"){
-        let text = document.createElement('div')
-        el.appendChild(text)
+        let wrapper = document.createElement('div')
 
-        text.style.position = "absolute"
+        if(block.id){
+            wrapper.setAttribute("data-id",block.id)
+        }
+        el.appendChild(wrapper)
+
+        wrapper.style.position = "absolute"
         if(block.position){
-            text.style.left = block.position.x + "px"
-            text.style.top = block.position.y + "px"
+            wrapper.style.left = block.position.x + "px"
+            wrapper.style.top = block.position.y + "px"
         }
         if(block.size){
-            text.style.width = block.size.width + "px"
-            text.style.height = block.size.height + "px"
+            wrapper.style.width = block.size.width + "px"
+            wrapper.style.height = block.size.height + "px"
         }
-       
         
-        text.style.boxSizing = "border-box"
-        if(block.valign != "top"){
-            text.style.display = "flex"
-            text.style.flexDirection = "column"
-
-            text.style.justifyContent = valignMap[block.valign] || "center"
-        }
-        if(block.padding){
-            text.style.padding = `${block.padding.t}px ${block.padding.r}px ${block.padding.b}px ${block.padding.l}px`
-        }
+        
+        
 
         if(block.fontSize){
-            text.style.fontSize = block.fontSize + "px"
+            wrapper.style.fontSize = block.fontSize + "px"
         }
 
         if(block.color){
-            text.style.color = "#" + block.color
+            wrapper.style.color = "#" + block.color
         }
 
         if(block.rot){
-            text.style.transform = `rotate(${block.rot}deg)`
+            wrapper.style.transform = `rotate(${block.rot}deg)`
         }
        
         if(block.svgs){
             block.svgs.map(svg=>{
                 let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
-                text.appendChild(s)
+                wrapper.appendChild(s)
                 s.style.position = "absolute"
                 s.style.left = "0"
                 s.style.top = "0"
@@ -218,7 +213,7 @@ const parseBlock = (block,el,pageIndex) =>{
 
         if(block.prstShape  && block.fill ){
             let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
-            text.appendChild(s)
+            wrapper.appendChild(s)
             s.style.position = "absolute"
             s.style.left = "0"
             s.style.top = "0"
@@ -257,16 +252,41 @@ const parseBlock = (block,el,pageIndex) =>{
             }
         }
 
-        ;(block.text || []).map((p,index)=>{
-            let div = parseTxBody(p,index)
-            if(p.isSlideNum){
-                let slideNum = document.createElement("span")
-                slideNum.innerHTML = `${pageIndex + 1}`
-                div.appendChild(slideNum)
-                console.log(pageIndex)
+        let textList = (block.text || [])
+
+        if(textList.length){
+            let textWrapper = document.createElement("div")
+            textWrapper.style.position = "absolute"
+            textWrapper.style.left = "0"
+            textWrapper.style.top = "0"
+            textWrapper.style.width = "100%"
+            textWrapper.style.height = "100%"
+            textWrapper.setAttribute("data-type","text-wrapper")
+            wrapper.appendChild(textWrapper)
+
+            if(block.valign != "top"){
+                textWrapper.style.display = "flex"
+                textWrapper.style.flexDirection = "column"
+                textWrapper.style.justifyContent = valignMap[block.valign] || "center"
             }
-            text.appendChild(div)
-        })
+
+            if(block.padding){
+                textWrapper.style.boxSizing = "border-box"
+                textWrapper.style.padding = `${block.padding.t}px ${block.padding.r}px ${block.padding.b}px ${block.padding.l}px`
+            }
+
+            textList.map((p,index)=>{
+                let div = parseTxBody(p,index)
+                if(p.isSlideNum){
+                    let slideNum = document.createElement("span")
+                    slideNum.innerHTML = `${pageIndex + 1}`
+                    div.appendChild(slideNum)
+                    console.log(pageIndex)
+                }
+                textWrapper.appendChild(div)
+            })
+        }
+
 
     }else if(block.type == "image" && block.src){
         let image = document.createElement('img')

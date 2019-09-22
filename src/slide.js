@@ -275,7 +275,8 @@ class SlideXML {
         let container = {
             type: "container",
             valign: sp.txBody && sp.txBody.anchor,
-            padding:sp.txBody && sp.txBody.padding
+            padding:sp.txBody && sp.txBody.padding,
+            id:sp.id
         }
 
         let xfrm = sp.xfrm || (!isLayout && this.layout.getXfrm(sp.idx,sp.type))
