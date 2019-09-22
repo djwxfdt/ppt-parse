@@ -120,6 +120,10 @@ const parseTxBody = (p,index) =>{
             span.style.textDecoration = "underline"
         }
 
+        if(t.highlight){
+            span.style.backgroundColor = "#" + t.highlight
+        }
+
 
         container.appendChild(span)
     })

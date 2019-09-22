@@ -69,6 +69,13 @@ module.exports = class RPr {
             }
         }
         
+        let highlight = node.getSingle("a:highlight")
+        if(highlight){
+            /**
+             * This element specifies the highlight color that will be present for a run of text.
+             */
+            this.highlight = new SolidFill(highlight)
+        }
 
     }
 

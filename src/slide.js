@@ -390,12 +390,10 @@ class SlideXML {
                         color = this.getSolidFill({type:"schemeClr",value:"hlink"}) || color
                     }
 
-                    return {
+                    let json = {
                         type: "span",
                         value: r.text,
                         size: sz,
-                        color,
-                        fontFamily,
                         bold: r.rPr && r.rPr.bold,
                         italic: r.rPr && r.rPr.italic,
                         underline: r.rPr && r.rPr.underline,
@@ -403,6 +401,20 @@ class SlideXML {
                         link: r.rPr && r.rPr.link
                         // valign:this.getTextVerticalAlign(r),
                     }
+
+                    if(fontFamily){
+                        json.fontFamily = fontFamily
+                    }
+
+                    if(color){
+                        json.color = color
+                    }
+
+                    if(r.rPr && r.rPr.highlight){
+                        json.highlight = this.getSolidFill(r.rPr.highlight)
+                    }
+
+                    return json
                 }).filter(t => t)
             }
 
