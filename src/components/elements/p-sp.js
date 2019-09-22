@@ -73,6 +73,22 @@ module.exports = class Sp {
         }
     }
 
+    get hasNoFill(){
+        return this.spPr && this.spPr.noFill
+    }
+
+    get fill(){
+        let solid = this.solidFill
+        let gradFill = this.spPr && this.spPr.gradFill
+
+        if(solid){
+            return {type:"solid",value:solid}
+        }
+        if(gradFill){
+            return {type:"grad",value:gradFill.color}
+        }
+    }
+
     get solidFill(){
         if(this.spPr && this.spPr.solidFill){
             return this.spPr.solidFill

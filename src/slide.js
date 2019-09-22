@@ -59,11 +59,7 @@ class SlideXML {
         
         if(obj.backgroundColor){
             if(obj.backgroundColor.type == "grad"){
-                obj.backgroundColor.value = obj.backgroundColor.value.map(c=>{
-                    let obj = {pos:c.pos}
-                    obj.color = this.getSolidFill(c.color)
-                    return obj
-                }).filter(c=>!!c.color)
+                obj.backgroundColor.value = this.getGradFill(obj.backgroundColor.value)
             }else if(obj.backgroundColor.type == "schemeClr"){
                 obj.backgroundColor.value = this.getSolidFill( obj.backgroundColor)
             }
@@ -300,9 +296,23 @@ class SlideXML {
             container.prstShape = sp.prstGeom
         }
 
-        if (sp.solidFill) {
-            container.fill = this.getSolidFill(sp.solidFill)
+      
+        if (sp.fill) {
+            if(sp.fill.type == "grad"){
+                container.fill = {
+                    type:sp.fill.type,
+                    value:this.getGradFill(sp.fill.value)
+                }
+            }else{
+                container.fill = {
+                    type:sp.fill.type,
+                    value:this.getSolidFill(sp.fill.value)
+                }
+            }
+            
         }
+
+        
 
         if(sp.ln){
             container.ln = {
@@ -498,6 +508,14 @@ class SlideXML {
         }else{
             return solid.value
         }
+    }
+
+    getGradFill(grad){
+        return grad.map(c=>{
+            let obj = {pos:c.pos}
+            obj.color = this.getSolidFill(c.color)
+            return obj
+        }).filter(c=>!!c.color)
     }
 
 }

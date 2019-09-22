@@ -9,6 +9,8 @@ const Ln = require("./a-ln")
 
 const AvLst = require("./a-avLst")
 
+const GradFill = require("./a-gradFill")
+
 module.exports = class SpPr {
     /**
     * @param {XElement} node 
@@ -34,7 +36,11 @@ module.exports = class SpPr {
 
         if (solidFill) {
             this.solidFill = new SolidFill(solidFill)
-            // this.solidFill = node.selectFirst(["a:solidFill", "a:srgbClr"]).attributes.val || node.selectFirst(["a:solidFill", "a:schemeClr"]).attributes.val
+        }
+
+        let gradFill = node.getSingle("a:gradFill")
+        if(gradFill){
+            this.gradFill = new GradFill(gradFill)
         }
 
         let prstGeom = node.getSingle("a:prstGeom")
@@ -55,6 +61,9 @@ module.exports = class SpPr {
         if(ln){
             this.ln = new Ln(ln)
         }
+
+        this.noFill = !!node.getSingle("a:noFill")
+
     }
 
     get prstGeom(){
@@ -66,7 +75,12 @@ module.exports = class SpPr {
             type:this.prstGeomType
         }
 
-        if(item.type == "pie" && this.avLst){
+        let pM ={
+            "pie":1,
+            "roundRect":1
+        }
+
+        if(pM[item.type] && this.avLst){
             item.avLst = this.avLst.gds.map(gd=>{
                 return Math.round(+gd.val / 60000)
             })

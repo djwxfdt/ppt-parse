@@ -51,7 +51,7 @@ module.exports = class GradFill {
             return this.gsLst.gs.map(g=>{
                 return {
                     pos:g.pos,
-                    color:g.color
+                    color:g.toJSON()
                 }
             }).filter(g=>(g.color || g.pos))
         }

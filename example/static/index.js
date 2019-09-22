@@ -208,7 +208,7 @@ const parseBlock = (block,el,pageIndex) =>{
                 }).join(" ")
                 let ps = ele.path(str)
                 if(block.fill){
-                    ps.fill("#" + block.fill)
+                    ps.fill("#" + block.fill.value)
                 }else{
                     ps.fill("transparent")
                 }
@@ -216,38 +216,55 @@ const parseBlock = (block,el,pageIndex) =>{
         }
 
         if(block.prstShape  && block.fill ){
+            let fill =  "transparent"
             let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
             wrapper.appendChild(s)
             s.style.position = "absolute"
             s.style.left = "0"
             s.style.top = "0"
             let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,block.size.width,block.size.height)
+            let {width,height} = block.size
+
+            if(block.fill.type == "grad"){
+                fill = ele.gradient("linear",stop=>{
+                    block.fill.value.map(v=>{
+                        stop.at(v.pos / 100,"#" + v.color)
+                    })
+                })
+            }else{
+                fill = "#" + block.fill.value
+            }
 
             if(block.prstShape.type == "rect" ){
-                ele.rect( block.size.width,block.size.height).fill("#" + block.fill)
+                let rt = ele.rect(width,height)
+                rt.fill(fill)
+            }else if(block.prstShape.type == "diamond"){
+                ele.path(`M ${width/2} 0 L ${width} ${height/2} L ${width/2} ${height} L 0 ${height/2} L ${width/2} 0 z`).fill(fill)
             }
             else if(block.prstShape.type == "roundRect"){
-                ele.rect( block.size.width,block.size.height).fill("#" + block.fill).radius(block.size.width / 2)
+                let rt = ele.rect( block.size.width,block.size.height)
+                rt.fill(fill)
+                rt.radius(Math.min(block.size.width / 2,block.size.height / 2))
             }else if(block.prstShape.type == "ellipse"){
-                ele.ellipse( block.size.width,block.size.height).fill("#" + block.fill)
+                ele.ellipse( block.size.width,block.size.height).fill(fill)
             }else if(block.prstShape.type == "donut"){
                 let grad = ele.gradient("radial",stop=>{
                     stop.at(0,"transparent")
                     stop.at(0.1,"white")
                     stop.at(0.3,"white")
-                    stop.at(0.3,"#" + block.fill)
-                    stop.at(0.8,"#" + block.fill)
+                    stop.at(0.3,fill)
+                    stop.at(0.8,fill)
                     stop.at(0.8,"white")
                     stop.at(1,"white")
                 })
                 ele.circle(block.size.width).center(block.size.width / 2,block.size.height / 2).fill(grad)
             }else if("round2SameRect" == block.prstShape.type ){
-                ele.rect( block.size.width,block.size.height).fill("#" + block.fill)
+                ele.rect( block.size.width,block.size.height).fill(fill)
                 s.style.borderTopLeftRadius = "10px"
                 s.style.borderTopRightRadius = "10px"
             }else if("pie" == block.prstShape.type){
                 s.style.borderRadius = "50%"
-                let pie = ele.circle(block.size.width).fill("#" + block.fill)
+                let pie = ele.circle(block.size.width).fill(fill)
                 let c = Math.PI * block.size.width
                 pie.attr({"stroke-dasharray":`${c/4} ${c}`,"stroke":"white","stroke-width":block.size.width,"stroke-dashoffset":c/4*3})
             }
