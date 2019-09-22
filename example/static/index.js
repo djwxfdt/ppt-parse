@@ -512,3 +512,7 @@ window.addEventListener("keyup",e=>{
         goPrev()
     }
 })
+
+document.getElementById("app").addEventListener("click",e=>{
+    goNext()
+})
