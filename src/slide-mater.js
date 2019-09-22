@@ -6,6 +6,8 @@ const {createSp} = require('./components/ShapeTree')
 
 const SlideBg = require("./components/elements/p-bg")
 
+const Transition = require("./components/elements/p-transition")
+
 class SlideMasterXML {
     constructor(xml) {
         this.xml = XElement.init(xml)
@@ -13,6 +15,11 @@ class SlideMasterXML {
         this.textStyles = new TextStyles(this.xml.getSingle("p:txStyles"))
 
         this.shapes = this.xml.selectArray(['p:cSld', 'p:spTree','p:sp']).map(sp=>createSp(sp))
+
+        let trans = this.xml.getSingle("p:transition")
+        if(trans){
+            this.transition = new Transition(trans)
+        }
 
         let bg = this.xml.selectFirst(['p:cSld',"p:bg"])
 

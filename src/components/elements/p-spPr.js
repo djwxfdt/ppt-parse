@@ -7,6 +7,8 @@ const SolidFill = require("./a-solidFill")
 
 const Ln = require("./a-ln")
 
+const AvLst = require("./a-avLst")
+
 module.exports = class SpPr {
     /**
     * @param {XElement} node 
@@ -39,13 +41,36 @@ module.exports = class SpPr {
         if(prstGeom){
             /**
              * This element specifies when a preset geometric shape should be used instead of a custom geometric shape. The generating application should be able to render all preset geometries enumerated in the <ST_ShapeType> list.
+             * @type {"round2SameRect"|"rect"|"pie"}
              */
-            this.prstGeom = prstGeom.attributes.prst
+            this.prstGeomType = prstGeom.attributes.prst
+
+            let avLst = prstGeom.getSingle("a:avLst")
+            if(avLst){
+                this.avLst = new AvLst(avLst)
+            }
         }
 
         let ln = node.getSingle("a:ln")
         if(ln){
             this.ln = new Ln(ln)
         }
+    }
+
+    get prstGeom(){
+        if(!this.prstGeomType){
+            return
+        }
+
+        let item = {
+            type:this.prstGeomType
+        }
+
+        if(item.type == "pie" && this.avLst){
+            item.avLst = this.avLst.gds.map(gd=>{
+                return Math.round(+gd.val / 60000)
+            })
+        }
+        return item
     }
 }

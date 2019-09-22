@@ -14,6 +14,7 @@ const SlideBg = require("./components/elements/p-bg")
 
 const TxBody = require("./components/elements/p-txBody")
 
+const Transition = require("./components/elements/p-transition")
 
 class SlideXML {
     constructor(xml) {
@@ -30,6 +31,11 @@ class SlideXML {
         if(bg){
             this.bg = new SlideBg(bg)
         }
+
+        let trans = this.xml.getSingle("p:transition")
+        if(trans){
+            this.transition = new Transition(trans)
+        }
     }
 
     get nodes() {
@@ -42,6 +48,12 @@ class SlideXML {
             backgroundImage: this.bg && this.bg.imageSrc,
             blocks: [],
             backgroundColor: (this.bg && this.bg.color) ||  (this.master.bg && this.master.bg.color)
+        }
+
+        let trans = this.transition || this.master.transition
+
+        if(trans){
+            obj.transition = trans
         }
 
         

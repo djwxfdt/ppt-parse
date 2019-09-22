@@ -1,0 +1,50 @@
+@keyframes slide{
+
+}
+
+@keyframes slide-circle{
+    from{
+        clip-path: ellipse(0% 0% at 50% 50%);
+    }
+    
+    to{
+        clip-path: ellipse(100% 100% at 50% 50%);
+    }
+}
+
+@keyframes slide-fade{
+
+}
+
+@keyframes slide-cover-ld{
+    from{
+        transform: translate(100%,-100%);
+    }
+    to{
+        transform: translate(0,0);
+    }
+}
+
+@keyframes slide-fade-thruBlk{
+    from{
+        opacity: 0;
+    }
+    20%{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+
+.slide-fade-thruBlk{
+    animation: 500ms slide-fade-thruBlk both ease;
+}
+
+.slide-circle{
+    animation: 500ms slide-circle both;
+}
+
+.slide-cover-ld{
+    animation: 500ms slide-cover-ld both;
+}

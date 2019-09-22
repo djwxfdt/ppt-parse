@@ -224,14 +224,14 @@ const parseBlock = (block,el,pageIndex) =>{
             s.style.top = "0"
             let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,block.size.width,block.size.height)
 
-            if(block.prstShape == "rect" ){
+            if(block.prstShape.type == "rect" ){
                 ele.rect( block.size.width,block.size.height).fill("#" + block.fill)
             }
-            else if(block.prstShape == "roundRect"){
+            else if(block.prstShape.type == "roundRect"){
                 ele.rect( block.size.width,block.size.height).fill("#" + block.fill).radius(block.size.width / 2)
-            }else if(block.prstShape == "ellipse"){
+            }else if(block.prstShape.type == "ellipse"){
                 ele.ellipse( block.size.width,block.size.height).fill("#" + block.fill)
-            }else if(block.prstShape == "donut"){
+            }else if(block.prstShape.type == "donut"){
                 let grad = ele.gradient("radial",stop=>{
                     stop.at(0,"transparent")
                     stop.at(0.1,"white")
@@ -242,10 +242,22 @@ const parseBlock = (block,el,pageIndex) =>{
                     stop.at(1,"white")
                 })
                 ele.circle(block.size.width).center(block.size.width / 2,block.size.height / 2).fill(grad)
+            }else if("round2SameRect" == block.prstShape.type ){
+                ele.rect( block.size.width,block.size.height).fill("#" + block.fill)
+                s.style.borderTopLeftRadius = "10px"
+                s.style.borderTopRightRadius = "10px"
+            }else if("pie" == block.prstShape.type){
+                s.style.borderRadius = "50%"
+                let pie = ele.circle(block.size.width).fill("#" + block.fill)
+                let c = Math.PI * block.size.width
+                pie.attr({"stroke-dasharray":`${c/4} ${c}`,"stroke":"white","stroke-width":block.size.width,"stroke-dashoffset":c/4*3})
+            }
+            else{
+                console.warn("unsported", block.prstShape,pageIndex)
             }
         }
 
-        block.text.map((p,index)=>{
+        ;(block.text || []).map((p,index)=>{
             let div = parseTxBody(p,index)
             if(p.isSlideNum){
                 let slideNum = document.createElement("span")
@@ -422,13 +434,38 @@ for(let i = 0;i<slideJson.slides.length;i++){
     }else{
         el.style.display = "none"
     }
+    
+
 
     let slide = slideJson.slides[i]
+
+    switch(slide.transition && slide.transition.type){
+        case "fade":{
+            el.setAttribute("class","slide-fade-thruBlk")
+            break
+        }
+        case "circle":{
+            el.setAttribute("class","slide-circle")
+            break
+        }
+        case "cover":{
+            el.setAttribute("class",`slide-cover-${slide.transition.dir}`)
+
+            break
+        }
+        default:{
+            el.setAttribute("class","slide")
+        }
+    }
+
+
 
     if(slide.backgroundImage){
         el.style.backgroundImage = `url(${slide.backgroundImage.replace('ppt','')})`
         el.style.backgroundSize = "cover"
     }
+
+    el.style.backgroundColor = "white"
 
     if(slide.backgroundColor){
         if(slide.backgroundColor.type == "grad"){

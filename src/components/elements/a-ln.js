@@ -53,7 +53,7 @@ module.exports = class Ln {
         return Math.floor(+pt * 96 / 91440) / 10
     }
 
-    toJson(){
+    toJSON(){
         return {
             width:this.width,
             color:this.solidFill,

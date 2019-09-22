@@ -9,7 +9,7 @@ class XElement{
         // this._rawXml = xml
 
         /**
-         * @type {{val:string}}
+         * @type {{val:string,[key:string]:string}}
          */
         this._attrs = xml.attrs || {}
 

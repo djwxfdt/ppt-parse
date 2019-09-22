@@ -53,7 +53,7 @@ class TcPr{
     get ln(){
         let ln = this.lnL || this.lnR || this.lnB || this.lnT
         if(ln){
-            return ln.toJson()
+            return ln.toJSON()
         }
     }
 

@@ -43,6 +43,9 @@ module.exports = class PresentationXML {
     }
 
     get fonts(){
+        if(!this.embeddedFontLst){
+            return []
+        }
         return this.embeddedFontLst.list.map(f=>{
             return {
                 name:f.name,
