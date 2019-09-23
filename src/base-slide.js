@@ -11,6 +11,7 @@ const ShapeTree = require('./components/ShapeTree')
 const Sp = require('./components/elements/p-sp')
 const Pic = require('./components/elements/p-pic')
 const GroupSp = require("./components/elements/p-grpSp")
+const GraphicFrame = require("./components/elements/p-graphicFrame")
 
 const { mapFont } = require('./utils')
 
@@ -156,6 +157,10 @@ module.exports = class BaseSlide{
         if(!sp.txBody){
             return
         }
+        let fontSize = this.getTextSize(sp)
+        // if (fontSize) {
+        //     container.fontSize = fontSize
+        // }
         let titleColor = this.getSolidFill(this.getTitleColor())
         return sp.txBody.pList.map(p => {
             let container = {
@@ -203,9 +208,7 @@ module.exports = class BaseSlide{
                         // valign:this.getTextVerticalAlign(r),
                     }
 
-                    if(r.fontSize){
-                        json.size = r.fontSize
-                    }
+                    json.size = r.fontSize || fontSize
 
                     if(r.rPr && r.rPr.baseline){
                         json.baseline = r.rPr.baseline
@@ -265,6 +268,14 @@ module.exports = class BaseSlide{
                 container.algn = p.align
             }
 
+            if(p.pPr && p.pPr.marL){
+                container.marL = p.pPr.marL
+            }
+
+            if(p.pPr && p.pPr.indent){
+                container.indent = p.pPr.indent
+            }
+
             return container
         })
     }
@@ -318,35 +329,21 @@ module.exports = class BaseSlide{
             
         }
 
-        if(sp.ln){
-            container.ln = {
-                color:sp.ln.solidFill && this.getSolidFill(sp.ln.solidFill),
-                round:sp.ln.round,
-                prstDash:sp.ln.prstDash,
-                width:sp.ln.width
+        if(sp.line){
+            container.line = {
+                color:sp.line.color && this.getSolidFill(sp.line.color),
+                round:sp.line.round,
+                prstDash:sp.line.prstDash,
+                width:sp.line.width
             }
         }
 
-        let fontSize = this.getTextSize(sp)
-        if (fontSize) {
-            container.fontSize = fontSize
-        }
+       
 
         let color = this.getTextColor(sp)
         if (color) {
             container.color = this.getSolidFill(color)
         }
-
-        // if (custShapType) {
-        //     // debugger
-        // }
-        // if (shpType) {
-        //     let fillColor = this.getShapeFillOfNode(node)
-        //     if (fillColor) {
-        //         container.type = shpType
-        //         container.fillColor = fillColor
-        //     }
-        // }
 
         let text = this.parseTxBody(sp)
     

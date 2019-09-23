@@ -87,6 +87,11 @@ module.exports =  class PPr{
             this.marL = Math.floor(+marL * 96 / 91440) / 10
         }
 
+        let indent = node.attributes.indent
+        if(indent){
+            this.indent = Math.floor(+indent * 96 / 91440) / 10
+        }
+
     }
 
     get lineSpacePercent(){

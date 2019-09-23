@@ -5,6 +5,8 @@ example/pptOutput*
 example/*.pptx
 example/*.xml
 example/static/media
+example/static/*.html
+
 
 example/output.json
 

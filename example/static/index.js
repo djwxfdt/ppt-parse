@@ -31,50 +31,59 @@ const valignMap = {
 }
 
 const parseTxBody = (p,index) =>{
-    let div = document.createElement('p')
-    div.style.zIndex = "1"
+    let pWrapper = document.createElement('div')
+    pWrapper.style.zIndex = "1"
+    pWrapper.style.position = "relative"
+
     // div.style.whiteSpace = "pre"
     if( p.algn == "ctr"){
-        div.style.textAlign = "center"
+        pWrapper.style.textAlign = "center"
     }
     if(p.color){
-        div.style.color = "#" + p.color
+        pWrapper.style.color = "#" + p.color
     }
     if(p.lnPct){
-        div.style.lineHeight = p.lnPct / 100
+        pWrapper.style.lineHeight = p.lnPct / 100
     }
 
     if(p.spcBef && index != 0){
-        div.style.marginTop = p.spcBef + "px"
+        pWrapper.style.marginTop = p.spcBef + "px"
     }
 
-    let container = div
+    let textsEl = document.createElement("div")
+
+    if(p.algn == "r"){
+        pWrapper.style.textAlign = "right"
+    }
+
+    let marL = (p.marL || 0) + (p.indent || 0)
+
+    if(marL){
+        textsEl.style.marginLeft = (marL) + "px"
+    }
 
     if(p.bullet){
         let bullet = document.createElement("span")
         bullet.innerHTML = p.bullet.char
         bullet.style.fontSize = p.bullet.sz + "px"
-        // bullet.style.height = p.bullet.sz + "px"
-        // bullet.style.display = "flex"
-        // bullet.style.alignItems = "center"
-        div.appendChild(bullet)
-
         if(p.bullet.color){
             bullet.style.color = "#" + p.bullet.color
         }
+        pWrapper.style.display = "flex"
 
-        div.style.display = "flex"
+        let bulletWrapper = document.createElement("div")
+        // bulletWrapper.style.position = "absolute"
+        // bulletWrapper.style.left = bullet.style.top = "0"
 
-        container = document.createElement("span")
-
-        div.appendChild(container)
+        bulletWrapper.appendChild(bullet)
+        pWrapper.appendChild(bulletWrapper)
     }
 
-    if(p.algn == "r"){
-        div.style.textAlign = "right"
-    }
     
 
+    
+    
+    pWrapper.appendChild(textsEl)
 
     p.children.map((t)=>{
         if(!t.value){
@@ -129,12 +138,12 @@ const parseTxBody = (p,index) =>{
         }
 
 
-        container.appendChild(span)
+        textsEl.appendChild(span)
     })
 
    
 
-    return div
+    return pWrapper
 }
 
 const parseBlock = (block,el,pageIndex) =>{
@@ -148,9 +157,25 @@ const parseBlock = (block,el,pageIndex) =>{
 
         wrapper.style.position = "absolute"
 
+        let borderWidth = 0
+
+        let stroke = null
+        if(block.line && block.line.color){
+            borderWidth = block.line.width || 1
+            stroke = {
+                width:borderWidth,
+                color:"#" + block.line.color,
+                linejoin:"round",
+                linecap:"but"
+            }
+            if(block.line.prstDash == "dot"){
+                stroke.dasharray = "3,6"
+            }
+        }
+
         if(block.prstShape && block.prstShape.type == "line"){
-            block.size.width = block.size.width + 2
-            block.size.height = block.size.height + 2
+            block.size.width = block.size.width  
+            block.size.height = block.size.height  
         }
 
 
@@ -161,11 +186,7 @@ const parseBlock = (block,el,pageIndex) =>{
         if(block.size){
             wrapper.style.width = block.size.width + "px"
             wrapper.style.height = block.size.height + "px"
-        }
-        
-        
-        
-        
+        }      
 
         if(block.fontSize){
             wrapper.style.fontSize = block.fontSize + "px"
@@ -190,23 +211,13 @@ const parseBlock = (block,el,pageIndex) =>{
                 let ele = SVG.adopt(s).size("100%","100%")
                 if(svg.width && svg.height){
                     ele.viewbox(0,0,svg.width,svg.height)
-                    
                 }
 
-                if(block.ln){
-                    if(block.ln.color){
-                        ele.attr("stroke","#" + block.ln.color)
-                    }
-                    if(block.ln.width){
-                        ele.attr("stroke-width",block.ln.width )
-                        ele.attr("stroke-linecap","butt")
-                    }
-                    if(block.ln.round){
-                        ele.attr("stroke-linejoin","round")
-                    }
-                    if(block.ln.prstDash == "dot"){
-                        ele.attr("stroke-dasharray","3,6")
-                    }
+
+                if(stroke){
+                    // let scale = Math.min(block.size.width / svg.width,block.size.height / svg.height)
+                    // stroke.width = stroke.width / scale
+                    ele.stroke(stroke)
                 }
 
                 let str = svg.points.map(g=>{
@@ -234,6 +245,7 @@ const parseBlock = (block,el,pageIndex) =>{
             s.style.position = "absolute"
             s.style.left = "0"
             s.style.top = "0"
+
             let ele = SVG.adopt(s).size("100%","100%").viewbox(0,0,block.size.width,block.size.height)
             let {width,height} = block.size
 
@@ -250,6 +262,10 @@ const parseBlock = (block,el,pageIndex) =>{
             if(block.prstShape.type == "rect" ){
                 let rt = ele.rect(width,height)
                 rt.fill(fill)
+                if(stroke){
+                    rt.stroke(stroke)
+                }
+               
             }else if(block.prstShape.type == "diamond"){
                 ele.path(`M ${width/2} 0 L ${width} ${height/2} L ${width/2} ${height} L 0 ${height/2} L ${width/2} 0 z`).fill(fill)
             }

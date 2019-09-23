@@ -13,23 +13,40 @@ module.exports = class Color {
         let srgbClr = node.getSingle("a:srgbClr")
         let schemeClr = node.getSingle("a:schemeClr")
 
+        /**
+         * @param {XElement} item 
+         */
+        const getAttrs = item=>{
+            let shade = item.getSingle("a:shade")
+            if(shade){
+                /**
+                 * percent
+                 */
+                this.shade = +shade.attributes.val / 1000
+            }
+        }
+
         if (srgbClr) {
             /**
              * @type {"srgbClr"|"schemeClr"}
              */
             this.type = "srgbClr"
             this.value = srgbClr.attributes.val
+            getAttrs(srgbClr)
 
         } else if (schemeClr) {
             this.type = "schemeClr"
             this.value = schemeClr.attributes.val
+            getAttrs(schemeClr)
         }
+
     }
 
     toJSON(){
         return {
             type:this.type,
-            value:this.value
+            value:this.value,
+            shade:this.shade
         }
     }
 }

@@ -3,7 +3,7 @@ const XElement = require('../../xelement')
 const Color = require("./c-color")
 
 
-class FillRef extends Color{
+class ColrRef extends Color{
 
     /**
      * @param {XElement} node 
@@ -23,7 +23,12 @@ module.exports = class Style{
 
         let fillRef = node.getSingle("a:fillRef")
         if(fillRef){
-            this.fillRef = new FillRef(fillRef)
+            this.fillRef = new ColrRef(fillRef)
+        }
+
+        let lnRef = node.getSingle("a:lnRef")
+        if(lnRef){
+            this.lnRef = new ColrRef(lnRef)
         }
     }
 }

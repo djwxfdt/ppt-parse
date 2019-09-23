@@ -89,6 +89,19 @@ module.exports = class Sp {
         }
     }
 
+    get line(){
+        let ln = this.spPr && this.spPr.ln
+        if(ln){
+            return ln.toJSON()
+        }
+        if(this.style && this.style.lnRef){
+            return {
+                color:this.style.lnRef,
+            }
+        }
+
+    }
+
     get solidFill(){
         if(this.spPr && this.spPr.solidFill){
             return this.spPr.solidFill
@@ -102,10 +115,10 @@ module.exports = class Sp {
         }
     }
 
-    get ln(){
-        if(this.spPr && this.spPr.ln && this.spPr.ln.exsist){
-            return this.spPr.ln
-        }
-    }
+    // get ln(){
+    //     if(this.spPr && this.spPr.ln && this.spPr.ln.exsist){
+    //         return this.spPr.ln
+    //     }
+    // }
 
 }

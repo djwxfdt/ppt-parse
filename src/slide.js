@@ -7,7 +7,6 @@ const Sp = require('./components/elements/p-sp')
 const Pic = require('./components/elements/p-pic')
 const GroupSp = require("./components/elements/p-grpSp")
 
-const GraphicFrame = require("./components/elements/p-graphicFrame")
 
 const SlideBg = require("./components/elements/p-bg")
 
