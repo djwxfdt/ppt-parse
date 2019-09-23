@@ -518,8 +518,13 @@ for(let i = 0;i<slideJson.slides.length;i++){
             el.style.backgroundColor = "#" + slide.backgroundColor.value
         }
     }
+    try {
+        parseBlocks(slide.blocks,el,i)
 
-    parseBlocks(slide.blocks,el,i)
+    } catch (error) {
+        console.error(error)
+    }
+
    
 }
 

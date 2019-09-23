@@ -6,25 +6,22 @@ const SlideLayoutXML = require('./slide-layout')
 
 const SlideMasterXML = require('./slide-mater')
 
-const SlideRelXML = require('./slide-rel')
-
-const SlideLayoutRelXml = require('./slide-layout-rel')
+const {SlideRelXML,SlideLayoutRelXml,PresentationRelXML,MasterRelXml} = require('./xml-rels')
 
 const ThemeXML = require('./theme')
 
 const PresentationXML = require('./presentation')
-
-const PresentationRelXML = require("./presentation-rel")
-
-
-
-
 
 
 /**
  * @returns {Promise<PresentationRelXML>}
  */
 const parseRelsXML = str => parseString(PresentationRelXML)(str)
+
+/**
+ * @returns {Promise<MasterRelXml>}
+ */
+const parseMaterXml = str => parseString(MasterRelXml)(str) 
 
 /**
  * @returns {Promise<ThemeXML>}

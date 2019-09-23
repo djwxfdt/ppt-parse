@@ -38,7 +38,7 @@ class PPTParseSDK{
          */
         this.slideXmlS = []
         for(let i = 0;i<slideFiles.length;i++){
-            if(i != 13){
+            if(i != 19){
                 // continue
             }
             let XML = await xml.parseSlideXML(slideFiles[i].data.toString())
@@ -46,24 +46,34 @@ class PPTParseSDK{
             let relFile = files.find(f=>f.path == relPath)
             XML.rel = await xml.parseSlideRelXML(relFile.data.toString())
 
+
+
+            let layoutPath = XML.rel.layoutPath
+            let layoutFile = files.find(f=>f.path == layoutPath)
+
+            XML.layout = XML.next = await xml.parseSlideLayoutXML(layoutFile.data.toString())
+
+            let layoutRelPath = layoutFile.path.replace('slideLayouts/slideLayout', 'slideLayouts/_rels/slideLayout') + '.rels'
+            let layoutRelFile = files.find(f=>f.path == layoutRelPath)
+            let layoutRel = await xml.parseSlideLayoutRelXML(layoutRelFile.data.toString())
+            XML.layout.rel = layoutRel
+
+            let masterPath = layoutRel.masterPath
+            let masterFile = files.find(f=>f.path == masterPath)
+
+            if(masterFile){
+                XML.master =  XML.layout.next = await xml.parseSlideMaterXML(masterFile.data.toString())
+
+                let masterRelPath = masterPath.replace('slideMasters/slideMaster','slideMasters/_rels/slideMaster')+ '.rels'
+                let masterRelFile = files.find(f=>f.path == masterRelPath)
+                let masterRel = await xml.parseSlideLayoutRelXML(masterRelFile.data.toString())
+                XML.master.rel = masterRel
+            }
+
             XML.theme = themeXml
 
             XML.presentation = presentationXML
 
-            let layoutPath = XML.rel.layoutPath
-            let layoutFile = files.find(f=>f.path == layoutPath)
-            XML.layout = await xml.parseSlideLayoutXML(layoutFile.data.toString())
-
-            let layoutRelPath = layoutFile.path.replace('slideLayouts/slideLayout', 'slideLayouts/_rels/slideLayout') + '.rels'
-            let layoutRelFile = files.find(f=>f.path == layoutRelPath)
-            XML.layout.rel = await xml.parseSlideLayoutRelXML(layoutRelFile.data.toString())
-
-            let masterPath = XML.layout.rel.masterPath
-            let masterFile = files.find(f=>f.path == masterPath)
-
-            if(masterFile){
-                XML.master = await xml.parseSlideMaterXML(masterFile.data.toString())
-            }
 
             this.slideXmlS.push(XML)
         }

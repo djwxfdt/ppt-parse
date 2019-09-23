@@ -2,30 +2,23 @@ const XElement = require('./xelement')
 
 const TextStyles = require('./components/text-styles')
 
-const {createSp} = require('./components/ShapeTree')
-
 const SlideBg = require("./components/elements/p-bg")
 
 const Transition = require("./components/elements/p-transition")
 
-class SlideMasterXML {
+const ShapeTree = require('./components/ShapeTree')
+
+const BaseSlide = require("./base-slide")
+
+
+class SlideMasterXML extends BaseSlide {
     constructor(xml) {
-        this.xml = XElement.init(xml)
+        super(xml)
+
+
+        this.type = "master"
 
         this.textStyles = new TextStyles(this.xml.getSingle("p:txStyles"))
-
-        this.shapes = this.xml.selectArray(['p:cSld', 'p:spTree','p:sp']).map(sp=>createSp(sp))
-
-        let trans = this.xml.getSingle("p:transition")
-        if(trans){
-            this.transition = new Transition(trans)
-        }
-
-        let bg = this.xml.selectFirst(['p:cSld',"p:bg"])
-
-        if(bg){
-            this.bg = new SlideBg(bg)
-        }
 
         this.typeMap = {
             title:"title",
@@ -45,44 +38,36 @@ class SlideMasterXML {
 
     }
 
-    get titleColor(){
-        let titleSp = this.shapes.find(sp=>sp.type == "title")
-        if(titleSp && titleSp.txBody && titleSp.txBody.textStyle){
-            return titleSp.txBody.textStyle.getColor('0')
-        }
-    }
-    
-    get titleSize(){
-        let finded = this.shapes.find(sp=>sp.type == "title")
-        if(finded && finded.txBody  && finded.txBody.textStyle){
-            let style = finded.txBody.textStyle.find('0')
-            if(style){
-                return style.size
-            }
-        }
+    getPlaceholder(idx,type){
+        type = this.typeMap[type] || type
+        return super.getPlaceholder(null,type)
     }
 
+    getTitleColor(){
+        let style = this.getTxStyle({type:"title"})
+        if(style){
+            return style.getColor('0')
+        }
+    }
 
     getTxBodyOfType(type){
         if(!type){
             return
         }
         type = this.typeMap[type] || type
-        let finded = this.shapes.find(sp=>sp.type == type)
+        let finded = this.placeholders.find(sp=>sp.type == type)
         if(finded && finded.txBody){
             return finded.txBody
         }
     }
 
     
-
-    getTxStyleOfType(type){
-        if(!type){
-            return
-        }
+  
+    getTxStyle({type,idx}){
         type = this.typeMap[type] || type
-        let finded = this.shapes.find(sp=>sp.type == type)
-        let style = finded && finded.txBody && finded.txBody.textStyle
+        idx = null
+        let style = super.getTxStyle({type,idx})
+
         if(!style){
             switch(type){
                 case "title":{
@@ -100,33 +85,12 @@ class SlideMasterXML {
     }
 
     getTextFontOfType(type){
-        let txBody = this.getTxBodyOfType(type)
-        if(txBody && txBody.textStyle){
-            return txBody.textStyle.getTypeface('0')
-        }
-    }
-
-    getTextColorOfType(type){
-        let txBody = this.getTxBodyOfType(type)
-        if(txBody && txBody.textStyle){
-            return txBody.textStyle.getColor('0')
-        }
-    }
-
-    getBulletColorOfType(type){
-        let txBody = this.getTxBodyOfType(type)
-        if(txBody && txBody.textStyle){
-            return txBody.textStyle.getBulletColor('0')
-        }
-    }
-    
-
-    getTextSizeOfType(type){
-        let style = this.getTxStyleOfType(type)
+        let style = this.getTxStyle({type})
         if(style){
-            return style.getSize('0')
+            return style.getTypeface('0')
         }
     }
+
 
     getLineSpacePercent(type){
         let txBody = this.getTxBodyOfType(type)
