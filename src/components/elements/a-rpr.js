@@ -44,6 +44,9 @@ module.exports = class RPr {
          * Specifies the baseline for both the superscript and subscript fonts. The size is specified using a percentage where 1000 is equal to 1 percent of the font size and 100000 is equal to 100 percent font of the font size
          */
         this.baseline = node.attributes.baseline
+        if(this.baseline){
+            this.baseline = +this.baseline / 1000
+        }
 
         if (node.getSingle("a:latin")) {
             /**

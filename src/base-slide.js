@@ -160,10 +160,7 @@ module.exports = class BaseSlide{
         return sp.txBody.pList.map(p => {
             let container = {
                 children: p.rList.map(r => {
-                    let sz = r.fontSize
-                    if (r.rPr && r.rPr.baseline && !isNaN(sz)) {
-                        sz -= 10
-                    }
+                    
 
                     let fontFamily = r.fontFamlily
                     if (fontFamily && fontFamily.indexOf('+') == 0) {
@@ -198,7 +195,6 @@ module.exports = class BaseSlide{
                     let json = {
                         type: "span",
                         value: r.text,
-                        size: sz,
                         bold: r.rPr && r.rPr.bold,
                         italic: r.rPr && r.rPr.italic,
                         underline: r.rPr && r.rPr.underline,
@@ -206,6 +202,18 @@ module.exports = class BaseSlide{
                         link: r.rPr && r.rPr.link
                         // valign:this.getTextVerticalAlign(r),
                     }
+
+                    if(r.fontSize){
+                        json.size = r.fontSize
+                    }
+
+                    if(r.rPr && r.rPr.baseline){
+                        json.baseline = r.rPr.baseline
+                        if(json.size){
+                            json.size = json.size * (100 - json.baseline) / 100
+                        }
+                    }
+
 
                     if(fontFamily){
                         json.fontFamily = fontFamily

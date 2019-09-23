@@ -102,7 +102,7 @@ const parseTxBody = (p,index) =>{
         }
         
         if(t.fontFamily){
-            span.style.fontFamily = t.fontFamily + ",Helvetica"
+            span.style.fontFamily = t.fontFamily.join(",")
         }
         if(t.valign){
             span.style.verticalAlign = t.valign + "%"
@@ -124,6 +124,10 @@ const parseTxBody = (p,index) =>{
             span.style.backgroundColor = "#" + t.highlight
         }
 
+        if(t.baseline){
+            span.style.verticalAlign = t.baseline + "%"
+        }
+
 
         container.appendChild(span)
     })
@@ -143,6 +147,13 @@ const parseBlock = (block,el,pageIndex) =>{
         el.appendChild(wrapper)
 
         wrapper.style.position = "absolute"
+
+        if(block.prstShape && block.prstShape.type == "line"){
+            block.size.width = block.size.width + 2
+            block.size.height = block.size.height + 2
+        }
+
+
         if(block.position){
             wrapper.style.left = block.position.x + "px"
             wrapper.style.top = block.position.y + "px"
@@ -151,6 +162,7 @@ const parseBlock = (block,el,pageIndex) =>{
             wrapper.style.width = block.size.width + "px"
             wrapper.style.height = block.size.height + "px"
         }
+        
         
         
         
@@ -267,6 +279,9 @@ const parseBlock = (block,el,pageIndex) =>{
                 let pie = ele.circle(block.size.width).fill(fill)
                 let c = Math.PI * block.size.width
                 pie.attr({"stroke-dasharray":`${c/4} ${c}`,"stroke":"white","stroke-width":block.size.width,"stroke-dashoffset":c/4*3})
+            }else if("line" == block.prstShape.type){
+                console.log(block.size)
+                ele.line(0,0,block.size.width-2,block.size.height-2).stroke({"color":fill,"width":2,linecap:"round"})
             }
             else{
                 console.warn("unsported", block.prstShape,pageIndex)

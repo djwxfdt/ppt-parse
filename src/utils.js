@@ -78,7 +78,7 @@ const FONT_MAP = {
 }
 
 const mapFont = name =>{
-    return FONT_MAP[name] || name
+    return [name,"Helvetica","cursive"]
 }
 
 module.exports = {searchXML,parseString,mapFont}
