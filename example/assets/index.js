@@ -1,4 +1,5 @@
 
+const WMF = require("./wmf")
 
 /**
  * @type {{size:{width,height},slides:Array<{background:string,blocks:Array<{position:{x,y},size:{width,height},type:string}>}>}}
@@ -403,6 +404,19 @@ const parseBlock = (block,el,pageIndex) =>{
         })
 
         el.appendChild(table)
+
+    }else if(block.type == "oleObj"){
+        let pic = document.createElement("canvas")
+
+        let wmf = new WMF(pic,block.pic.src.replace('ppt',''),480,320)
+        pic.style.position = "absolute"
+        pic.style.width = block.imgW / 20+ "px"
+        pic.style.height = block.imgH / 20 + "px"
+        pic.style.left = block.position.x  + "px"
+        pic.style.top = block.position.y  + "px"
+
+        wmf.toPngFile()
+        el.appendChild(pic)
 
     }
 }

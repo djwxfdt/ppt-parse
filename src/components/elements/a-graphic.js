@@ -4,6 +4,8 @@ const TxBody = require("./p-txBody")
 
 const Ln = require("./a-ln")
 
+const Pic = require("./p-pic")
+
 class TcPr{
     /**
      * @param {XElement} node
@@ -129,6 +131,29 @@ class Table{
     }
 }
 
+class OleObj{
+     /**
+     * @param {XElement} node
+     */
+    constructor(node) {
+        this.rid = node.attributes["r:id"]
+        this.imgW = this.toPix(node.attributes.imgW)
+        this.imgH = this.toPix(node.attributes.imgH)
+
+        let pic = node.getSingle("p:pic")
+        if(pic){
+            this.pic = new Pic(pic)
+        }
+    }
+    
+    toPix(pt){
+        if(!pt){
+            return 0
+        }
+        return Math.floor(+pt * 96 / 91440) / 10
+    }
+}
+
 class GraphicData {
     /**
      * @param {XElement} node
@@ -144,6 +169,20 @@ class GraphicData {
         if(table){
             this.table = new Table(table)
             this.type = "table"
+        }
+
+        // let ole2 = node.selectFirst(["mc:AlternateContent","mc:Choice","p:oleObj"])
+        let oleObj = node.selectFirst(["p:oleObj"]) || node.selectFirst(["mc:AlternateContent","mc:Fallback","p:oleObj"])
+
+
+        if(oleObj){
+            this.type = "oleObj"
+
+            this.oleObj = new OleObj(oleObj)
+            if(!this.oleObj.pic){
+                this.oleObj = null
+                this.type =  null
+            }
         }
 
     }
@@ -169,6 +208,12 @@ module.exports = class Graphic {
     get table(){
         if(this.graphicData){
             return this.graphicData.table
+        }
+    }
+
+    get oleObj(){
+        if(this.graphicData){
+            return this.graphicData.oleObj
         }
     }
 };

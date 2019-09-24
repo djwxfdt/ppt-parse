@@ -124,6 +124,10 @@ module.exports = class BaseSlide{
         if(this.type != "slide"){
             elements = this.viewElements
         }
+        return this._parseElements(elements)
+    }
+
+    _parseElements(elements){
         return elements.map(sp=>{
             if(sp.tag == "p:sp"){
                 return this.parseSp(sp)
@@ -407,11 +411,7 @@ module.exports = class BaseSlide{
      */
     parseGrp(gp){
         let container = {
-            children: [...gp.shapes.map(sp => {
-                return this.parseSp(sp)
-            }),...gp.pics.map(sp=>{
-                return this.parsePic(sp)
-            }),...gp.groupShapes.map(sp=>this.parseGrp(sp))],
+            children: this._parseElements(gp.elements),
             type:"group"
         }
 
@@ -517,6 +517,14 @@ module.exports = class BaseSlide{
                         height:tr.height
                     }
                 })
+            }
+        }else if(item.type == "oleObj"){
+            let oleObj = frame.graphic.oleObj
+            if(oleObj && oleObj.pic){
+                let pic = this.parsePic(oleObj.pic)
+                item.pic = pic,
+                item.imgW = oleObj.imgW
+                item.imgH = oleObj.imgH
             }
         }
 
