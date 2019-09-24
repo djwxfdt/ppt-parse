@@ -144,6 +144,8 @@ class OleObj{
         if(pic){
             this.pic = new Pic(pic)
         }
+
+        this.spid = node.attributes.spid
     }
     
     toPix(pt){
@@ -171,18 +173,12 @@ class GraphicData {
             this.type = "table"
         }
 
-        // let ole2 = node.selectFirst(["mc:AlternateContent","mc:Choice","p:oleObj"])
-        let oleObj = node.selectFirst(["p:oleObj"]) || node.selectFirst(["mc:AlternateContent","mc:Fallback","p:oleObj"])
+        let oleObj = node.selectFirst(["p:oleObj"]) || node.selectFirst(["mc:AlternateContent","mc:Choice","p:oleObj"])
 
 
         if(oleObj){
             this.type = "oleObj"
-
             this.oleObj = new OleObj(oleObj)
-            if(!this.oleObj.pic){
-                this.oleObj = null
-                this.type =  null
-            }
         }
 
     }

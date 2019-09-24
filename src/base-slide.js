@@ -92,6 +92,16 @@ module.exports = class BaseSlide{
         }
     }
 
+    /**
+     * @param {Array<import("./vml-drawing")>} v
+     */
+    set vmls(v){
+        this._vmls = v
+        if(this.next){
+            this.next.vmls = v
+        }
+    }
+
 
     /**
      * @param {import('./theme')} v
@@ -520,11 +530,16 @@ module.exports = class BaseSlide{
             }
         }else if(item.type == "oleObj"){
             let oleObj = frame.graphic.oleObj
-            if(oleObj && oleObj.pic){
-                let pic = this.parsePic(oleObj.pic)
-                item.pic = pic,
-                item.imgW = oleObj.imgW
-                item.imgH = oleObj.imgH
+            if(oleObj && oleObj.spid){
+
+                let vml = this._vmls.find(vml=>vml.spid == oleObj.spid)
+                if(vml){
+                    item.src = vml.src,
+                    item.width = vml.width
+                    item.imgH = vml.height
+                    item.left = vml.left
+                    item.top = vml.top
+                }
             }
         }
 

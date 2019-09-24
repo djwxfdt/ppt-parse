@@ -1,5 +1,6 @@
 /**
  * 参考自 https://github.com/g21589/wmf2canvas
+ * todo 后续改为svg
  */
 
 
@@ -35,7 +36,6 @@ module.exports = class WMF {
 		reader.onerror = function (event) {
 			console.error(event);
 		};
-		reader.re
 
 		fetch(this.filename).then(resp=>resp.blob()).then(data=>{
 			reader.readAsArrayBuffer(data);
@@ -157,10 +157,10 @@ module.exports = class WMF {
 	}
 
 	Int32ToHexColor(color) {
-		// let blue = (color >> 16) & 0xFF;
-		// let green = (color >> 8) & 0xFF;
-		// let red = color & 0xFF;
-		return "#" + color.toString("16")
+		let blue = ((color >> 16) & 0xFF).toString(16).padStart(2,0)
+		let green = ((color >> 8) & 0xFF).toString(16).padStart(2,0)
+		let red = (color & 0xFF).toString(16).padStart(2,0)
+		return "#" + `${blue}${green}${red}`
 	}
 
 	Uint8ArrayToBase64(dv) {
@@ -830,8 +830,9 @@ module.exports = class WMF {
 							ctx.fillStyle = obj.color;
 							break;
 						case "FONT":
+							ctx.font = `${obj.italic ? "italic " : ""}${obj.weight} ${Math.abs(obj.height)}px ${obj.faceName}`
 							// ctx.font = sprintf("%s%d %dpx '%s'", obj.italic ? "italic " : "",
-							// 	obj.weight, Math.abs(obj.height), obj.faceName);
+								// obj.weight, Math.abs(obj.height), obj.faceName);
 							break;
 					}
 					console.info("SELECT_OBJECT " + objID + " : " + JSON.stringify(obj));

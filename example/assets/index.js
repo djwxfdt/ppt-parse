@@ -16,6 +16,7 @@ app.style.height = slideJson.size.height + "px"
 let current = 0
 let total = slideJson.slides.length
 
+let currentSlideEl = null
 
 // if(slideJson.fonts){
 //     slideJson.fonts.map(f=>{
@@ -405,18 +406,18 @@ const parseBlock = (block,el,pageIndex) =>{
 
         el.appendChild(table)
 
-    }else if(block.type == "oleObj"){
+    }else if(block.type == "oleObj" && block.src){
         let pic = document.createElement("canvas")
 
-        let wmf = new WMF(pic,block.pic.src.replace('ppt',''),480,320)
+        let wmf = new WMF(pic,block.src.replace('ppt',''),480,320)
         pic.style.position = "absolute"
-        pic.style.width = block.imgW / 20+ "px"
-        pic.style.height = block.imgH / 20 + "px"
-        pic.style.left = block.position.x  + "px"
-        pic.style.top = block.position.y  + "px"
+        pic.style.width = block.width  + "px"
+        pic.style.height = block.height + "px"
+        pic.style.left = block.left  + "px"
+        pic.style.top = block.top  + "px"
 
         wmf.toPngFile()
-        el.appendChild(pic)
+        currentSlideEl.appendChild(pic)
 
     }
 }
@@ -490,7 +491,7 @@ for(let i = 0;i<slideJson.slides.length;i++){
     
     let el = document.createElement('div')
     app.appendChild(el)
-
+    currentSlideEl = el
 
     el.style.position = "absolute"
     el.style.width = "100%"

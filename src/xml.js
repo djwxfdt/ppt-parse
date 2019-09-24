@@ -12,6 +12,8 @@ const ThemeXML = require('./theme')
 
 const PresentationXML = require('./presentation')
 
+const VMLDrawing = require("./vml-drawing")
+
 
 /**
  * @returns {Promise<PresentationRelXML>}
@@ -60,6 +62,12 @@ const parseSlideLayoutRelXML = str => parseString(SlideLayoutRelXml)(str)
  */
 const parseSlideLayoutXML = str => parseString(SlideLayoutXML)(str)
 
+
+/**
+ * @returns {Promise<VMLDrawing>} 
+ */
+const parseVmlXML = str => parseString(VMLDrawing)(str)
+
 module.exports = {
     parseRelsXML,
     parseThemeXML,
@@ -68,5 +76,6 @@ module.exports = {
     parseSlideRelXML,
     parseSlideLayoutXML,
     parseSlideMaterXML,
-    parseSlideLayoutRelXML
+    parseSlideLayoutRelXML,
+    parseVmlXML
 }

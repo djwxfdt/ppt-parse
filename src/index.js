@@ -29,6 +29,14 @@ class PPTParseSDK{
             return n1 - n2
         })
 
+        let vmls = files.filter(item=>item.path.indexOf("drawings/vmlDrawing") > -1)
+
+        this.vmls = []
+
+        for(let i=0;i<vmls.length;i++){
+            this.vmls.push(await xml.parseVmlXML(vmls[i].data.toString()))
+        }
+
         this.presentationXML = presentationXML
         this.presentationXML.rel = relXml
         this.themeXml = themeXml
@@ -76,6 +84,8 @@ class PPTParseSDK{
             XML.presentation = presentationXML
 
             XML.pageIndex = i
+
+            XML.vmls = this.vmls
 
 
             this.slideXmlS.push(XML)
