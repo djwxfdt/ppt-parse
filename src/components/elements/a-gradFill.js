@@ -46,14 +46,12 @@ module.exports = class GradFill {
         }
     }
 
-    get color(){
+    get list(){
         if(this.gsLst){
             return this.gsLst.gs.map(g=>{
-                return {
-                    pos:g.pos,
-                    color:g.toJSON()
-                }
-            }).filter(g=>(g.color || g.pos))
+                return g
+            })
         }
+        return []
     }
 }

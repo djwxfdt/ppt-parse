@@ -13,7 +13,11 @@ const Pic = require('./components/elements/p-pic')
 const GroupSp = require("./components/elements/p-grpSp")
 const GraphicFrame = require("./components/elements/p-graphicFrame")
 
-const { mapFont } = require('./utils')
+const Color = require("./components/elements/c-color")
+
+const GradFill = require("./components/elements/a-gradFill")
+
+const { mapFont,applyLumColor } = require('./utils')
 
 module.exports = class BaseSlide{
 
@@ -55,11 +59,13 @@ module.exports = class BaseSlide{
 
     get backgroundColor(){
         if(this.bg && this.bg.color){
-            let color = {type:this.bg.color.type,value:this.bg.color.value}
+            let color = this.bg.color
             if(color.type == "grad"){
                 color.value = this.getGradFill(color.value)
-            }else if(color.type == "schemeClr"){
-                color.value = this.getSolidFill(color)
+            }else if(color.type == "solid"){
+                color.value = this.getSolidFill(color.value)
+            }else{
+                return null
             }
             return color
         }
@@ -77,6 +83,13 @@ module.exports = class BaseSlide{
 
     get presentation() {
         return this._presationXML
+    }
+
+    set pageIndex(v){
+        this._pageIndex = v
+        if(this.next){
+            this.next.pageIndex = v
+        }
     }
 
 
@@ -117,7 +130,8 @@ module.exports = class BaseSlide{
             }else if(sp.tag == "p:pic"){
                 return this.parsePic(sp)
             }else if(sp.tag == "p:grpSp"){
-                return this.parseGrp(sp)
+                let grp = this.parseGrp(sp)
+                return this.reSizeGroup(grp)
             }else if(sp.tag == "p:graphicFrame"){
                 return this.parseGraphic(sp)
             }
@@ -166,6 +180,9 @@ module.exports = class BaseSlide{
             let container = {
                 children: p.rList.map(r => {
                     
+                    if(!r.text || r.text.length == "0"){
+                        return
+                    }
 
                     let fontFamily = r.fontFamlily
                     if (fontFamily && fontFamily.indexOf('+') == 0) {
@@ -234,6 +251,10 @@ module.exports = class BaseSlide{
                 }).filter(t => t)
             }
 
+            if(container.children.length == 0){
+                return
+            }
+
             if (p.lineSpacePercent) {
                 container.lnPct = p.lineSpacePercent
             }
@@ -252,6 +273,9 @@ module.exports = class BaseSlide{
                     if(sp.type){
                         container.bullet.color = this.getBulletColor(sp)
                     }
+                }
+                if(container.bullet && container.bullet.color){
+                    container.bullet.color = "#" + (container.bullet.color)
                 }
             }
             // container.lnPt = p.lineSpacePercent || this.master.getLineSpacePercent(type)
@@ -277,11 +301,12 @@ module.exports = class BaseSlide{
             }
 
             return container
-        })
+        }).filter(i=>!!i)
     }
 
     /**
      * @param {Sp} sp 
+     * @returns {{type:"container",size:{width,height},position:{x,y}}}
      */
     parseSp(sp) {
 
@@ -331,7 +356,7 @@ module.exports = class BaseSlide{
 
         if(sp.line){
             container.line = {
-                color:sp.line.color && this.getSolidFill(sp.line.color),
+                color: sp.line.color && this.getSolidFill(sp.line.color),
                 round:sp.line.round,
                 prstDash:sp.line.prstDash,
                 width:sp.line.width
@@ -340,9 +365,9 @@ module.exports = class BaseSlide{
 
        
 
-        let color = this.getTextColor(sp)
+        let color = this.getSolidFill(this.getTextColor(sp))
         if (color) {
-            container.color = this.getSolidFill(color)
+            container.color = color
         }
 
         let text = this.parseTxBody(sp)
@@ -357,6 +382,7 @@ module.exports = class BaseSlide{
 
     /**
      * @param {Pic} pic 
+     * @returns {{type:"image",size:{width,height},position:{x,y}}}
      */
     parsePic(pic) {
 
@@ -377,7 +403,6 @@ module.exports = class BaseSlide{
     }
 
     /**
-     * 
      * @param {GroupSp} gp 
      */
     parseGrp(gp){
@@ -389,6 +414,7 @@ module.exports = class BaseSlide{
             }),...gp.groupShapes.map(sp=>this.parseGrp(sp))],
             type:"group"
         }
+
 
         if (gp.xfrm) {
             container.position = gp.xfrm.off
@@ -406,10 +432,52 @@ module.exports = class BaseSlide{
                 container.chExt = gp.xfrm.chExt
             }
         }
+        
         return container
     }
 
+    /**
+     * 
+     * @param {*} sp 
+     * @param {*} ox 子偏移
+     * @param {*} oy 子偏移
+     * @param {*} scaleX 
+     * @param {*} scaleY 
+     */
+    reSizeSp(sp,ox,oy,scaleX,scaleY){
+        sp.position.x = (sp.position.x - ox) * scaleX
+        sp.position.y = (sp.position.y - oy) * scaleY
+        sp.size.width = sp.size.width * scaleY
+        sp.size.height = sp.size.height * scaleY
 
+        if(sp.type == "group"){
+            scaleX = sp.size.width / sp.chExt.width
+            scaleY = sp.size.height / sp.chExt.height
+
+            sp.children = sp.children.map(s=>{
+                return this.reSizeSp(s,sp.chOff.x,sp.chOff.y,scaleX,scaleY)
+            })
+        }
+
+        // sp.position.y = (sp.position.y + oy) * scaleY
+
+
+        // if(sp.type == "container"){
+            
+        // }
+        return sp
+    }
+
+    reSizeGroup(grp){
+        let scaleX = grp.size.width / grp.chExt.width
+        let scaleY = grp.size.height / grp.chExt.height
+
+        grp.children = grp.children.map(sp=>{
+            return this.reSizeSp(sp,grp.chOff.x,grp.chOff.y,scaleX,scaleY)
+        })
+        return grp
+    }
+    
      /**
      * 
      * @param {GraphicFrame} frame 
@@ -456,30 +524,43 @@ module.exports = class BaseSlide{
     }
 
 
-      /**
+    /**
      * 
-     * @param {{type:"schemeClr"|"schemeClr",value:string}} solid 
+     * @param {Color} solid 
      */
     getSolidFill(solid){
         if(!solid){
             return
         }
-        if(solid.type == "schemeClr"){
-            let k = this.master.findSchemeClr(solid.value) || solid.value
-            if(k){
-                return this.theme.getColor("a:" + k)
-            }
-        }else{
-            return solid.value
+        let res = solid
+        if(solid.toJSON){
+            res = solid.toJSON()
         }
+        if(solid.type == "schemeClr"){
+            let k = this.theme.getColor("a:" + this.master.findSchemeClr(solid.value)) 
+            if(k){
+                res.value = k
+            }
+        }
+        return applyLumColor(res)
     }
 
+
+    /**
+     * 
+     * @param {GradFill} grad 
+     */
     getGradFill(grad){
-        return grad.map(c=>{
-            let obj = {pos:c.pos}
-            obj.color = this.getSolidFill(c.color)
-            return obj
-        }).filter(c=>!!c.color)
+        if(!grad){
+            return
+        }
+        return grad.list.map(c=>{
+            let color = this.getSolidFill(c)
+            if(!color){
+                return {}
+            }
+            return {pos:c.pos,value:color}
+        }).filter(c=>!!c.value)
     }
 
 
@@ -512,7 +593,7 @@ module.exports = class BaseSlide{
         }
     
         if(this.next){
-            return this.next.getXfrm(this.getPlaceholder(sp))
+            return this.next.getXfrm(this.getPlaceholder(sp.idx,sp.type))
         }
        
     }

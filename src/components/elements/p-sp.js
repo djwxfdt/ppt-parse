@@ -85,7 +85,7 @@ module.exports = class Sp {
             return {type:"solid",value:solid}
         }
         if(gradFill){
-            return {type:"grad",value:gradFill.color}
+            return {type:"grad",value:gradFill}
         }
     }
 

@@ -60,21 +60,22 @@ module.exports = class Bg{
         this._src = v
     }
 
-    /**
-     * @returns {{type:"srgbClr"|"schemeClr"|"grad",value:"FFFFFF"|Array<{color:{type:"srgbClr"|"schemeClr",value},pos}>}}
-     */
+  
     get color(){
         if(!this.bgPr){
             return
         }
         
         if(this.bgPr.solidFill){
-            return this.bgPr.solidFill
+            return {
+                type:"solid",
+                value:this.bgPr.solidFill
+            }
         }
         if(this.bgPr.gradFill){
             return {
                 type:"grad",
-                value:this.bgPr.gradFill.color
+                value:this.bgPr.gradFill
             }
         }
     }

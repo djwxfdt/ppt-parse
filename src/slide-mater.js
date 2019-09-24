@@ -107,7 +107,7 @@ class SlideMasterXML extends BaseSlide {
      * @returns {string}
      */
     findSchemeClr(k){
-        return this.clrMap[k]
+        return this.clrMap[k] || k
     }
 
 

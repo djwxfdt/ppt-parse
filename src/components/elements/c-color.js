@@ -24,6 +24,18 @@ module.exports = class Color {
                  */
                 this.shade = +shade.attributes.val / 1000
             }
+            let lumMod = item.getSingle("a:lumMod")
+            if(lumMod){
+                this.lumMod = +lumMod.attributes.val / 1000
+            }
+            let lumOff = item.getSingle("a:lumOff")
+            if(lumOff){
+                this.lumOff = +lumOff.attributes.val / 1000
+            }
+            let alpha = item.getSingle("a:alpha")
+            if(alpha){
+                this.alpha = +alpha.attributes.val / 1000
+            }
         }
 
         if (srgbClr) {
@@ -46,7 +58,10 @@ module.exports = class Color {
         return {
             type:this.type,
             value:this.value,
-            shade:this.shade
+            shade:this.shade,
+            lumMod:this.lumMod,
+            alpha:this.alpha,
+            lumOff:this.lumOff
         }
     }
 }

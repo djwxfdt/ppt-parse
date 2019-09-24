@@ -2,6 +2,8 @@ const xml2js = require('xml2js')
 
 const XElement = require("./xelement")
 
+const d3 = require("d3-color")
+
 let xmlParser = null
 
 try {
@@ -81,4 +83,21 @@ const mapFont = name =>{
     return [name,"Helvetica","cursive"]
 }
 
-module.exports = {searchXML,parseString,mapFont}
+const applyLumColor = ({value,lumMod,lumOff}) =>{
+    if(!value){
+        return
+    }
+
+    lumMod = (lumMod || 0) / 100
+    lumOff = (lumOff || 0) / 100
+
+    if(lumOff == 0){
+        return "#" + value
+    }
+
+    let hsl = d3.hsl("#" + value)
+    hsl.l = hsl.l * (1 + lumOff)
+    return hsl.hex()
+}
+
+module.exports = {searchXML,parseString,mapFont,applyLumColor}

@@ -40,7 +40,7 @@ const parseTxBody = (p,index) =>{
         pWrapper.style.textAlign = "center"
     }
     if(p.color){
-        pWrapper.style.color = "#" + p.color
+        pWrapper.style.color = p.color
     }
     if(p.lnPct){
         pWrapper.style.lineHeight = p.lnPct / 100
@@ -67,7 +67,7 @@ const parseTxBody = (p,index) =>{
         bullet.innerHTML = p.bullet.char
         bullet.style.fontSize = p.bullet.sz + "px"
         if(p.bullet.color){
-            bullet.style.color = "#" + p.bullet.color
+            bullet.style.color = p.bullet.color
         }
         pWrapper.style.display = "flex"
 
@@ -101,7 +101,7 @@ const parseTxBody = (p,index) =>{
             span.setAttribute("href","#")
         }
         if(t.color){
-            span.style.color = "#" + t.color
+            span.style.color =  t.color
         }
         let str = t.value.replace(/( )( )/g,"&nbsp&nbsp")
         
@@ -130,7 +130,7 @@ const parseTxBody = (p,index) =>{
         }
 
         if(t.highlight){
-            span.style.backgroundColor = "#" + t.highlight
+            span.style.backgroundColor =  t.highlight
         }
 
         if(t.baseline){
@@ -164,7 +164,7 @@ const parseBlock = (block,el,pageIndex) =>{
             borderWidth = block.line.width || 1
             stroke = {
                 width:borderWidth,
-                color:"#" + block.line.color,
+                color: block.line.color,
                 linejoin:"round",
                 linecap:"but"
             }
@@ -173,19 +173,15 @@ const parseBlock = (block,el,pageIndex) =>{
             }
         }
 
-        if(block.prstShape && block.prstShape.type == "line"){
-            block.size.width = block.size.width  
-            block.size.height = block.size.height  
-        }
-
 
         if(block.position){
             wrapper.style.left = block.position.x + "px"
             wrapper.style.top = block.position.y + "px"
         }
         if(block.size){
-            wrapper.style.width = block.size.width + "px"
-            wrapper.style.height = block.size.height + "px"
+
+            wrapper.style.width = (block.size.width )  + "px"
+            wrapper.style.height = (block.size.height ) + "px"
         }      
 
         if(block.fontSize){
@@ -193,12 +189,21 @@ const parseBlock = (block,el,pageIndex) =>{
         }
 
         if(block.color){
-            wrapper.style.color = "#" + block.color
+            wrapper.style.color = block.color
         }
 
         if(block.rot){
             wrapper.style.transform = `rotate(${block.rot}deg)`
         }
+
+        let fill =  "transparent"
+        if(block.fill){
+            if(block.fill.type == "solid"){
+                fill = block.fill.value
+            }
+        }
+        
+
        
         if(block.svgs){
             block.svgs.map(svg=>{
@@ -215,8 +220,6 @@ const parseBlock = (block,el,pageIndex) =>{
 
 
                 if(stroke){
-                    // let scale = Math.min(block.size.width / svg.width,block.size.height / svg.height)
-                    // stroke.width = stroke.width / scale
                     ele.stroke(stroke)
                 }
 
@@ -230,16 +233,11 @@ const parseBlock = (block,el,pageIndex) =>{
                     }
                 }).join(" ")
                 let ps = ele.path(str)
-                if(block.fill){
-                    ps.fill("#" + block.fill.value)
-                }else{
-                    ps.fill("transparent")
-                }
+                ps.fill(fill)
             })
         }
 
         if(block.prstShape  && block.fill ){
-            let fill =  "transparent"
             let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
             wrapper.appendChild(s)
             s.style.position = "absolute"
@@ -252,11 +250,9 @@ const parseBlock = (block,el,pageIndex) =>{
             if(block.fill.type == "grad"){
                 fill = ele.gradient("linear",stop=>{
                     block.fill.value.map(v=>{
-                        stop.at(v.pos / 100,"#" + v.color)
+                        stop.at(v.pos / 100,v.value)
                     })
                 })
-            }else{
-                fill = "#" + block.fill.value
             }
 
             if(block.prstShape.type == "rect" ){
@@ -357,7 +353,7 @@ const parseBlock = (block,el,pageIndex) =>{
         div.style.top = block.position.y + "px"
 
         div.innerHTML = `<svg  viewBox="0 0 ${block.size.width} ${block.size.height}" width="${block.size.width}" height="${block.size.height}">
-            <rect x="0" y="0" fill="#${block.fillColor}" width="${block.size.width}" height="${block.size.height}"></rect>
+            <rect x="0" y="0" fill="${block.fillColor}" width="${block.size.width}" height="${block.size.height}"></rect>
         </svg>`
         el.appendChild(div)
 
@@ -389,7 +385,7 @@ const parseBlock = (block,el,pageIndex) =>{
                     tdEl.appendChild(div)
                 })
                 if(tc.ln){
-                    tdEl.style.border = `dashed 1px #${tc.ln.color || "FFF"}`
+                    tdEl.style.border = `dashed 1px ${tc.ln.color || "FFF"}`
                     tdEl.style.boxSizing = "border-box"
                     if(j != (block.table.trs.length - 1)){
                         tdEl.style.borderBottom = "none"
@@ -434,55 +430,39 @@ const parseBlocks = (blocks,el,pageIndex)=>{
             wrapper.style.position = "relative"
             group.appendChild(wrapper)
 
+
             el.appendChild(group)
+
+            // let sX = 1
+            // let sY = 1
+
+            // let childTransform = []
+            
+            // if(block.chExt && block.chExt.width && block.chExt.height){
+                
+            //     let ssX = block.size.width / block.chExt.width
+            //     let ssY = block.size.height / block.chExt.height
+            //     console.log(ssX)
+            //     sX = scaleX * ssX
+            //     sY = scaleY * ssY
+            //     /**
+            //      * 先scale再translate
+            //      */
+            //     // childTransform.push(`scale(${ssX},${ssY})`) 
+            // }
+
+            // if(block.chOff){
+            //     // childTransform.push(`translate(-${block.chOff.x}px, -${block.chOff.y}px)`)
+            // }
 
             parseBlocks(block.children,wrapper,pageIndex)
 
-            let childTransform = []
 
-            
-            if(block.chExt && block.chExt.width && block.chExt.height){
-                let scaleX = block.size.width / block.chExt.width
-                let scaleY = block.size.height / block.chExt.height
-                /**
-                 * 先scale再translate
-                 */
-                childTransform.push(`scale(${scaleX},${scaleY})`) 
-            }
-
-            if(block.chOff){
-                childTransform.push(`translate(-${block.chOff.x}px, -${block.chOff.y}px)`)
-            }
-
-            if(childTransform.length){
-                wrapper.style.transform =  childTransform.join(" ")
-                wrapper.style.transformOrigin = "left top"
-            }
-
-            // let rect = {}
-
-            // block.children.map(c=>{
-            //     if(rect.x == undefined){
-            //         rect.x = c.position.x
-            //         rect.y = c.position.y
-            //         rect.r = c.size.width + rect.x
-            //         rect.b = c.size.height + rect.y
-            //     }
-                
-            //     rect.x = Math.min(rect.x,c.position.x)
-            //     rect.y = Math.min(rect.y,c.position.y)
-            //     rect.r = Math.max(rect.r,c.position.x + c.size.width)
-            //     rect.b = Math.max(rect.b,c.position.y + c.size.height)
-            // })
-
-            // if(rect.x != undefined){
-            //     let w = rect.r - rect.x
-            //     let h = rect.b - rect.y
-            //     let scale = Math.min(block.size.width / w,block.size.height / h)
-            //     scale =Math.floor(scale * 10) / 10
-            //     // group.style.transform = `scale(${scale})`
-            //     group.style.transformOrigin = "left top"
+            // if(childTransform.length){
+            //     wrapper.style.transform =  childTransform.join(" ")
+            //     wrapper.style.transformOrigin = "left top"
             // }
+
 
 
         }else{
@@ -530,27 +510,35 @@ for(let i = 0;i<slideJson.slides.length;i++){
         }
     }
 
+    el.style.backgroundColor = "white"
+
+    let wrapper = document.createElement("div")
+    wrapper.style.position = "absolute"
+    wrapper.style.left = wrapper.style.top = "0"
+    wrapper.style.width = wrapper.style.height = "100%"
+
+    el.appendChild(wrapper)
+
 
 
     if(slide.backgroundImage){
-        el.style.backgroundImage = `url(${slide.backgroundImage.replace('ppt','')})`
-        el.style.backgroundSize = "cover"
+        wrapper.style.backgroundImage = `url(${slide.backgroundImage.replace('ppt','')})`
+        wrapper.style.backgroundSize = "cover"
     }
 
-    el.style.backgroundColor = "white"
 
     if(slide.backgroundColor){
         if(slide.backgroundColor.type == "grad"){
             let str = `linear-gradient(to right,${slide.backgroundColor.value.map(c=>{
-                return `#${c.color} ${c.pos}%`
+                return `${c.value} ${c.pos}%`
             }).join(",")})`
-            el.style.background = str
+            wrapper.style.background = str
         }else{
-            el.style.backgroundColor = "#" + slide.backgroundColor.value
+            wrapper.style.backgroundColor = slide.backgroundColor.value
         }
     }
     try {
-        parseBlocks(slide.blocks,el,i)
+        parseBlocks(slide.blocks,wrapper,i)
 
     } catch (error) {
         console.error(error)

@@ -54,8 +54,8 @@ module.exports =  class Xfrm{
              * Specifies the length of the extents rectangle in EMUs. This rectangle shall dictate the size of the object as displayed (the result of any scaling to the original object).
              */
             this.chExt = {
-                width:this.toPix(chExt.attributes.cx),
-                height:this.toPix(chExt.attributes.cy)
+                width:this.toPix(chExt.attributes.cx) || 1,
+                height:this.toPix(chExt.attributes.cy) || 1
             }
         }
 
