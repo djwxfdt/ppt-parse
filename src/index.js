@@ -39,7 +39,7 @@ class PPTParseSDK{
         this.slideXmlS = []
         for(let i = 0;i<slideFiles.length;i++){
             if(i != 6){
-                continue
+                // continue
             }
             let XML = await xml.parseSlideXML(slideFiles[i].data.toString())
             let relPath = slideFiles[i].path.replace('slides/slide', 'slides/_rels/slide') + '.rels'
