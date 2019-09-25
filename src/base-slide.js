@@ -536,9 +536,11 @@ module.exports = class BaseSlide{
                 if(vml){
                     item.src = vml.src,
                     item.width = vml.width
-                    item.imgH = vml.height
+                    item.height = vml.height
                     item.left = vml.left
                     item.top = vml.top
+                    item.imgW = oleObj.imgW
+                    item.imgH = oleObj.imgH
                 }
             }
         }

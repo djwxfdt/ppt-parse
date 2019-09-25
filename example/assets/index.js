@@ -1,5 +1,6 @@
 
 const WMF = require("./wmf")
+const SVG = require("svg.js")
 
 /**
  * @type {{size:{width,height},slides:Array<{background:string,blocks:Array<{position:{x,y},size:{width,height},type:string}>}>}}
@@ -406,18 +407,21 @@ const parseBlock = (block,el,pageIndex) =>{
 
         el.appendChild(table)
 
-    }else if(block.type == "oleObj" && block.src){
-        let pic = document.createElement("canvas")
-
-        let wmf = new WMF(pic,block.src.replace('ppt',''),480,320)
-        pic.style.position = "absolute"
-        pic.style.width = block.width  + "px"
-        pic.style.height = block.height + "px"
-        pic.style.left = block.left  + "px"
-        pic.style.top = block.top  + "px"
-
-        wmf.toPngFile()
-        currentSlideEl.appendChild(pic)
+    }else if(block.type == "oleObj" && block.src ){
+        if(block.src.indexOf(".wmf") > -1){
+            let pic = document.createElementNS("http://www.w3.org/2000/svg","svg")
+            currentSlideEl.appendChild(pic)
+            console.log(block.imgW,block.imgH)
+            let svg = SVG.adopt(pic).size(block.width,block.height).viewbox(0,0,block.imgW || 0,block.imgH || 0)
+            let wmf = new WMF(svg,block.src.replace('ppt',''))
+            pic.style.position = "absolute"
+            // pic.style.width = block.width  + "px"
+            // pic.style.height = block.height + "px"
+            pic.style.left = block.left  + "px"
+            pic.style.top = block.top  + "px"
+    
+            wmf.toPngFile()
+        }
 
     }
 }

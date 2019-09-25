@@ -3,35 +3,53 @@
  * todo 后续改为svg
  */
 
+ const SVG = require("svg.js")
+
 
 const Icnov = require('iconv-lite');
 
 module.exports = class WMF {
 
-	constructor(canvas, filename, width, height) {
+	constructor(svg=SVG("drawing"), filename="") {
 
 		/**
 		 * @type {HTMLCanvasElement}
 		 */
-		this.canvas = canvas  || document.createElement("canvas")
-		this.canvas.width = width
-		this.canvas.height = height
+		this.canvas = document.createElement("canvas")
+
+		this.svg = svg
 
 		this.filename = filename
 
+		this.bkColor = "transparent"
+
+		this.txColor = "#000"
+
+		this.fillColor = "transparent"
+
+		this.textAlign = "left"
+
+		this.textBaseline = "alphabetic"
+
+		this.strokeWidth = 1
+		this.strokeColor = "#000"
+
+		this.fontSize = 12
+		this.fontFamily = "System"
+		this.fontWeight = null
+
+		this.fontItalic = false
+
+		this.pos = {x:0,y:0}
 	}
 
 	toPngFile() {
 
 		let reader = new FileReader();
 		reader.onload =  (event)=> {
-			try {
-				this.dataView = new DataView(event.target.result)
-				this.parseWMF()
-				// parseWMF(new DataView(event.target.result), canvas);
-			} catch (e) {
-				console.error(e.message);
-			}
+			this.dataView = new DataView(event.target.result)
+			this.parseWMF()
+			
 		};
 		reader.onerror = function (event) {
 			console.error(event);
@@ -246,14 +264,7 @@ module.exports = class WMF {
 		const RECORD_CREATE_BRUSH_INDIRECT = 0x02FC;
 		const RECORD_CREATE_RECT_RGN = 0x06FF;
 
-		// canvas.width = 480;
-		// canvas.height = 320;
-
-		let canvas = this.canvas
 		let dv = this.dataView
-		const ctx = canvas.getContext('2d')
-
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 		let offset = 0, offset_bk = 0;
 		let mtType = 0, mtHeaderSize = 0;
@@ -271,7 +282,6 @@ module.exports = class WMF {
 		let mx = 1.0, my = 1.0;
 
 		let charset = 0;
-		let textColor = "#000";
 		let fillMode = "evenodd";
 
 		let key = dv.getUint32(offset, true); offset += 4;
@@ -422,15 +432,14 @@ module.exports = class WMF {
 				case RECORD_SET_BK_COLOR: {
 					let color = dv.getInt32(offset, true); offset += 4;
 					color = this.Int32ToHexColor(color);
-					ctx.fillStyle = color;
+					this.bkColor = color
 					console.log("SET_BK_COLOR " + color);
 					break;
 				}
 				case RECORD_SET_TEXT_COLOR: {
 					let color = dv.getInt32(offset, true); offset += 4;
 					color = this.Int32ToHexColor(color);
-					//ctx.fillStyle = color;
-					textColor = color;
+					this.txColor = color
 					console.log("SET_TEXT_COLOR " + color);
 					break;
 				}
@@ -445,16 +454,15 @@ module.exports = class WMF {
 				case RECORD_LINE_TO: {
 					let ey = dv.getInt16(offset, true); offset += 2;
 					let ex = dv.getInt16(offset, true); offset += 2;
-					ctx.lineTo(ex, ey);
-					ctx.stroke();
+					this.svg.line(this.pos.x,this.pos.y,ex,ey).stroke({width:this.strokeWidth,color:this.strokeColor})
+					this.svg.pos = {x:0,y:0}
 					console.log("LineTo (" + ex + ", " + ey + ")");
 					break;
 				}
 				case RECORD_MOVE_TO_EX: {
 					let y = dv.getInt16(offset, true); offset += 2;
 					let x = dv.getInt16(offset, true); offset += 2;
-					ctx.beginPath();
-					ctx.moveTo(x, y);
+					this.pos = {x,y}
 					console.log("MoveTo (" + x + ", " + y + ")");
 					break;
 				}
@@ -490,41 +498,33 @@ module.exports = class WMF {
 				case RECORD_POLYGON: {
 					let numOfPoints = dv.getInt16(offset, true); offset += 2;
 
-					ctx.beginPath();
-
-					let x = this.toAbsoluteX(dv.getInt16(offset, true), ww, wx, mx, wox, wsx); offset += 2;
-					let y = this.toAbsoluteY(dv.getInt16(offset, true), wh, wy, my, woy, wsy); offset += 2;
-					ctx.moveTo(x, y);
+					let sy = this.toAbsoluteY(dv.getInt16(offset, true), wh, wy, my, woy, wsy); offset += 2;
+					let points = [[sx,sy]]
 
 					for (let i = 1; i < numOfPoints; i++) {
-						x = this.toAbsoluteX(dv.getInt16(offset, true), ww, wx, mx, wox, wsx); offset += 2;
-						y = this.toAbsoluteY(dv.getInt16(offset, true), wh, wy, my, woy, wsy); offset += 2;
-						ctx.lineTo(x, y);
+						let x = this.toAbsoluteX(dv.getInt16(offset, true), ww, wx, mx, wox, wsx); offset += 2;
+						let y = this.toAbsoluteY(dv.getInt16(offset, true), wh, wy, my, woy, wsy); offset += 2;
+						points.push([x,y])
 					}
 
-					ctx.closePath();
-					ctx.fill(fillMode);
-					ctx.stroke();
-
+					this.svg.polygon(points).stroke({width:1})
 					console.log("POLYGON");
 					break;
 				}
 				case RECORD_POLYLINE: {
 					let numOfPoints = dv.getInt16(offset, true); offset += 2;
 
-					ctx.beginPath();
-
-					let x = this.toAbsoluteX(dv.getInt16(offset, true), ww, wx, mx, wox, wsx); offset += 2;
-					let y = this.toAbsoluteY(dv.getInt16(offset, true), wh, wy, my, woy, wsy); offset += 2;
-					ctx.moveTo(x, y);
+					let sx = this.toAbsoluteX(dv.getInt16(offset, true), ww, wx, mx, wox, wsx); offset += 2;
+					let sy = this.toAbsoluteY(dv.getInt16(offset, true), wh, wy, my, woy, wsy); offset += 2;
+					let points = [[sx,sy]]
 
 					for (let i = 1; i < numOfPoints; i++) {
-						x = this.toAbsoluteX(dv.getInt16(offset, true), ww, wx, mx, wox, wsx); offset += 2;
-						y = this.toAbsoluteY(dv.getInt16(offset, true), wh, wy, my, woy, wsy); offset += 2;
-						ctx.lineTo(x, y);
+						let x = this.toAbsoluteX(dv.getInt16(offset, true), ww, wx, mx, wox, wsx); offset += 2;
+						let y = this.toAbsoluteY(dv.getInt16(offset, true), wh, wy, my, woy, wsy); offset += 2;
+						points.push([x,y])
 					}
 
-					ctx.stroke();
+					this.svg.polyline(points).stroke({width:1})
 					console.log("POLYLINE");
 					break;
 				}
@@ -545,12 +545,9 @@ module.exports = class WMF {
 					let height = dv.getInt16(offset, true); offset += 2;
 					let width = dv.getInt16(offset, true); offset += 2;
 
-					let inMemCanvas = document.createElement('canvas');
-					let inMemCtx = inMemCanvas.getContext('2d');
-					inMemCtx.drawImage(canvas, 0, 0);
-					canvas.width = Math.abs(width);
-					canvas.height = Math.abs(height);
-					ctx.drawImage(inMemCanvas, 0, 0);
+					if(width && height){
+						this.svg.viewbox(0,0,width,height)
+					}
 
 					ww = width;
 					wh = height;
@@ -624,10 +621,7 @@ module.exports = class WMF {
 					let sy = dv.getInt16(offset, true); offset += 2;
 					let sx = dv.getInt16(offset, true); offset += 2;
 
-					ctx.beginPath();
-					ctx.ellipse(ex, ey, sx, sy, 0, 0, Math.PI * 2);
-					ctx.fill();
-					ctx.stroke();
+					this.svg.ellipse(2*sx,2*sy).move(ex-sx,ey-sy)
 
 					console.log("ELLIPSE (" + ex + ", " + ey + ") (" + sx + ", " + sy + ")");
 					break;
@@ -683,23 +677,17 @@ module.exports = class WMF {
 
 					for (let i = 0; i < numOfpolygons; i++) {
 
-						ctx.beginPath();
-
-						let x = this.toAbsoluteX(dv.getInt16(offset, true), ww, wx, mx, wox, wsx); offset += 2;
-						let y = this.toAbsoluteY(dv.getInt16(offset, true), wh, wy, my, woy, wsy); offset += 2;
-						ctx.moveTo(x, y);
-						//console.log("M " + JSON.stringify({x, y}));
+						let sx = this.toAbsoluteX(dv.getInt16(offset, true), ww, wx, mx, wox, wsx); offset += 2;
+						let sy = this.toAbsoluteY(dv.getInt16(offset, true), wh, wy, my, woy, wsy); offset += 2;
+						let points = [[sx,sy]]
 
 						for (let j = 1; j < numOfPoints[i]; j++) {
-							x = this.toAbsoluteX(dv.getInt16(offset, true), ww, wx, mx, wox, wsx); offset += 2;
-							y = this.toAbsoluteY(dv.getInt16(offset, true), wh, wy, my, woy, wsy); offset += 2;
-							ctx.lineTo(x, y);
+							let x = this.toAbsoluteX(dv.getInt16(offset, true), ww, wx, mx, wox, wsx); offset += 2;
+							let y = this.toAbsoluteY(dv.getInt16(offset, true), wh, wy, my, woy, wsy); offset += 2;
+							points.push([x,y])
 							//console.log("L " + JSON.stringify({x, y}));
 						}
-
-						ctx.closePath();
-						ctx.fill(fillMode);
-						ctx.stroke();
+						this.svg.polygon(points)
 
 					}
 					console.log("RECORD_POLY_POLYGON");
@@ -720,9 +708,9 @@ module.exports = class WMF {
 					let ex = dv.getInt16(offset, true); offset += 2;
 					let sy = dv.getInt16(offset, true); offset += 2;
 					let sx = dv.getInt16(offset, true); offset += 2;
-					ctx.rect(sx, sy, ex - sx, ey - sy);
-					ctx.fill();
-					ctx.stroke();
+
+					this.svg.rect(ex - sx, ey - sy).move(sx,sy).fill()
+
 					console.log("RECTANGLE");
 					break;
 				}
@@ -731,8 +719,7 @@ module.exports = class WMF {
 					let y = dv.getInt16(offset, true); offset += 2;
 					let x = dv.getInt16(offset, true); offset += 2;
 					color = this.Int32ToHexColor(color);
-					ctx.fillStyle = color;
-					ctx.fillRect(x, y, 1, 1);
+					this.svg.rect(1,1).move(x,y).fill(this.fillColor)
 					console.log("SET_PIXEL (" + x + ", " + y + ", " + color + ")");
 					break;
 				}
@@ -743,8 +730,7 @@ module.exports = class WMF {
 					let ex = dv.getInt16(offset, true); offset += 2;
 					let sy = dv.getInt16(offset, true); offset += 2;
 					let sx = dv.getInt16(offset, true); offset += 2;
-					this.drawRoundRect(ctx, sx, sy, ex - sx, ey - sy, (rh + rw) / 2, false, true);
-					console.log("ROUND_RECT");
+					this.svg.rect(ex - sx, ey - sy).move(sx,sy).radius(rh,rw)
 					break;
 				}
 				case RECORD_PAT_BLT: {
@@ -823,16 +809,17 @@ module.exports = class WMF {
 					let obj = objs[objID];
 					switch (obj.type) {
 						case "PEN":
-							ctx.lineWidth = obj.width;
-							ctx.strokeStyle = obj.color;
+							this.strokeWidth = obj.width;
+							this.strokeColor = obj.color;
 							break;
 						case "BRUSH":
-							ctx.fillStyle = obj.color;
+							this.fillColor = obj.color
 							break;
 						case "FONT":
-							ctx.font = `${obj.italic ? "italic " : ""}${obj.weight} ${Math.abs(obj.height)}px ${obj.faceName}`
-							// ctx.font = sprintf("%s%d %dpx '%s'", obj.italic ? "italic " : "",
-								// obj.weight, Math.abs(obj.height), obj.faceName);
+							this.fontItalic = obj.italic
+							this.fontWeight = obj.weight
+							this.fontSize = obj.height
+							this.fontFamily = obj.faceName
 							break;
 					}
 					console.info("SELECT_OBJECT " + objID + " : " + JSON.stringify(obj));
@@ -845,24 +832,20 @@ module.exports = class WMF {
 					let alignV = align & (0x08 | 0x00 | 0x18);
 
 					if (alignH == 0x02) {
-						ctx.textAlign = "right";
+						this.textAlign = "right";
 					} else if (alignH == 0x06) {
-						ctx.textAlign = "center";
+						this.textAlign = "center";
 					} else {
-						ctx.textAlign = "left";
+						this.textAlign = "left";
 					}
 
 					if (alignV == 0x08) {
-						ctx.textBaseline = "bottom";
+						this.textBaseline = "bottom";
 					} else if (alignV == 0x00) {
-						ctx.textBaseline = "top";
+						this.textBaseline = "top";
 					} else {
-						ctx.textBaseline = "alphabetic";
+						this.textBaseline = "alphabetic";
 					}
-					/*
-					ctx.textBaseline = "middle";
-					ctx.textBaseline = "hanging";
-					*/
 
 					console.log("SET_TEXT_ALIGN " + align);
 					break;
@@ -949,10 +932,13 @@ module.exports = class WMF {
 						}
 					}
 					*/
-					let fillStyle_bk = ctx.fillStyle;
-					ctx.fillStyle = textColor;
-					ctx.fillText(text, x, y);
-					ctx.fillStyle = fillStyle_bk;
+					this.svg.text(text).font({
+						style:`color:${this.txColor}`,
+						anchor:this.textAlign,
+						size:Math.abs(this.fontSize),
+						family:this.fontFamily
+					}).move(x,this.fontSize > 0 ? y: (y+this.fontSize))
+
 					console.log("EXT_TEXT_OUT " + JSON.stringify({ "x": x, "y": y, "count": count, "text": text }));
 					break;
 				}
