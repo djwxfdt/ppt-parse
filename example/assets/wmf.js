@@ -8,6 +8,11 @@
 
 const Icnov = require('iconv-lite');
 
+const Logger = {
+	log:new Function,
+	info:new Function
+}
+
 module.exports = class WMF {
 
 	constructor(svg=SVG("drawing"), filename="") {
@@ -300,7 +305,7 @@ module.exports = class WMF {
 
 			mtType = dv.getUint16(offset, true); offset += 2;
 			mtHeaderSize = dv.getUint16(offset, true); offset += 2;
-			console.log("Placeable Header " + JSON.stringify({
+			Logger.log("Placeable Header " + JSON.stringify({
 				"vsx": vsx, "vsy": vsy, "vex": vex, "vey": vey, "dpi": dpi
 			}));
 
@@ -329,7 +334,7 @@ module.exports = class WMF {
 			let size = dv.getUint32(offset, true) - 3; offset += 4;
 			let id = dv.getUint16(offset, true); offset += 2;
 
-			console.info("id: " + id.toString(16) + ", size: " + size);
+			Logger.info("id: " + id.toString(16) + ", size: " + size);
 
 			if (id == RECORD_EOF) {
 				break; // Last record
@@ -340,7 +345,7 @@ module.exports = class WMF {
 			switch (id) {
 				case RECORD_REALIZE_PALETTE: {
 					//gdi.realizePalette();
-					console.log("REALIZE_PALETTE");
+					Logger.log("REALIZE_PALETTE");
 					break;
 				}
 				case RECORD_SET_PALETTE_ENTRIES: {
@@ -351,61 +356,61 @@ module.exports = class WMF {
 						entries[i] = dv.getInt32(offset, true); offset += 4;
 					}
 					//gdi.setPaletteEntries((//gdiPalette) objs[objID], startIndex, entries);
-					console.log("SET_PALETTE_ENTRIES");
+					Logger.log("SET_PALETTE_ENTRIES");
 					break;
 				}
 				case RECORD_SET_BK_MODE: {
 					let mode = dv.getInt16(offset, true); offset += 2;
 					//gdi.setBkMode(mode);
-					console.log("SET_SET_BK_MODE");
+					Logger.log("SET_SET_BK_MODE");
 					break;
 				}
 				case RECORD_SET_MAP_MODE: {
 					let mode = dv.getInt16(offset, true); offset += 2;
 					//gdi.setMapMode(mode);
-					console.log("SET_MAP_MODE");
+					Logger.log("SET_MAP_MODE");
 					break;
 				}
 				case RECORD_SET_ROP2: {
 					let mode = dv.getInt16(offset, true); offset += 2;
 					//gdi.setROP2(mode);
-					console.log("SET_ROP2");
+					Logger.log("SET_ROP2");
 					break;
 				}
 				case RECORD_SET_REL_ABS: {
 					let mode = dv.getInt16(offset, true); offset += 2;
 					//gdi.setRelAbs(mode);
-					console.log("SET_REL_ABS");
+					Logger.log("SET_REL_ABS");
 					break;
 				}
 				case RECORD_SET_POLY_FILL_MODE: {
 					let mode = dv.getInt16(offset, true); offset += 2;
 					fillMode = (mode == 0x01) ? "evenodd" : "nonzero";
-					console.log("SET_POLY_FILL_MODE (" + fillMode + ")");
+					Logger.log("SET_POLY_FILL_MODE (" + fillMode + ")");
 					break;
 				}
 				case RECORD_SET_STRETCH_BLT_MODE: {
 					let mode = dv.getInt16(offset, true); offset += 2;
 					//gdi.setStretchBltMode(mode);
-					console.log("SET_STRETCH_BLT_MODE");
+					Logger.log("SET_STRETCH_BLT_MODE");
 					break;
 				}
 				case RECORD_SET_TEXT_CHARACTER_EXTRA: {
 					let extra = dv.getInt16(offset, true); offset += 2;
 					//gdi.setTextCharacterExtra(extra);
-					console.log("SET_TEXT_CHARACTER_EXTRA");
+					Logger.log("SET_TEXT_CHARACTER_EXTRA");
 					break;
 				}
 				case RECORD_RESTORE_DC: {
 					let dc = dv.getInt16(offset, true); offset += 2;
 					//gdi.restoreDC(dc);
-					console.log("RESTORE_DC");
+					Logger.log("RESTORE_DC");
 					break;
 				}
 				case RECORD_RESIZE_PALETTE: {
 					let objID = dv.getUint16(offset, true); offset += 2;;
 					//gdi.resizePalette((//gdiPalette) objs[objID]);
-					console.log("RESIZE_PALETTE");
+					Logger.log("RESIZE_PALETTE");
 					break;
 				}
 				case RECORD_DIB_CREATE_PATTERN_BRUSH: {
@@ -420,27 +425,27 @@ module.exports = class WMF {
 						}
 					}
 					*/
-					console.info("DIB_CREATE_PATTERN_BRUSH");
+					Logger.info("DIB_CREATE_PATTERN_BRUSH");
 					break;
 				}
 				case RECORD_SET_LAYOUT: {
 					let layout = dv.getUint32(offset, true); offset += 4;
 					//gdi.setLayout(layout);
-					console.log("SET_LAYOUT");
+					Logger.log("SET_LAYOUT");
 					break;
 				}
 				case RECORD_SET_BK_COLOR: {
 					let color = dv.getInt32(offset, true); offset += 4;
 					color = this.Int32ToHexColor(color);
 					this.bkColor = color
-					console.log("SET_BK_COLOR " + color);
+					Logger.log("SET_BK_COLOR " + color);
 					break;
 				}
 				case RECORD_SET_TEXT_COLOR: {
 					let color = dv.getInt32(offset, true); offset += 4;
 					color = this.Int32ToHexColor(color);
 					this.txColor = color
-					console.log("SET_TEXT_COLOR " + color);
+					Logger.log("SET_TEXT_COLOR " + color);
 					break;
 				}
 				case RECORD_OFFSET_VIEWPORT_ORG_EX: {
@@ -448,7 +453,7 @@ module.exports = class WMF {
 					let x = dv.getInt16(offset, true); offset += 2;
 					//vox = x;
 					//voy = y;
-					console.log("OFFSET_VIEWPORT_ORG_EX");
+					Logger.log("OFFSET_VIEWPORT_ORG_EX");
 					break;
 				}
 				case RECORD_LINE_TO: {
@@ -456,34 +461,34 @@ module.exports = class WMF {
 					let ex = dv.getInt16(offset, true); offset += 2;
 					this.svg.line(this.pos.x,this.pos.y,ex,ey).stroke({width:this.strokeWidth,color:this.strokeColor})
 					this.svg.pos = {x:0,y:0}
-					console.log("LineTo (" + ex + ", " + ey + ")");
+					Logger.log("LineTo (" + ex + ", " + ey + ")");
 					break;
 				}
 				case RECORD_MOVE_TO_EX: {
 					let y = dv.getInt16(offset, true); offset += 2;
 					let x = dv.getInt16(offset, true); offset += 2;
 					this.pos = {x,y}
-					console.log("MoveTo (" + x + ", " + y + ")");
+					Logger.log("MoveTo (" + x + ", " + y + ")");
 					break;
 				}
 				case RECORD_OFFSET_CLIP_RGN: {
 					let y = dv.getInt16(offset, true); offset += 2;
 					let x = dv.getInt16(offset, true); offset += 2;
 					//gdi.offsetClipRgn(x, y);
-					console.log("OFFSET_CLIP_RGN");
+					Logger.log("OFFSET_CLIP_RGN");
 					break;
 				}
 				case RECORD_FILL_RGN: {
 					let brushID = dv.getUint16(offset, true); offset += 2;
 					let rgnID = dv.getUint16(offset, true); offset += 2;
 					//gdi.fillRgn((//gdiRegion) objs[rgnID], (//gdiBrush) objs[brushID]);
-					console.log("OFFSET_FILL_RGN");
+					Logger.log("OFFSET_FILL_RGN");
 					break;
 				}
 				case RECORD_SET_MAPPER_FLAGS: {
 					let flag = dv.getUint32(offset, true); offset += 4;
 					//gdi.setMapperFlags(flag);
-					console.log("SET_MAPPER_FLAGS");
+					Logger.log("SET_MAPPER_FLAGS");
 					break;
 				}
 				case RECORD_SELECT_PALETTE: {
@@ -492,7 +497,7 @@ module.exports = class WMF {
 					//let objID = dv.getUint16(offset, true); offset += 2;;
 					//gdi.selectPalette((//gdiPalette) objs[objID], mode);
 					//}
-					console.log("SELECT_PALETTE");
+					Logger.log("SELECT_PALETTE");
 					break;
 				}
 				case RECORD_POLYGON: {
@@ -508,7 +513,7 @@ module.exports = class WMF {
 					}
 
 					this.svg.polygon(points).stroke({width:1})
-					console.log("POLYGON");
+					Logger.log("POLYGON");
 					break;
 				}
 				case RECORD_POLYLINE: {
@@ -525,20 +530,20 @@ module.exports = class WMF {
 					}
 
 					this.svg.polyline(points).stroke({width:1})
-					console.log("POLYLINE");
+					Logger.log("POLYLINE");
 					break;
 				}
 				case RECORD_SET_TEXT_JUSTIFICATION: {
 					let breakCount = dv.getInt16(offset, true); offset += 2;
 					let breakExtra = dv.getInt16(offset, true); offset += 2;
 					//gdi.setTextJustification(breakExtra, breakCount);
-					console.log("SET_TEXT_JUSTIFICATION");
+					Logger.log("SET_TEXT_JUSTIFICATION");
 					break;
 				}
 				case RECORD_SET_WINDOW_ORG_EX: {
 					wy = dv.getInt16(offset, true); offset += 2;
 					wx = dv.getInt16(offset, true); offset += 2;
-					console.log("SET_WINDOW_ORG_EX (" + wx + ", " + wy + ")");
+					Logger.log("SET_WINDOW_ORG_EX (" + wx + ", " + wy + ")");
 					break;
 				}
 				case RECORD_SET_WINDOW_EXT_EX: {
@@ -551,7 +556,7 @@ module.exports = class WMF {
 
 					ww = width;
 					wh = height;
-					console.log("SET_WINDOW_EXT_EX (" + width + ", " + height + ")");
+					Logger.log("SET_WINDOW_EXT_EX (" + width + ", " + height + ")");
 					break;
 				}
 				case RECORD_SET_VIEWPORT_ORG_EX: {
@@ -559,7 +564,7 @@ module.exports = class WMF {
 					let x = dv.getInt16(offset, true); offset += 2;
 					vx = x;
 					vy = y;
-					console.log("SET_VIEWPORT_ORG_EX (" + x + ", " + y + ")");
+					Logger.log("SET_VIEWPORT_ORG_EX (" + x + ", " + y + ")");
 					break;
 				}
 				case RECORD_SET_VIEWPORT_EXT_EX: {
@@ -567,7 +572,7 @@ module.exports = class WMF {
 					let x = dv.getInt16(offset, true); offset += 2;
 					vw = width;
 					vh = height;
-					console.log("SET_VIEWPORT_EXT_EX (" + x + ", " + y + ")");
+					Logger.log("SET_VIEWPORT_EXT_EX (" + x + ", " + y + ")");
 					break;
 				}
 				case RECORD_OFFSET_WINDOW_ORG_EX: {
@@ -575,7 +580,7 @@ module.exports = class WMF {
 					let x = dv.getInt16(offset, true); offset += 2;
 					vox = x;
 					voy = y;
-					console.log("OFFSET_WINDOW_ORG_EX (" + x + ", " + y + ")");
+					Logger.log("OFFSET_WINDOW_ORG_EX (" + x + ", " + y + ")");
 					break;
 				}
 				case RECORD_SCALE_WINDOW_EXT_EX: {
@@ -585,7 +590,7 @@ module.exports = class WMF {
 					let x = dv.getInt16(offset, true); offset += 2;
 					wsx = (wsx * x) / xd;
 					wsy = (wsy * y) / yd;
-					console.log("SCALE_WINDOW_EXT_EX (" + x + ", " + y + ") (" + xd + ", " + yd + ")");
+					Logger.log("SCALE_WINDOW_EXT_EX (" + x + ", " + y + ") (" + xd + ", " + yd + ")");
 					break;
 				}
 				case RECORD_SCALE_VIEWPORT_EXT_EX: {
@@ -594,7 +599,7 @@ module.exports = class WMF {
 					let xd = dv.getInt16(offset, true); offset += 2;
 					let x = dv.getInt16(offset, true); offset += 2;
 					//gdi.scaleViewportExtEx(x, xd, y, yd, null);
-					console.log("SCALE_VIEWPORT_EXT_EX (" + x + ", " + y + ") (" + xd + ", " + yd + ")");
+					Logger.log("SCALE_VIEWPORT_EXT_EX (" + x + ", " + y + ") (" + xd + ", " + yd + ")");
 					break;
 				}
 				case RECORD_EXCLUDE_CLIP_RECT: {
@@ -603,7 +608,7 @@ module.exports = class WMF {
 					let sy = dv.getInt16(offset, true); offset += 2;
 					let sx = dv.getInt16(offset, true); offset += 2;
 					//gdi.excludeClipRect(sx, sy, ex, ey);
-					console.log("EXCLUDE_CLIP_RECT (" + ex + ", " + ey + ") (" + sx + ", " + sy + ")");
+					Logger.log("EXCLUDE_CLIP_RECT (" + ex + ", " + ey + ") (" + sx + ", " + sy + ")");
 					break;
 				}
 				case RECORD_INTERSECT_CLIP_RECT: {
@@ -612,7 +617,7 @@ module.exports = class WMF {
 					let sy = dv.getInt16(offset, true); offset += 2;
 					let sx = dv.getInt16(offset, true); offset += 2;
 					//gdi.intersectClipRect(sx, sy, ex, ey);
-					console.log("INTERSECT_CLIP_RECT (" + ex + ", " + ey + ") (" + sx + ", " + sy + ")");
+					Logger.log("INTERSECT_CLIP_RECT (" + ex + ", " + ey + ") (" + sx + ", " + sy + ")");
 					break;
 				}
 				case RECORD_ELLIPSE: {
@@ -623,7 +628,7 @@ module.exports = class WMF {
 
 					this.svg.ellipse(2*sx,2*sy).move(ex-sx,ey-sy)
 
-					console.log("ELLIPSE (" + ex + ", " + ey + ") (" + sx + ", " + sy + ")");
+					Logger.log("ELLIPSE (" + ex + ", " + ey + ") (" + sx + ", " + sy + ")");
 					break;
 				}
 				case RECORD_FLOOD_FILL: {
@@ -632,7 +637,7 @@ module.exports = class WMF {
 					let x = dv.getInt16(offset, true); offset += 2;
 					color = this.Int32ToHexColor(color);
 					//gdi.floodFill(x, y, color);
-					console.log("FLOOD_FILL (" + x + ", " + y + ") " + color);
+					Logger.log("FLOOD_FILL (" + x + ", " + y + ") " + color);
 					break;
 				}
 				case RECORD_FRAME_RGN: {
@@ -685,12 +690,12 @@ module.exports = class WMF {
 							let x = this.toAbsoluteX(dv.getInt16(offset, true), ww, wx, mx, wox, wsx); offset += 2;
 							let y = this.toAbsoluteY(dv.getInt16(offset, true), wh, wy, my, woy, wsy); offset += 2;
 							points.push([x,y])
-							//console.log("L " + JSON.stringify({x, y}));
+							//Logger.log("L " + JSON.stringify({x, y}));
 						}
 						this.svg.polygon(points)
 
 					}
-					console.log("RECORD_POLY_POLYGON");
+					Logger.log("RECORD_POLY_POLYGON");
 					break;
 				}
 				case RECORD_EXT_FLOOD_FILL: {
@@ -700,7 +705,7 @@ module.exports = class WMF {
 					let x = dv.getInt16(offset, true); offset += 2;
 					color = this.Int32ToHexColor(color);
 					//gdi.extFloodFill(x, y, color, type);
-					console.log("EXT_FLOOD_FILL " + color);
+					Logger.log("EXT_FLOOD_FILL " + color);
 					break;
 				}
 				case RECORD_RECTANGLE: {
@@ -711,7 +716,7 @@ module.exports = class WMF {
 
 					this.svg.rect(ex - sx, ey - sy).move(sx,sy).fill()
 
-					console.log("RECTANGLE");
+					Logger.log("RECTANGLE");
 					break;
 				}
 				case RECORD_SET_PIXEL: {
@@ -720,7 +725,7 @@ module.exports = class WMF {
 					let x = dv.getInt16(offset, true); offset += 2;
 					color = this.Int32ToHexColor(color);
 					this.svg.rect(1,1).move(x,y).fill(this.fillColor)
-					console.log("SET_PIXEL (" + x + ", " + y + ", " + color + ")");
+					Logger.log("SET_PIXEL (" + x + ", " + y + ", " + color + ")");
 					break;
 				}
 				case RECORD_ROUND_RECT: {
@@ -740,12 +745,12 @@ module.exports = class WMF {
 					let y = dv.getInt16(offset, true); offset += 2;
 					let x = dv.getInt16(offset, true); offset += 2;
 					//gdi.patBlt(x, y, width, height, rop);
-					console.log("PAT_BLT");
+					Logger.log("PAT_BLT");
 					break;
 				}
 				case RECORD_SAVE_DC: {
 					//gdi.seveDC();
-					console.log("SAVE_DC");
+					Logger.log("SAVE_DC");
 					break;
 				}
 				case RECORD_PIE: {
@@ -782,26 +787,26 @@ module.exports = class WMF {
 					// TODO
 					//byte[] data = in.readBytes(2 * size);
 					//gdi.escape(data);
-					console.log("ESCAPE");
+					Logger.log("ESCAPE");
 					break;
 				}
 				case RECORD_INVERT_RGN: {
 					let rgnID = dv.getUint16(offset, true); offset += 2;
 					//gdi.invertRgn((//gdiRegion) objs[rgnID]);
-					console.log("INVERT_RGN");
+					Logger.log("INVERT_RGN");
 					break;
 				}
 				case RECORD_PAINT_RGN: {
 					let objID = dv.getUint16(offset, true); offset += 2;
 					//gdi.paintRgn((//gdiRegion) objs[objID]);
-					console.log("PAINT_RGN");
+					Logger.log("PAINT_RGN");
 					break;
 				}
 				case RECORD_SELECT_CLIP_RGN: {
 					let objID = dv.getUint16(offset, true); offset += 2;
 					//gdiRegion rgn = (objID > 0) ? (//gdiRegion) objs[objID] : null;
 					//gdi.selectClipRgn(rgn);
-					console.log("SELECT_CLIP_RGN");
+					Logger.log("SELECT_CLIP_RGN");
 					break;
 				}
 				case RECORD_SELECT_OBJECT: {
@@ -822,7 +827,7 @@ module.exports = class WMF {
 							this.fontFamily = obj.faceName
 							break;
 					}
-					console.info("SELECT_OBJECT " + objID + " : " + JSON.stringify(obj));
+					Logger.info("SELECT_OBJECT " + objID + " : " + JSON.stringify(obj));
 					break;
 				}
 				case RECORD_SET_TEXT_ALIGN: {
@@ -847,7 +852,7 @@ module.exports = class WMF {
 						this.textBaseline = "alphabetic";
 					}
 
-					console.log("SET_TEXT_ALIGN " + align);
+					Logger.log("SET_TEXT_ALIGN " + align);
 					break;
 				}
 				case RECORD_ARC: {
@@ -932,14 +937,18 @@ module.exports = class WMF {
 						}
 					}
 					*/
-					this.svg.text(text).font({
-						style:`color:${this.txColor}`,
-						anchor:this.textAlign,
-						size:Math.abs(this.fontSize),
+					let txSvg = this.svg.text(text).font({
 						family:this.fontFamily
-					}).move(x,this.fontSize > 0 ? y: (y+this.fontSize))
-
-					console.log("EXT_TEXT_OUT " + JSON.stringify({ "x": x, "y": y, "count": count, "text": text }));
+					})
+					txSvg.attr({
+						"text-anchor":this.textAlign,
+						"fill":this.txColor,
+						"dominant-baseline":this.textBaseline,
+						"font-size":Math.abs(this.fontSize),
+						x,
+						y:this.fontSize > 0 ? y: (y- Math.abs(this.fontSize) * 4 /3)
+					})
+					console.log("EXT_TEXT_OUT " + this.fontSize + ":" + JSON.stringify({ "x": x, "y": y, "count": count, "text": text }));
 					break;
 				}
 				case RECORD_SET_DIBITS_TO_DEVICE: {
@@ -979,7 +988,7 @@ module.exports = class WMF {
 						let base64 = this.Uint8ArrayToBase64(this.dibToBmp(dib));
 						this.drawBmpImage(ctx, base64, sx, sy, width, height, dx, dy, width, height, rop);
 					}
-					console.log("DIB_BIT_BLT ");
+					Logger.log("DIB_BIT_BLT ");
 					break;
 				}
 				case RECORD_DIB_STRETCH_BLT: {
@@ -998,7 +1007,7 @@ module.exports = class WMF {
 
 					this.drawBmpImage(ctx, base64, sx, sy, sw, sh, dx, dy, dw, dh, rop);
 
-					console.log("DIB_STRETCH_BLT " + JSON.stringify({
+					Logger.log("DIB_STRETCH_BLT " + JSON.stringify({
 						"dx": dx, "dy": dy, "dw": dw, "dh": dh, "sx": sx, "sy": sy, "sw": sw, "sh": sh, "rop": rop
 					}));
 					break;
@@ -1020,7 +1029,7 @@ module.exports = class WMF {
 
 					this.drawBmpImage(ctx, base64, sx, sy, sw, sh, dx, dy, dw, dh, rop);
 
-					console.log("STRETCH_DIBITS " + JSON.stringify({
+					Logger.log("STRETCH_DIBITS " + JSON.stringify({
 						"dx": dx, "dy": dy, "dw": dw, "dh": dh, "sx": sx, "sy": sy, "sw": sw, "sh": sh, "usage": usage, "rop": rop
 					}));
 					break;
@@ -1028,7 +1037,7 @@ module.exports = class WMF {
 				case RECORD_DELETE_OBJECT: {
 					let objID = dv.getUint16(offset, true); offset += 2;
 					objs[objID] = null;
-					console.info("DELETE_OBJECT " + objID /*+ " Objs: " + JSON.stringify(objs)*/);
+					Logger.info("DELETE_OBJECT " + objID /*+ " Objs: " + JSON.stringify(objs)*/);
 					break;
 				}
 				case RECORD_CREATE_PALETTE: {
@@ -1043,7 +1052,7 @@ module.exports = class WMF {
 						"entries": entries
 					});
 
-					console.info("CREATE_PALETTE");
+					Logger.info("CREATE_PALETTE");
 					break;
 				}
 				case RECORD_CREATE_PATTERN_BRUSH: {
@@ -1054,7 +1063,7 @@ module.exports = class WMF {
 						"image": image
 					});
 
-					console.info("CREATE_PATTERN_BRUSH");
+					Logger.info("CREATE_PATTERN_BRUSH");
 					break;
 				}
 				case RECORD_CREATE_PEN_INDIRECT: {
@@ -1070,7 +1079,7 @@ module.exports = class WMF {
 						"width": width
 					});
 
-					console.info("CREATE_PEN_INDIRECT " + JSON.stringify({ "style": style, "color": color, "width": width }));
+					Logger.info("CREATE_PEN_INDIRECT " + JSON.stringify({ "style": style, "color": color, "width": width }));
 					break;
 				}
 				case RECORD_CREATE_FONT_INDIRECT: {
@@ -1120,7 +1129,7 @@ module.exports = class WMF {
 
 					this.insertObjToFirstNull(objs, obj);
 
-					console.info("CREATE_FONT_INDIRECT " + JSON.stringify(obj));
+					Logger.info("CREATE_FONT_INDIRECT " + JSON.stringify(obj));
 					break;
 				}
 				case RECORD_CREATE_BRUSH_INDIRECT: {
@@ -1135,7 +1144,7 @@ module.exports = class WMF {
 						"hatch": hatch
 					});
 
-					console.info("CREATE_BRUSH_INDIRECT " + JSON.stringify({ "style": style, "color": color, "hatch": hatch }));
+					Logger.info("CREATE_BRUSH_INDIRECT " + JSON.stringify({ "style": style, "color": color, "hatch": hatch }));
 					break;
 				}
 				case RECORD_CREATE_RECT_RGN: {
@@ -1152,11 +1161,11 @@ module.exports = class WMF {
 						"ey": ey
 					});
 
-					console.info("CREATE_RECT_RGN");
+					Logger.info("CREATE_RECT_RGN");
 					break;
 				}
 				default: {
-					console.info("unsuppored id find: " + id + " (size=" + size + ")");
+					Logger.info("unsuppored id find: " + id + " (size=" + size + ")");
 				}
 			}
 
