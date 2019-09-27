@@ -6,19 +6,22 @@ const Ln = require("./a-ln")
 
 const Pic = require("./p-pic")
 
+const {EMU2PIX} = require("../measure")
+
+
 class TcPr{
     /**
      * @param {XElement} node
      */
     constructor(node) {
 
-        this.marT = this.toPix(node.attributes.marT)
+        this.marT = EMU2PIX(node.attributes.marT)
 
-        this.marB = this.toPix(node.attributes.marB)
+        this.marB = EMU2PIX(node.attributes.marB)
         
-        this.marR = this.toPix(node.attributes.marR)
+        this.marR = EMU2PIX(node.attributes.marR)
 
-        this.marL = this.toPix(node.attributes.marL)
+        this.marL = EMU2PIX(node.attributes.marL)
 
         this.anchor = node.attributes.anchor 
 
@@ -59,12 +62,6 @@ class TcPr{
         }
     }
 
-    toPix(pt){
-        if(!pt){
-            return 0
-        }
-        return Math.floor(+pt * 96 / 91440) / 10
-    }
 }
 
 class Tc{
@@ -92,18 +89,12 @@ class Tr{
     constructor(node) {
         let h = node.attributes.h
         if(h){
-            this.height = this.toPix(h)
+            this.height = EMU2PIX(h)
         }
 
         this.tcs = node.selectArray(["a:tc"]).map(c=>new Tc(c))
     }
 
-    toPix(pt){
-        if(!pt){
-            return 0
-        }
-        return Math.floor(+pt * 96 / 91440) / 10
-    }
 }
 
 class Table{
@@ -118,17 +109,12 @@ class Table{
 
         if(tblGrid){
             this.gridCols = tblGrid.selectArray(["a:gridCol"]).map(c=>{
-                return this.toPix(c.attributes.w)
+                return EMU2PIX(c.attributes.w)
             })
         }
     }
 
-    toPix(pt){
-        if(!pt){
-            return 0
-        }
-        return Math.floor(+pt * 96 / 91440) / 10
-    }
+
 }
 
 class OleObj{
@@ -137,8 +123,8 @@ class OleObj{
      */
     constructor(node) {
         this.rid = node.attributes["r:id"]
-        this.imgW = this.toPix(node.attributes.imgW)
-        this.imgH = this.toPix(node.attributes.imgH)
+        this.imgW = EMU2PIX(node.attributes.imgW)
+        this.imgH = EMU2PIX(node.attributes.imgH)
 
         let pic = node.getSingle("p:pic")
         if(pic){
@@ -148,12 +134,7 @@ class OleObj{
         this.spid = node.attributes.spid
     }
     
-    toPix(pt){
-        if(!pt){
-            return 0
-        }
-        return Math.floor(+pt * 96 / 91440) / 10
-    }
+
 }
 
 class GraphicData {

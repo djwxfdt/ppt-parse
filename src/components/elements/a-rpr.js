@@ -2,6 +2,8 @@ const XElement = require('../../xelement')
 
 const SolidFill = require("./a-solidFill")
 
+const EffectLst = require("./a-effectLst")
+
 
 module.exports = class RPr {
     /**
@@ -78,6 +80,12 @@ module.exports = class RPr {
              * This element specifies the highlight color that will be present for a run of text.
              */
             this.highlight = new SolidFill(highlight)
+        }
+
+
+        let effectLst = node.getSingle("a:effectLst")
+        if(effectLst){
+            this.effectLst = new EffectLst(effectLst)
         }
 
     }

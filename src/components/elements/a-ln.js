@@ -2,6 +2,8 @@ const XElement = require('../../xelement')
 
 const SolidFill = require("./a-solidFill")
 
+const {EMU2PIX} = require("../measure")
+
 /**
  * This element specifies an outline style that can be applied to a number of different objects such as shapes and text. The line allows for the specifying of many different types of outlines including even line dashes and bevels.
  */
@@ -20,7 +22,7 @@ module.exports = class Ln {
             /**
              * Specifies the width to be used for the underline stroke. If this attribute is omitted, then a value of 0 is assumed.
              */
-            this.width = this.toPix(w)
+            this.width = EMU2PIX(w)
         }
 
         let solidFill = node.getSingle("a:solidFill")
@@ -49,9 +51,7 @@ module.exports = class Ln {
         return this.width || this.solidFill || this.prstDash
     }
 
-    toPix(pt){
-        return Math.floor(+pt * 96 / 91440) / 10
-    }
+
 
     toJSON(){
         return {

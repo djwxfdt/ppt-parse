@@ -248,6 +248,16 @@ module.exports = class BaseSlide{
                         }
                     }
 
+                    if(r.rPr && r.rPr.effectLst && r.rPr.effectLst.outerShaw){
+                        let shaw = r.rPr.effectLst.outerShaw
+                        json.outerShadow = {
+                            color:this.getSolidFill(shaw),
+                            direction:shaw.dir,
+                            blurRad:shaw.blurRad,
+                            dist:shaw.dist
+                        }
+                    }
+
 
                     if(fontFamily){
                         json.fontFamily = fontFamily
