@@ -190,6 +190,7 @@ module.exports = class BaseSlide{
         //     container.fontSize = fontSize
         // }
         let titleColor = this.getSolidFill(this.getTitleColor())
+    
         return sp.txBody.pList.map(p => {
             let container = {
                 children: p.rList.map(r => {
@@ -275,7 +276,7 @@ module.exports = class BaseSlide{
                 }).filter(t => t)
             }
 
-            if(container.children.length == 0){
+            if(sp.type != "sldNum" && container.children.length == 0){
                 return
             }
 
@@ -393,6 +394,8 @@ module.exports = class BaseSlide{
         if (color) {
             container.color = color
         }
+
+        
 
         let text = this.parseTxBody(sp)
     
