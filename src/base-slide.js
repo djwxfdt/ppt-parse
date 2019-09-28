@@ -134,10 +134,10 @@ module.exports = class BaseSlide{
         if(this.type != "slide"){
             elements = this.viewElements
         }
-        return this._parseElements(elements)
+        return this._parseElements(elements,true)
     }
 
-    _parseElements(elements){
+    _parseElements(elements,_top=false){
         return elements.map(sp=>{
             if(sp.tag == "p:sp"){
                 return this.parseSp(sp)
@@ -145,7 +145,7 @@ module.exports = class BaseSlide{
                 return this.parsePic(sp)
             }else if(sp.tag == "p:grpSp"){
                 let grp = this.parseGrp(sp)
-                return this.reSizeGroup(grp)
+                return _top?this.reSizeGroup(grp):grp
             }else if(sp.tag == "p:graphicFrame"){
                 return this.parseGraphic(sp)
             }
@@ -465,26 +465,19 @@ module.exports = class BaseSlide{
      * @param {*} scaleY 
      */
     reSizeSp(sp,ox,oy,scaleX,scaleY){
-        sp.position.x = (sp.position.x - ox) * scaleX
-        sp.position.y = (sp.position.y - oy) * scaleY
-        sp.size.width = sp.size.width * scaleY
-        sp.size.height = sp.size.height * scaleY
-
+        let rx = (sp.position.x - ox) * scaleX
+        let ry = (sp.position.y - oy) * scaleY
+        let rw = sp.size.width * scaleY
+        let rh = sp.size.height * scaleY
         if(sp.type == "group"){
-            scaleX = sp.size.width / sp.chExt.width
-            scaleY = sp.size.height / sp.chExt.height
-
+            scaleX = rw / sp.chExt.width
+            scaleY = rh / sp.chExt.height
             sp.children = sp.children.map(s=>{
                 return this.reSizeSp(s,sp.chOff.x,sp.chOff.y,scaleX,scaleY)
             })
         }
-
-        // sp.position.y = (sp.position.y + oy) * scaleY
-
-
-        // if(sp.type == "container"){
-            
-        // }
+        sp.position = {x:rx,y:ry}
+        sp.size = {width:rw,height:rh}
         return sp
     }
 

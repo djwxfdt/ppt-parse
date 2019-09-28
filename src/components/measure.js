@@ -6,7 +6,7 @@ module.exports.EMU2PIX = emus =>{
         return undefined
     }
 
-    return  Math.round(Pt2PIX(+emus / 12700))
+    return  Pt2PIX(+emus / 12700)
 
 }
 
