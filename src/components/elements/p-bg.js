@@ -6,6 +6,22 @@ const SolidFill = require("./a-solidFill")
 
 const GradFill = require("./a-gradFill")
 
+const Color = require("./c-color")
+
+class BgRef extends Color{
+    /**
+     * @param {XElement} node 
+     */
+    constructor(node){
+        super(node)
+        /**
+         * The @idx attribute refers to the index of a background fill style or fill style within the presentation's style matrix, defined by the <fmtScheme> element. A value of 0 or 1000 indicates no background, values 1-999 refer to the index of a fill style within the <fillStyleLst> element, and values 1001 and above refer to the index of a background fill style within the <bgFillStyleLst> element. The value 1001 corresponds to the first background fill style, 1002 to the second background fill style, and so on.
+         */
+        this.idx = node.attributes.idx
+
+    }
+}
+
 /**
  * This element specifies visual effects used to render the slide background. This includes any fill, image, or effects that are to make up the background of the slide.
  */
@@ -31,6 +47,8 @@ class BgPr{
             this.gradFill = new GradFill(gradFill)
         }
 
+        
+
     }
 }
 
@@ -43,6 +61,11 @@ module.exports = class Bg{
         let bgPr = node.getSingle("p:bgPr")
         if(bgPr){
             this.bgPr = new BgPr(bgPr)
+        }
+
+        let bgRef = node.getSingle("p:bgRef")
+        if(bgRef){
+            this.bgRef = new BgRef(bgRef)
         }
     }
 
@@ -62,20 +85,26 @@ module.exports = class Bg{
 
   
     get color(){
-        if(!this.bgPr){
-            return
-        }
-        
-        if(this.bgPr.solidFill){
-            return {
-                type:"solid",
-                value:this.bgPr.solidFill
+        if(this.bgPr){
+            if(this.bgPr.solidFill){
+                return {
+                    type:"solid",
+                    value:this.bgPr.solidFill
+                }
+            }
+            if(this.bgPr.gradFill){
+                return {
+                    type:"grad",
+                    value:this.bgPr.gradFill
+                }
             }
         }
-        if(this.bgPr.gradFill){
+        
+        
+        if(this.bgRef){
             return {
-                type:"grad",
-                value:this.bgPr.gradFill
+                type:"solid",
+                value:this.bgRef
             }
         }
     }

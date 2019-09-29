@@ -77,7 +77,9 @@ class TextStyle{
             this.isEmpty = true
         }else{
             node.children.map(ppr=>{
-                this.lvPprs[ppr.name.replace("a:","")] = new LvpPr(ppr)
+                if(ppr.name.indexOf("a:lvl") > -1){
+                    this.lvPprs[ppr.name.replace("a:","")] = new LvpPr(ppr)
+                }
             })
         }
 
@@ -130,6 +132,24 @@ class TextStyle{
         let ppr = this.find(lvl)
         if(ppr){
             return ppr.typeface
+        }
+    }
+
+    /**
+     * @param {"size"|"color"|"bullet"} type 
+     * @param {*} lvl 
+     */
+    getValue(type,lvl){
+        switch(type){
+            case "size":{
+                return this.getSize(lvl)
+            }
+            case "color":{
+                return this.getColor(lvl)
+            }
+            case "bullet":{
+                return this.getBulletColor(lvl)
+            }
         }
     }
 }

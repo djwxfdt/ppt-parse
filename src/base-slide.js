@@ -19,6 +19,8 @@ const GradFill = require("./components/elements/a-gradFill")
 
 const { mapFont,applyLumColor } = require('./utils')
 
+const {getXfrm,getTextSize,getTextColor,getBulletColor} = require("./components/slide-functions")
+
 module.exports = class BaseSlide{
 
     constructor(xml) {
@@ -164,7 +166,7 @@ module.exports = class BaseSlide{
     }
 
     /**
-     * @param {import('./slide-mater')} v
+     * @param {import('./slide-master')} v
      */
     set master(v) {
         this.materxml = v
@@ -185,7 +187,8 @@ module.exports = class BaseSlide{
         if(!sp.txBody){
             return
         }
-        let fontSize = this.getTextSize(sp)
+       
+        let fontSize = getTextSize(sp)(this)
         // if (fontSize) {
         //     container.fontSize = fontSize
         // }
@@ -296,7 +299,7 @@ module.exports = class BaseSlide{
                 container.bullet = p.bullet
                 if(!p.bullet.color){
                     if(sp.type){
-                        container.bullet.color = this.getBulletColor(sp)
+                        container.bullet.color = getBulletColor(sp)(this)
                     }
                 }
                 if(container.bullet && container.bullet.color){
@@ -342,7 +345,7 @@ module.exports = class BaseSlide{
             id:sp.id
         }
 
-        let xfrm = this.getXfrm(sp)
+        let xfrm = getXfrm(sp)(this)
 
         if (xfrm) {
             container.position = xfrm.off
@@ -390,7 +393,7 @@ module.exports = class BaseSlide{
 
        
 
-        let color = this.getSolidFill(this.getTextColor(sp))
+        let color = this.getSolidFill(getTextColor(sp)(this))
         if (color) {
             container.color = color
         }
@@ -603,70 +606,17 @@ module.exports = class BaseSlide{
             return
         }
        
-        let finded = this.placeholders.find(sp=>{
-            if(idx){
-                return sp.idx == idx
-            }
-            return sp.type == type
-        })
+        let finded = this.placeholders.find(sp=>sp.type == type)
+        
+        if(idx){
+            finded = this.placeholders.find(sp=>sp.idx == idx) || finded
+        }
 
         return finded
 
     }
 
-    /**
-     * @param {Sp} sp 
-     */
-    getXfrm(sp){
-
-        if(sp && sp.xfrm){
-            return sp.xfrm
-        }
     
-        if(this.next){
-            return this.next.getXfrm(this.getPlaceholder(sp.idx,sp.type))
-        }
-       
-    }
-
-
-    /**
-     * @param {Sp} sp 
-     */
-    getTextSize(sp){
-      
-        let fnt = null
-        let style = this.getTxStyle(sp)
-        if(style){
-            fnt = style.getSize('0')
-        }
-        if(fnt){
-            return fnt
-        }
-        if(this.next){
-            return this.next.getTextSize(sp)
-        }
-    }
-
-    /**
-     * @param {Sp} sp 
-     */
-    getTextColor(sp){
-        
-        let color = null
-
-
-        let style = this.getTxStyle(sp)
-        if(style){
-            color = style.getColor('0')
-        }
-        if(color){
-            return color
-        }
-        if(this.next){
-            return this.next.getTextColor(sp)
-        }
-    }
 
     getTitleColor(){
         if(this.type != "master"){
@@ -676,27 +626,12 @@ module.exports = class BaseSlide{
 
  
     getTxStyle({type,idx}){
-        if(!type){
+        if(!type && !idx){
             return
         }
         let finded = this.getPlaceholder(idx,type)
         return finded && finded.txBody && finded.txBody.textStyle
     }
 
-    /**
-     * @param {Sp} sp 
-     */
-    getBulletColor(sp){
-        let style = this.getTxStyle(sp)
-        let color = null
-        if(style){
-            color = style.getBulletColor('0')
-        }
-        if(color){
-            return color
-        }
-        if(this.next){
-            return this.next.getBulletColor(sp)
-        }
-    }
+   
 }

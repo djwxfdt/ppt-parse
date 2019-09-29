@@ -10,6 +10,10 @@ const parse = (block, wrapper,stroke) => {
 
     let fill =  "transparent"
 
+    if(!block.size){
+        return
+    }
+
     let { width, height } = block.size
 
 

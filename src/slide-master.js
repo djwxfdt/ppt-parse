@@ -40,7 +40,7 @@ class SlideMasterXML extends BaseSlide {
 
     getPlaceholder(idx,type){
         type = this.typeMap[type] || type
-        return super.getPlaceholder(null,type)
+        return super.getPlaceholder(idx,type)
     }
 
     getTitleColor(){
@@ -61,27 +61,26 @@ class SlideMasterXML extends BaseSlide {
         }
     }
 
+    getStyleFromTxStyles(type){
+        type = this.typeMap[type] || type
+        switch(type){
+            case "title":{
+                return this.textStyles.titleStyle
+            }
+            case "body":{
+                return this.textStyles.bodyStyle
+            }
+            case "other":{
+                return this.textStyles.bodyStyle
+            }
+        } 
+    }
+
     
   
     getTxStyle({type,idx}){
         type = this.typeMap[type] || type
-        idx = null
-        let style = super.getTxStyle({type,idx})
-
-        if(!style){
-            switch(type){
-                case "title":{
-                    return this.textStyles.titleStyle
-                }
-                case "body":{
-                    return this.textStyles.bodyStyle
-                }
-                case "other":{
-                    return this.textStyles.bodyStyle
-                }
-            } 
-        }
-        return style
+        return super.getTxStyle({type,idx}) 
     }
 
     getTextFontOfType(type){

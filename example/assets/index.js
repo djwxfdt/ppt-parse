@@ -21,6 +21,8 @@ app.style.height = slideJson.size.height + "px"
 let current = 0
 let total = slideJson.slides.length
 
+
+
 let currentSlideEl = null
 
 // if(slideJson.fonts){

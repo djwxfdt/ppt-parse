@@ -4,7 +4,7 @@ const SlideXML = require('./slide')
 
 const SlideLayoutXML = require('./slide-layout')
 
-const SlideMasterXML = require('./slide-mater')
+const SlideMasterXML = require('./slide-master')
 
 const {SlideRelXML,SlideLayoutRelXml,PresentationRelXML,MasterRelXml} = require('./xml-rels')
 
