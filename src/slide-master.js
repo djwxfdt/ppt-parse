@@ -62,7 +62,7 @@ class SlideMasterXML extends BaseSlide {
     }
 
     getStyleFromTxStyles(type){
-        type = this.typeMap[type] || type
+        type = this.typeMap[type] || type || "other"
         switch(type){
             case "title":{
                 return this.textStyles.titleStyle

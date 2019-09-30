@@ -9,6 +9,11 @@ module.exports = class BodyPr{
      */
     constructor(node){
 
+        if(Object.keys(node.attributes).length == 0){
+            this.isEmpty = true
+            return
+        }
+
         let anchorMap = {
             b:"bottom",//Anchor the text at the bottom of the bounding rectangle.
             ctr:"center",//Anchor the text at the middle of the bounding rectangle.

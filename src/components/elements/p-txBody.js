@@ -24,6 +24,9 @@ module.exports = class TxBody{
         let bodyPr = node.getSingle("a:bodyPr")
         if(bodyPr){
             this.bodyPr = new BodyPr(bodyPr)
+            if(this.bodyPr.isEmpty){
+                this.bodyPr = null
+            }
         }
         
     }

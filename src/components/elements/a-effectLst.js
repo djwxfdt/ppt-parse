@@ -21,6 +21,17 @@ class OuterShdw extends Color{
     }
 }
 
+class Reflection{
+    /**
+     * 
+     * @param {XElement} node 
+     */
+    constructor(node){
+
+        this.dir = +(node.attributes.dir || 0) / 60000
+    }
+}
+
 module.exports = class EffectLst{
     
     /**
@@ -33,6 +44,11 @@ module.exports = class EffectLst{
 
         if(outerShaw){
             this.outerShaw = new OuterShdw(outerShaw)
+        }
+
+        let reflection = node.getSingle("a:reflection")
+        if(reflection){
+            this.reflection = new Reflection(reflection)
         }
     }
 }

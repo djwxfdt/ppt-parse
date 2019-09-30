@@ -38,7 +38,6 @@ module.exports =  class PPr{
          */
         this.lvl = node.attributes.lvl || "0"
 
-
         let lnSpc = node.getSingle("a:lnSpc")
 
         if(lnSpc){

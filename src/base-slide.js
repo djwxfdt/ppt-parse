@@ -19,7 +19,7 @@ const GradFill = require("./components/elements/a-gradFill")
 
 const { mapFont,applyLumColor } = require('./utils')
 
-const {getXfrm,getTextSize,getTextColor,getBulletColor} = require("./components/slide-functions")
+const {getXfrm,getTextSize,getTextColor,getBulletColor,getTxBodyPr} = require("./components/slide-functions")
 
 module.exports = class BaseSlide{
 
@@ -346,6 +346,13 @@ module.exports = class BaseSlide{
                 container.indent = p.pPr.indent
             }
 
+            if(p.pPr && p.pPr.lvl && p.pPr.lvl != "0"){
+                let color = this.getSolidFill(getTextColor(sp,p.pPr.lvl)(this))
+                if (color) {
+                    container.color = color
+                }
+            }
+
             return container
         }).filter(i=>!!i)
     }
@@ -356,12 +363,16 @@ module.exports = class BaseSlide{
      */
     parseSp(sp) {
 
+        let txBodyPr = getTxBodyPr(sp)(this)
+
         let container = {
             type: "container",
-            valign: sp.txBody && sp.txBody.anchor,
-            padding:sp.txBody && sp.txBody.padding,
+            valign: txBodyPr.anchor,
+            padding:txBodyPr.padding,
             id:sp.id
         }
+
+        
 
         let xfrm = getXfrm(sp)(this)
 

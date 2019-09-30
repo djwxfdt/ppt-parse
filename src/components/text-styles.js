@@ -76,9 +76,13 @@ class TextStyle{
         if(node.children.length == 0){
             this.isEmpty = true
         }else{
-            node.children.map(ppr=>{
+            node.children.map((ppr,index)=>{
                 if(ppr.name.indexOf("a:lvl") > -1){
-                    this.lvPprs[ppr.name.replace("a:","")] = new LvpPr(ppr)
+                     let lv = new LvpPr(ppr)
+                     this.lvPprs[ppr.name.replace("a:","")] = lv
+                     if(lv.lvl == undefined){
+                         lv.lvl = index
+                     }
                 }
             })
         }
