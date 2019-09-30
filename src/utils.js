@@ -83,7 +83,7 @@ const mapFont = name =>{
     return [name,"Helvetica","cursive"]
 }
 
-const applyLumColor = ({value,lumMod,lumOff}) =>{
+const applyLumColor = ({value,lumMod,lumOff,tint}) =>{
     if(!value){
         return
     }
@@ -91,12 +91,23 @@ const applyLumColor = ({value,lumMod,lumOff}) =>{
     lumMod = (lumMod || 0) / 100
     lumOff = (lumOff || 0) / 100
 
-    if(lumOff == 0){
-        return "#" + value
+    let hsl = d3.hsl("#" + value)
+
+    if(lumOff != 0){
+        hsl.l = hsl.l * (1 + lumOff)
     }
 
-    let hsl = d3.hsl("#" + value)
-    hsl.l = hsl.l * (1 + lumOff)
+    if(tint){
+        let rgb = hsl.rgb()
+        rgb.r = rgb.r * tint / 100 + 255 * (1 - tint / 100)
+        rgb.g = rgb.g * tint / 100 + 255 * (1 - tint / 100)
+        rgb.b = rgb.b * tint / 100 + 255 * (1 - tint / 100)
+        hsl = d3.hsl(rgb)
+    }
+
+    
+
+    
     return hsl.hex()
 }
 

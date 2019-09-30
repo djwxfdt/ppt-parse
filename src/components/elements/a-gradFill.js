@@ -39,10 +39,19 @@ module.exports = class GradFill {
     */
     constructor(node) {
 
+        this.fillType = "grad"
+
         let gsLst = node.getSingle("a:gsLst")
 
         if(gsLst){
             this.gsLst = new GsLst(gsLst)
+        }
+
+        this.ang = 0
+
+        let lin = node.getSingle("a:lin")
+        if(lin){
+            this.ang = +(lin.attributes.ang || 0) / 60000
         }
     }
 

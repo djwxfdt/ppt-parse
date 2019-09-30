@@ -60,8 +60,26 @@ module.exports = class BaseSlide{
     }
 
     get backgroundColor(){
-        if(this.bg && this.bg.color){
-            let color = this.bg.color
+
+        let color = {}
+
+        if(this.bg && this.bg.bgRef){
+            let fill = this.theme.getBgFillByIdx(this.bg.bgRef.idx)
+            if(fill){
+                color.type = fill.fillType
+                color.value = fill
+                color.ang = fill.ang
+            }
+        }
+
+        if(!color.type &&  this.bg && this.bg.color){
+            color.type = this.bg.color.fillType
+            color.value = this.bg.color
+            color.ang = this.bg.color.ang
+        }
+
+
+        if(color.type){
             if(color.type == "grad"){
                 color.value = this.getGradFill(color.value)
             }else if(color.type == "solid"){
@@ -571,9 +589,13 @@ module.exports = class BaseSlide{
             res = solid.toJSON()
         }
         if(solid.type == "schemeClr"){
-            let k = this.theme.getColor("a:" + this.master.findSchemeClr(solid.value)) 
-            if(k){
-                res.value = k
+            if(solid.value == "phClr"){
+                res.value = "000"
+            }else{
+                let k = this.theme.getColor("a:" + this.master.findSchemeClr(solid.value)) 
+                if(k){
+                    res.value = k
+                }
             }
         }
         return applyLumColor(res)

@@ -15,9 +15,14 @@ class BgRef extends Color{
     constructor(node){
         super(node)
         /**
-         * The @idx attribute refers to the index of a background fill style or fill style within the presentation's style matrix, defined by the <fmtScheme> element. A value of 0 or 1000 indicates no background, values 1-999 refer to the index of a fill style within the <fillStyleLst> element, and values 1001 and above refer to the index of a background fill style within the <bgFillStyleLst> element. The value 1001 corresponds to the first background fill style, 1002 to the second background fill style, and so on.
+         * The @idx attribute refers to the index of a background fill style or fill style within the presentation's style matrix, defined by the <fmtScheme> element. 
+         * A value of 0 or 1000 indicates no background, 
+         * values 1-999 refer to the index of a fill style within the <fillStyleLst> element, 
+         * and values 1001 and above refer to the index of a background fill style within the <bgFillStyleLst> element. The value 1001 corresponds to the first background fill style, 1002 to the second background fill style, and so on.
          */
-        this.idx = node.attributes.idx
+        this.idx = +(node.attributes.idx || 0)
+
+        this.fillType = "solid"
 
     }
 }
@@ -86,26 +91,11 @@ module.exports = class Bg{
   
     get color(){
         if(this.bgPr){
-            if(this.bgPr.solidFill){
-                return {
-                    type:"solid",
-                    value:this.bgPr.solidFill
-                }
-            }
-            if(this.bgPr.gradFill){
-                return {
-                    type:"grad",
-                    value:this.bgPr.gradFill
-                }
-            }
+            return this.bgPr.solidFill || this.bgPr.gradFill
         }
         
-        
         if(this.bgRef){
-            return {
-                type:"solid",
-                value:this.bgRef
-            }
+            return this.bgRef
         }
     }
 }

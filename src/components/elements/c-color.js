@@ -36,6 +36,11 @@ module.exports = class Color {
             if(alpha){
                 this.alpha = +alpha.attributes.val / 1000
             }
+
+            let tint = item.getSingle("a:tint")
+            if(tint){
+                this.tint = +tint.attributes.val / 1000
+            }
         }
 
         if (srgbClr) {
@@ -61,7 +66,8 @@ module.exports = class Color {
             shade:this.shade,
             lumMod:this.lumMod,
             alpha:this.alpha,
-            lumOff:this.lumOff
+            lumOff:this.lumOff,
+            tint:this.tint
         }
     }
 }
