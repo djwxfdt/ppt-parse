@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname,'pptOutput1/ppt')))
 app.use('/test.html',(req,res)=>{
     let sdk = new PPTParseSDK()
 
-    sdk.parsePPT(path.join(__dirname,'../example/test.pptx')).then(()=>{
+    sdk.parsePPT(path.join(__dirname,'../example/test4.pptx')).then(()=>{
         let json = JSON.stringify(sdk.json)
         let filename = path.join(__dirname,'output.json')
         fs.writeFile(filename,json,()=>{

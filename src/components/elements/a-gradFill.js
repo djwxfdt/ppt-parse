@@ -55,6 +55,9 @@ module.exports = class GradFill {
         }
     }
 
+    /**
+     * @returns {Array<Gs>}
+     */
     get list(){
         if(this.gsLst){
             return this.gsLst.gs.map(g=>{
@@ -63,4 +66,5 @@ module.exports = class GradFill {
         }
         return []
     }
+  
 }

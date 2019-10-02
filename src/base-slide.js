@@ -64,8 +64,20 @@ module.exports = class BaseSlide{
         let color = {}
 
         if(this.bg && this.bg.bgRef){
+            let phClr = this.bg.bgRef.value
             let fill = this.theme.getBgFillByIdx(this.bg.bgRef.idx)
             if(fill){
+                if(phClr){
+                    if(fill instanceof GradFill){
+                        fill.list.map(g=>{
+                            g.value = phClr
+                        })
+                    }else{
+                        fill.value = phClr
+                    }
+                }
+                
+
                 color.type = fill.fillType
                 color.value = fill
                 color.ang = fill.ang
