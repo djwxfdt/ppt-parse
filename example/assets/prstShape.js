@@ -6,11 +6,11 @@ const SVG = require("svg.js")
  * @param {{prstShape:{type:"string"},fill:{type:"grad"|"solid",value},size:{width,height}}} block 
  * @param {HTMLElement} wrapper
  */
-const parse = (block, wrapper,stroke) => {
+const parse = (block, wrapper, stroke) => {
 
-    let fill =  "transparent"
+    let fill = "transparent"
 
-    if(!block.size){
+    if (!block.size) {
         return
     }
 
@@ -20,15 +20,15 @@ const parse = (block, wrapper,stroke) => {
 
     if (block.prstShape && block.fill) {
 
-        if(block.prstShape.type == "line"){
-           
+        if (block.prstShape.type == "line") {
+
             wrapper.style.width = (width || 4) + "px"
             wrapper.style.height = (height || 4) + "px"
 
         }
 
-        
-        if(block.fill.type == "solid"){
+
+        if (block.fill.type == "solid") {
             fill = block.fill.value
         }
 
@@ -38,7 +38,8 @@ const parse = (block, wrapper,stroke) => {
         s.style.left = "0"
         s.style.top = "0"
 
-        let ele = SVG.adopt(s).size("100%", "100%").viewbox(0, 0, width ||4, height||4)
+        let ele = SVG.adopt(s)
+        ele.size("100%", "100%").viewbox(0, 0, width || 4, height || 4)
 
         if (block.fill.type == "grad") {
             fill = ele.gradient("linear", stop => {
@@ -86,6 +87,9 @@ const parse = (block, wrapper,stroke) => {
             pie.attr({ "stroke-dasharray": `${c / 4} ${c}`, "stroke": "white", "stroke-width": width, "stroke-dashoffset": c / 4 * 3 })
         } else if ("line" == block.prstShape.type) {
             ele.line(0, 0, width, height).stroke({ "color": fill, "width": 2, linecap: "round" })
+        }else if("blockArc" == block.prstShape.type){
+            // let arc = ele.arc()
+            // debugger
         }
         else {
             console.warn("unsported", block.prstShape)

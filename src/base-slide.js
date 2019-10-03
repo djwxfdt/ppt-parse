@@ -462,11 +462,15 @@ module.exports = class BaseSlide{
             type: "image"
         }
 
-        if (pic.spPr && pic.spPr.xfrm) {
-            item.position = pic.spPr.xfrm.off
+        let xfrm = pic.spPr && pic.spPr.xfrm
+        if (xfrm) {
+            item.position = xfrm.off
             item.size = {
-                width: pic.spPr.xfrm.ext.cx,
-                height: pic.spPr.xfrm.ext.cy,
+                width: xfrm.ext.cx,
+                height: xfrm.ext.cy,
+            }
+            if (xfrm.rot) {
+                item.rot = xfrm.rot
             }
         }
 
