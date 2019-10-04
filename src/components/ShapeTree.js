@@ -37,6 +37,9 @@ module.exports.createElement = node=>{
         case "p:sp":{
             return new Sp(node)
         }
+        case "p:cxnSp":{
+            return new Sp(node)
+        }
         case "p:pic":{
             return new Pic(node)
         }

@@ -140,10 +140,12 @@ const buildStyle = (block,element)=>{
         element.style.left = block.position.x + "px"
         element.style.top = block.position.y + "px"
     }
+    
     if(block.size){
         element.style.width = (block.size.width )  + "px"
         element.style.height = (block.size.height ) + "px"
     }  
+   
     if(block.id){
         element.setAttribute("data-id",block.id)
     }

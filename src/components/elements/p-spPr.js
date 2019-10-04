@@ -47,7 +47,7 @@ module.exports = class SpPr {
         if(prstGeom){
             /**
              * This element specifies when a preset geometric shape should be used instead of a custom geometric shape. The generating application should be able to render all preset geometries enumerated in the <ST_ShapeType> list.
-             * @type {"round2SameRect"|"rect"|"pie"}
+             * @type {"round2SameRect"|"rect"|"pie"|"blockArc"}
              */
             this.prstGeomType = prstGeom.attributes.prst
 
@@ -77,7 +77,8 @@ module.exports = class SpPr {
 
         let pM ={
             "pie":1,
-            "roundRect":1
+            "roundRect":1,
+            "blockArc":1
         }
 
         if(pM[item.type] && this.avLst){
