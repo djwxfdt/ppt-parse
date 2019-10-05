@@ -1,16 +1,15 @@
 
-
 /**
- * 
+ *
  * @typedef {import('../base-slide')} BaseSlide
  */
 
 /**
- * @param {import('./elements/p-sp')} sp 
+ * @param {import('./elements/p-sp')} sp
  * @returns {(self:BaseSlide)=>import('./elements/a-xfrm')}
  */
 module.exports.getXfrm = (sp) => self => {
-    let { idx, type } = sp
+    const { idx, type } = sp
 
     while (self) {
         if (sp && sp.xfrm) {
@@ -24,18 +23,69 @@ module.exports.getXfrm = (sp) => self => {
 }
 
 /**
- * @param {import('./elements/p-sp')} sp 
+ * @param {import('./elements/p-sp')} sp
+ */
+module.exports.getPrstGeom = (sp) => self => {
+    const { idx, type } = sp
+
+    while (self) {
+        if (sp && sp.prstGeom) {
+            return sp.prstGeom
+        }
+        if (self.next) {
+            sp = self.next.getPlaceholder(idx, type)
+        }
+        self = self.next
+    }
+}
+
+/**
+ * @param {import('./elements/p-sp')} sp
+ */
+module.exports.getFill = sp => self => {
+    const { idx, type } = sp
+
+    while (self) {
+        if (sp && sp.fill) {
+            return sp.fill
+        }
+        if (self.next) {
+            sp = self.next.getPlaceholder(idx, type)
+        }
+        self = self.next
+    }
+}
+
+/**
+ * @param {import('./elements/p-sp')} sp
+ */
+module.exports.getLine = sp => self => {
+    const { idx, type } = sp
+
+    while (self) {
+        if (sp && sp.line) {
+            return sp.line
+        }
+        if (self.next) {
+            sp = self.next.getPlaceholder(idx, type)
+        }
+        self = self.next
+    }
+}
+
+/**
+ * @param {import('./elements/p-sp')} sp
  * @returns {(self:BaseSlide)=>any}
  */
-const getStyle = (sp,key,lvl="0") => self => {
-    let { idx, type } = sp
-    let master = self.master
-    
+const getStyle = (sp, key, lvl = '0') => self => {
+    const { idx, type } = sp
+    const master = self.master
+
     while (self) {
         let value = null
-        let style = self.getTxStyle({ idx, type })
+        const style = self.getTxStyle({ idx, type })
         if (style) {
-            value = style.getValue(key,'0')
+            value = style.getValue(key, '0')
         }
         if (value) {
             return value
@@ -43,48 +93,43 @@ const getStyle = (sp,key,lvl="0") => self => {
         self = self.next
     }
 
-    let txStyle = master.getStyleFromTxStyles(type )
-    let value = txStyle && txStyle.getValue(key,lvl)
+    const txStyle = master.getStyleFromTxStyles(type)
+    const value = txStyle && txStyle.getValue(key, lvl)
     if (value) {
         return value
     }
 }
 
-
-
 /**
- * @param {import('./elements/p-sp')} sp 
+ * @param {import('./elements/p-sp')} sp
  * @returns {(self:BaseSlide)=>number}
  */
-module.exports.getTextSize = (sp,lvl="0") => self => getStyle(sp,"size",lvl)(self)
-
+module.exports.getTextSize = (sp, lvl = '0') => self => getStyle(sp, 'size', lvl)(self)
 
 /**
- * @param {import('./elements/p-sp')} sp 
+ * @param {import('./elements/p-sp')} sp
  * @returns {(self:BaseSlide)=>number}
  */
-module.exports.getTextColor = (sp,lvl="0") => self => getStyle(sp,"color",lvl)(self)
-
+module.exports.getTextColor = (sp, lvl = '0') => self => getStyle(sp, 'color', lvl)(self)
 
 /**
- * @param {import('./elements/p-sp')} sp 
+ * @param {import('./elements/p-sp')} sp
  * @returns {(self:BaseSlide)=>number}
  */
-module.exports.getBulletColor = (sp,lvl="0") => self => getStyle(sp,"bullet",lvl)(self)
-
+module.exports.getBulletColor = (sp, lvl = '0') => self => getStyle(sp, 'bullet', lvl)(self)
 
 /**
- * @param {import('./elements/p-sp')} sp 
+ * @param {import('./elements/p-sp')} sp
  * @returns {(self:BaseSlide)=>{anchor:string,padding:any}}
  */
 module.exports.getTxBodyPr = (sp) => self => {
-    let { idx, type } = sp
-    let list = []
-    
-    let res = {}
-    while(self){
-        let bodyPr = sp && sp.txBody && sp.txBody.bodyPr
-        if(bodyPr){
+    const { idx, type } = sp
+    const list = []
+
+    const res = {}
+    while (self) {
+        const bodyPr = sp && sp.txBody && sp.txBody.bodyPr
+        if (bodyPr) {
             list.push(bodyPr)
         }
         if (self.next) {
@@ -93,11 +138,11 @@ module.exports.getTxBodyPr = (sp) => self => {
         self = self.next
     }
 
-    for(let pr of list){
-        if(!res.anchor){
+    for (const pr of list) {
+        if (!res.anchor) {
             res.anchor = pr.anchor
         }
-        if(!res.padding){
+        if (!res.padding) {
             res.padding = pr.padding
         }
     }

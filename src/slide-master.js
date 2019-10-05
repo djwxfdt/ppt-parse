@@ -2,100 +2,94 @@ const XElement = require('./xelement')
 
 const TextStyles = require('./components/text-styles')
 
-const SlideBg = require("./components/elements/p-bg")
+const SlideBg = require('./components/elements/p-bg')
 
-const Transition = require("./components/elements/p-transition")
+const Transition = require('./components/elements/p-transition')
 
 const ShapeTree = require('./components/ShapeTree')
 
-const BaseSlide = require("./base-slide")
-
+const BaseSlide = require('./base-slide')
 
 class SlideMasterXML extends BaseSlide {
     constructor(xml) {
         super(xml)
 
+        this.type = 'master'
 
-        this.type = "master"
-
-        this.textStyles = new TextStyles(this.xml.getSingle("p:txStyles"))
+        this.textStyles = new TextStyles(this.xml.getSingle('p:txStyles'))
 
         this.typeMap = {
-            title:"title",
-            subTitle:"body",
-            ctrTitle:"title"
+            title: 'title',
+            subTitle: 'body',
+            ctrTitle: 'title'
         }
-        
+
         this.clrMap = {}
 
-        let clrMap = this.xml.getSingle("p:clrMap")
+        const clrMap = this.xml.getSingle('p:clrMap')
 
-        if(clrMap){
-            Object.keys(clrMap.attributes).map(k=>{
+        if (clrMap) {
+            Object.keys(clrMap.attributes).map(k => {
                 this.clrMap[k] = clrMap.attributes[k]
             })
         }
-
     }
 
-    getPlaceholder(idx,type){
+    getPlaceholder(idx, type) {
         type = this.typeMap[type] || type
-        return super.getPlaceholder(idx,type)
+        return super.getPlaceholder(idx, type)
     }
 
-    getTitleColor(){
-        let style = this.getTxStyle({type:"title"})
-        if(style){
+    getTitleColor() {
+        const style = this.getTxStyle({ type: 'title' })
+        if (style) {
             return style.getColor('0')
         }
     }
 
-    getTxBodyOfType(type){
-        if(!type){
+    getTxBodyOfType(type) {
+        if (!type) {
             return
         }
         type = this.typeMap[type] || type
-        let finded = this.placeholders.find(sp=>sp.type == type)
-        if(finded && finded.txBody){
+        const finded = this.placeholders.find(sp => sp.type == type)
+        if (finded && finded.txBody) {
             return finded.txBody
         }
     }
 
-    getStyleFromTxStyles(type){
-        type = this.typeMap[type] || type || "other"
-        switch(type){
-            case "title":{
-                return this.textStyles.titleStyle
-            }
-            case "body":{
-                return this.textStyles.bodyStyle
-            }
-            case "other":{
-                return this.textStyles.bodyStyle
-            }
-        } 
+    getStyleFromTxStyles(type) {
+        type = this.typeMap[type] || type || 'other'
+        switch (type) {
+        case 'title': {
+            return this.textStyles.titleStyle
+        }
+        case 'body': {
+            return this.textStyles.bodyStyle
+        }
+        case 'other': {
+            return this.textStyles.bodyStyle
+        }
+        }
     }
 
-    
-  
-    getTxStyle({type,idx}){
+    getTxStyle({ type, idx }) {
         type = this.typeMap[type] || type
-        return super.getTxStyle({type,idx}) 
+        return super.getTxStyle({ type, idx })
     }
 
-    getTextFontOfType(type){
-        let style = this.getTxStyle({type})
-        if(style){
+    getTextFontOfType(type) {
+        const style = this.getTxStyle({ type })
+        if (style) {
             return style.getTypeface('0')
         }
     }
 
-
-    getLineSpacePercent(type){
-        let txBody = this.getTxBodyOfType(type)
-        if(txBody && txBody.textStyle){
-            let style = txBody.textStyle.find('0')
-            if(style){
+    getLineSpacePercent(type) {
+        const txBody = this.getTxBodyOfType(type)
+        if (txBody && txBody.textStyle) {
+            const style = txBody.textStyle.find('0')
+            if (style) {
                 return style.lineSpacePercent
             }
         }
@@ -105,11 +99,9 @@ class SlideMasterXML extends BaseSlide {
      * schemeClr的映射
      * @returns {string}
      */
-    findSchemeClr(k){
+    findSchemeClr(k) {
         return this.clrMap[k] || k
     }
-
-
 }
 
 module.exports = SlideMasterXML

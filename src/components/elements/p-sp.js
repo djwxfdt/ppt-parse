@@ -2,115 +2,113 @@ const SpPr = require('./p-spPr')
 const NvSpPr = require('./p-nvSpPr')
 const TxBody = require('./p-txBody')
 const XElement = require('../../xelement')
-const Style = require("./p-style")
-
+const Style = require('./p-style')
 
 module.exports = class Sp {
     /**
-     * @param {XElement} node 
+     * @param {XElement} node
      */
-    constructor(node){
+    constructor(node) {
+        this.tag = 'p:sp'
 
-        this.tag = "p:sp"
-
-        let spPr = node.selectFirst(["p:spPr"])
-        if(spPr){
+        let spPr = node.selectFirst(['p:spPr'])
+        if (spPr) {
             this.spPr = new SpPr(spPr)
         }
 
-        let nvSpPr = node.selectFirst(["p:nvSpPr"])
-        if(nvSpPr){
+        let nvSpPr = node.selectFirst(['p:nvSpPr'])
+        if (nvSpPr) {
             this.nvSpPr = new NvSpPr(nvSpPr)
         }
 
         let txBody = node.getSingle('p:txBody')
-        if(txBody){
+        if (txBody) {
             this.txBody = new TxBody(txBody)
         }
-        let style = node.getSingle("p:style")
-        if(style){
+        let style = node.getSingle('p:style')
+        if (style) {
             this.style = new Style(style)
         }
     }
 
-    get id(){
-        if(this.nvSpPr && this.nvSpPr.cNvPr){
+    get id() {
+        if (this.nvSpPr && this.nvSpPr.cNvPr) {
             return this.nvSpPr.cNvPr.id
         }
     }
 
-    get name(){
-        if(this.nvSpPr && this.nvSpPr.cNvPr){
+    get name() {
+        if (this.nvSpPr && this.nvSpPr.cNvPr) {
             return this.nvSpPr.cNvPr.name
         }
     }
 
-    get placeholder(){
-        if(this.nvSpPr && this.nvSpPr.nvPr && this.nvSpPr.nvPr.placeholder){
+    get placeholder() {
+        if (this.nvSpPr && this.nvSpPr.nvPr && this.nvSpPr.nvPr.placeholder) {
             return this.nvSpPr.nvPr.placeholder
         }
     }
 
-    get type(){
-        if(this.placeholder){
+    get type() {
+        if (this.placeholder) {
             return this.placeholder.type
         }
     }
 
-    get idx(){
+    get idx() {
         return this.placeholder && this.placeholder.idx
     }
 
-    get xfrm(){
-        if(this.spPr ){
+    get xfrm() {
+        if (this.spPr) {
             return this.spPr.xfrm
         }
     }
 
-    get custGeom(){
-        if(this.spPr){
+    get custGeom() {
+        if (this.spPr) {
             return this.spPr.custGeom
         }
     }
 
-    get hasNoFill(){
+    get hasNoFill() {
         return this.spPr && this.spPr.noFill
     }
 
-    get fill(){
+    get fill() {
         let solid = this.solidFill
         let gradFill = this.spPr && this.spPr.gradFill
 
-        if(solid){
-            return {type:"solid",value:solid}
+        if (solid) {
+            return { type: 'solid', value: solid }
         }
-        if(gradFill){
-            return {type:"grad",value:gradFill}
+        if (gradFill) {
+            return { type: 'grad', value: gradFill }
         }
     }
 
-    get line(){
+    get line() {
         let ln = this.spPr && this.spPr.ln
-        if(ln){
+        if (ln) {
             return ln.toJSON()
         }
-        if(this.style && this.style.lnRef){
+        if (this.style && this.style.lnRef) {
             return {
-                color:this.style.lnRef,
+                color: this.style.lnRef
             }
         }
-
     }
 
-    get solidFill(){
-        if(this.spPr && this.spPr.solidFill){
+    get solidFill() {
+        if (this.spPr && this.spPr.solidFill) {
             return this.spPr.solidFill
-        }else if(this.style && this.style.fillRef){
+        } else if (this.style && this.style.fillRef) {
             return this.style.fillRef
         }
     }
-    get prstGeom(){
-        if(this.spPr){
+
+    get prstGeom() {
+        if (this.spPr) {
             return this.spPr.prstGeom
         }
     }
@@ -120,5 +118,4 @@ module.exports = class Sp {
     //         return this.spPr.ln
     //     }
     // }
-
 }

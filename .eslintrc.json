@@ -1,0 +1,24 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "extends": [
+        "standard"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+    "rules": {
+        "indent":["error",4],
+        "eqeqeq":"off",
+        "no-unused-vars":"off",
+        "space-before-function-paren":"off",
+        "promise/param-names":"off",
+        "prefer-const":"off"
+    }
+}

@@ -1,4 +1,3 @@
-
 const XElement = require('../../xelement')
 
 /**
@@ -6,39 +5,38 @@ const XElement = require('../../xelement')
  */
 module.exports = class Color {
     /**
-        * @param {XElement} node 
-        */
+     * @param {XElement} node
+     */
     constructor(node) {
-
-        let srgbClr = node.getSingle("a:srgbClr")
-        let schemeClr = node.getSingle("a:schemeClr")
+        let srgbClr = node.getSingle('a:srgbClr')
+        let schemeClr = node.getSingle('a:schemeClr')
 
         /**
-         * @param {XElement} item 
+         * @param {XElement} item
          */
-        const getAttrs = item=>{
-            let shade = item.getSingle("a:shade")
-            if(shade){
+        const getAttrs = item => {
+            let shade = item.getSingle('a:shade')
+            if (shade) {
                 /**
                  * percent
                  */
                 this.shade = +shade.attributes.val / 1000
             }
-            let lumMod = item.getSingle("a:lumMod")
-            if(lumMod){
+            let lumMod = item.getSingle('a:lumMod')
+            if (lumMod) {
                 this.lumMod = +lumMod.attributes.val / 1000
             }
-            let lumOff = item.getSingle("a:lumOff")
-            if(lumOff){
+            let lumOff = item.getSingle('a:lumOff')
+            if (lumOff) {
                 this.lumOff = +lumOff.attributes.val / 1000
             }
-            let alpha = item.getSingle("a:alpha")
-            if(alpha){
+            let alpha = item.getSingle('a:alpha')
+            if (alpha) {
                 this.alpha = +alpha.attributes.val / 1000
             }
 
-            let tint = item.getSingle("a:tint")
-            if(tint){
+            let tint = item.getSingle('a:tint')
+            if (tint) {
                 this.tint = +tint.attributes.val / 1000
             }
         }
@@ -47,27 +45,25 @@ module.exports = class Color {
             /**
              * @type {"srgbClr"|"schemeClr"}
              */
-            this.type = "srgbClr"
+            this.type = 'srgbClr'
             this.value = srgbClr.attributes.val
             getAttrs(srgbClr)
-
         } else if (schemeClr) {
-            this.type = "schemeClr"
+            this.type = 'schemeClr'
             this.value = schemeClr.attributes.val
             getAttrs(schemeClr)
         }
-
     }
 
-    toJSON(){
+    toJSON() {
         return {
-            type:this.type,
-            value:this.value,
-            shade:this.shade,
-            lumMod:this.lumMod,
-            alpha:this.alpha,
-            lumOff:this.lumOff,
-            tint:this.tint
+            type: this.type,
+            value: this.value,
+            shade: this.shade,
+            lumMod: this.lumMod,
+            alpha: this.alpha,
+            lumOff: this.lumOff,
+            tint: this.tint
         }
     }
 }

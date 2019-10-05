@@ -1,13 +1,11 @@
 const XElement = require('../../xelement')
 
-const Color = require("./c-color")
+const Color = require('./c-color')
 
-module.exports = class SolidFill extends Color{
-   
-    constructor(n){
+module.exports = class SolidFill extends Color {
+    constructor(n) {
         super(n)
 
-        this.fillType = "solid"
-
+        this.fillType = 'solid'
     }
 }

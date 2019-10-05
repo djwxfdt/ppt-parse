@@ -1,8 +1,7 @@
-class XElement{
-
+class XElement {
     /**
-     * 
-     * @param {{name:string,children:Array,attrs,value}} xml 
+     *
+     * @param {{name:string,children:Array,attrs,value}} xml
      */
     constructor(xml) {
         // this._map = {}
@@ -13,12 +12,11 @@ class XElement{
          */
         this._attrs = xml.attrs || {}
 
-        this.name = xml.name || xml["#name"]
-        
+        this.name = xml.name || xml['#name']
+
         this.value = xml.value || xml._
 
-        
-        this.children = (xml.children || []).map(c=>XElement.init(c))
+        this.children = (xml.children || []).map(c => XElement.init(c))
 
         // if(typeof xml  === "object"){
         //     for(let key in xml){
@@ -34,7 +32,7 @@ class XElement{
         // }
     }
 
-    get attributes(){
+    get attributes() {
         return this._attrs
     }
 
@@ -42,13 +40,13 @@ class XElement{
      * @param {{name:string,children:Array,attrs}} xml
      * @returns {XElement}
      */
-    static init(xml){
-        if(!xml){
+    static init(xml) {
+        if (!xml) {
             return null
         }
 
-        if(typeof xml === "object"){
-            if(Object.keys(xml).length == 0){
+        if (typeof xml === 'object') {
+            if (Object.keys(xml).length == 0) {
                 return null
             }
             return new XElement(xml)
@@ -61,8 +59,8 @@ class XElement{
     // }
 
     // /**
-    //  * 
-    //  * @param {(key:string,x:XElement)=>void} callback 
+    //  *
+    //  * @param {(key:string,x:XElement)=>void} callback
     //  */
     // map(callback){
     //     for(let key in this._map){
@@ -71,51 +69,50 @@ class XElement{
     // }
 
     /**
-     * @returns {XElement} 
+     * @returns {XElement}
      */
-    get(key){
-        return this.children.filter(c=>c.name == key)
+    get(key) {
+        return this.children.filter(c => c.name == key)
         // return this._map[key]
     }
 
     /**
-     * @returns {XElement} 
+     * @returns {XElement}
      */
-    getSingle(key){
-        let res = this.get(key)
-       
-        if(Array.isArray(res)){
+    getSingle(key) {
+        const res = this.get(key)
+
+        if (Array.isArray(res)) {
             return res[0]
         }
 
         return res
     }
-    
 
     /**
-     * @param {Array<string>} arry 
+     * @param {Array<string>} arry
      * @param {any} def 默认返回值
      * @returns {XElement}
      */
-    selectFirst(arry,def=undefined){
-        let tmp = this.selectArray(arry)
+    selectFirst(arry, def = undefined) {
+        const tmp = this.selectArray(arry)
         return tmp[0] || def
     }
 
     /**
-     * @param {Array<string>} arry 
+     * @param {Array<string>} arry
      * @returns {Array<XElement>}
      */
-    selectArray(arry){
+    selectArray(arry) {
         let xml = this
         for (let i = 0; i < arry.length; i++) {
             if (!xml) {
                 break
             }
 
-            let key = arry[i]
+            const key = arry[i]
 
-            if(xml instanceof XElement){
+            if (xml instanceof XElement) {
                 xml = xml.get(key)
                 continue
             }
@@ -124,34 +121,31 @@ class XElement{
                 xml = xml[0]
             }
 
-            if(xml instanceof XElement){
+            if (xml instanceof XElement) {
                 xml = xml.get(key)
-            }else{
+            } else {
                 xml = null
                 break
             }
         }
-    
-        if(!xml){
+
+        if (!xml) {
             return []
-        }else if(Array.isArray(xml)){
+        } else if (Array.isArray(xml)) {
             return xml
-        }else{
+        } else {
             return [xml]
         }
-
     }
 
     /**
-     * 
+     *
      * @param {XElement} el
-     * @returns {XElement} 
+     * @returns {XElement}
      */
-    add(el){
+    add(el) {
 
     }
-
 }
-
 
 module.exports = XElement

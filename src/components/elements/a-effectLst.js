@@ -1,15 +1,15 @@
 const XElement = require('../../xelement')
 
-const Color = require("./c-color")
+const Color = require('./c-color')
 
-const {EMU2PIX,Angle2Degree} = require("../measure")
+const { EMU2PIX, Angle2Degree } = require('../measure')
 
-class OuterShdw extends Color{
+class OuterShdw extends Color {
     /**
-     * 
-     * @param {XElement} node 
+     *
+     * @param {XElement} node
      */
-    constructor(node){
+    constructor(node) {
         super(node)
 
         this.dir = Angle2Degree(node.attributes.dir || 0)
@@ -17,37 +17,33 @@ class OuterShdw extends Color{
         this.blurRad = EMU2PIX(node.attributes.blurRad || 0)
 
         this.dist = EMU2PIX(node.attributes.dist || 0)
-
     }
 }
 
-class Reflection{
+class Reflection {
     /**
-     * 
-     * @param {XElement} node 
+     *
+     * @param {XElement} node
      */
-    constructor(node){
-
+    constructor(node) {
         this.dir = +(node.attributes.dir || 0) / 60000
     }
 }
 
-module.exports = class EffectLst{
-    
+module.exports = class EffectLst {
     /**
-     * 
-     * @param {XElement} node 
+     *
+     * @param {XElement} node
      */
-    constructor(node){
+    constructor(node) {
+        const outerShaw = node.getSingle('a:outerShdw')
 
-        let outerShaw = node.getSingle("a:outerShdw")
-
-        if(outerShaw){
+        if (outerShaw) {
             this.outerShaw = new OuterShdw(outerShaw)
         }
 
-        let reflection = node.getSingle("a:reflection")
-        if(reflection){
+        const reflection = node.getSingle('a:reflection')
+        if (reflection) {
             this.reflection = new Reflection(reflection)
         }
     }
