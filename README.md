@@ -21,9 +21,11 @@ https://ppt2h5-1259648581.file.myqcloud.com/g4f7d5qqc0jcqk8n11mb/index.html
 
 ### Issue
 
-1. 第六页，bullet char 的样式有点问题
+example中的ppt是从简易到复杂的test文件
 
-1. 13页的表格
+目前第1-3的ppt解析基本无误
+
+4-5还需要继续完善
 
 参考文档：
 1. [Ecma-376](https://www.ecma-international.org/publications/standards/Ecma-376.htm)
