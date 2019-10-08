@@ -149,3 +149,15 @@ module.exports.getTxBodyPr = (sp) => self => {
 
     return res
 }
+
+/**
+ * @param {import('./elements/p-sp')} sp
+ * @returns {(self:BaseSlide)=>string}
+ */
+module.exports.getTypeface = (sp, lvl = '0') => self => {
+    let typeface = getStyle(sp, 'typeface', '0')(self)
+    if (!typeface) {
+        typeface = self.theme.fontScheme.getFontByType(sp.type || 'other')
+    }
+    return typeface
+}

@@ -149,6 +149,9 @@ class TextStyle {
         case 'bullet': {
             return this.getBulletColor(lvl)
         }
+        case 'typeface': {
+            return this.getTypeface(lvl)
+        }
         }
     }
 }

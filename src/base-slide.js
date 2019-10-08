@@ -68,7 +68,7 @@ module.exports = class BaseSlide {
                 if (phClr) {
                     if (fill instanceof GradFill) {
                         fill.list.map(g => {
-                            g.value = phClr
+                            g.value = g.value == 'phClr' ? phClr : g.value
                         })
                     } else {
                         fill.value = phClr
@@ -221,6 +221,8 @@ module.exports = class BaseSlide {
         // }
         const titleColor = this.getSolidFill(this.getTitleColor())
 
+        const typeface = SlideFunctions.getTypeface(sp)(this)
+
         return sp.txBody.pList
             .map(p => {
                 const container = {
@@ -230,24 +232,11 @@ module.exports = class BaseSlide {
                                 return
                             }
 
-                            let fontFamily = r.fontFamlily
+                            let fontFamily = r.fontFamlily || typeface
                             if (fontFamily && fontFamily.indexOf('+') == 0) {
                                 fontFamily = this.theme.fontScheme.getFont(
                                     fontFamily
                                 )
-                            }
-
-                            if (sp.type) {
-                                if (!fontFamily) {
-                                    fontFamily =
-                                        this.master &&
-                                        this.master.getTextFontOfType(sp.type)
-                                }
-                                if (!fontFamily) {
-                                    fontFamily = this.theme.fontScheme.getFontByType(
-                                        sp.type
-                                    )
-                                }
                             }
 
                             if (
