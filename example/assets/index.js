@@ -89,7 +89,7 @@ const parseBlocks = (blocks, el, pageIndex) => {
 
 
         } else {
-            parseBlock(block, el, pageIndex)
+            parseBlock(block, el, pageIndex,currentSlideEl)
         }
     }
 

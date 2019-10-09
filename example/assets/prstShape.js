@@ -109,6 +109,24 @@ const parse = (block, wrapper, stroke) => {
             
             // let arc = ele.arc()
             // debugger
+        }else if("chevron" == block.prstShape.type){
+            let strA = []
+            strA.push(`M 0,0`)
+            strA.push(`L ${width/2} 0`)
+            strA.push(`L ${width} ${height/2}`)
+            strA.push(`L ${width/2} ${height}`)
+            strA.push(`L 0 ${height}`)
+            strA.push(`L ${width/2} ${height/2}`)
+            strA.push(`z`)
+            ele.path(strA.join(" ")).fill(fill)
+        }else if("triangle" == block.prstShape.type){
+            let strA = []
+            strA.push(`M ${width/2} 0`)
+            strA.push(`L ${width} ${height}`)
+            strA.push(`L 0 ${height}`)
+            strA.push(`z`)
+            ele.path(strA.join(" ")).fill(fill)
+
         }
         else {
             console.warn("unsported", block.prstShape)

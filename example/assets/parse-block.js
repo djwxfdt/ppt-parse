@@ -76,8 +76,14 @@ const parseContainer = (block,pageIndex)=>{
                     return `M ${g.x} ${g.y}`
                 }else if(g.t == "lnTo"){
                     return `L ${g.x} ${g.y}`
-                }else if(g.t == "close"){
-                    return "z"
+                }else if(g.t == "cubicBezTo"){
+                    let pts = g.pts.map(({x,y})=>{
+                        return `${x},${y}`
+                    }).join(" ")
+                    return `C ${pts}`
+                }
+                else if(g.t == "close"){
+                    return ""
                 }
             }).join(" ")
             let ps = ele.path(str)

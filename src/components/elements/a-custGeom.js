@@ -13,17 +13,26 @@ class Path {
 
         this.actions = node.children.map(c => {
             const t = c.name.replace('a:', '')
-            const attrs = c.selectFirst(['a:pt'], {}).attributes
+            const pts = c.selectArray(['a:pt'])
 
             /**
-             * @type {{t:string,x:number,y:number}}
+             * @type {{t:string,x:number,y:number,pts:Array}}
              */
-            const r = { t }
+            const r = { t, pts: [] }
 
-            if (attrs) {
+            if (pts.length == 1) {
+                const attrs = pts[0].attributes
                 r.x = Math.floor((+attrs.x / 100 / 3) * 4)
                 r.y = Math.floor((+attrs.y / 100 / 3) * 4)
             }
+
+            pts.map(pt => {
+                r.pts.push({
+                    x: Math.floor((+pt.attributes.x / 100 / 3) * 4),
+                    y: Math.floor((+pt.attributes.x / 100 / 3) * 4)
+                })
+            })
+
             return r
         })
     }
