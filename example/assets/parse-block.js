@@ -1,5 +1,4 @@
 
-
 const WMF = require("./wmf")
 const SVG = require("svg.js")
 const {parseTxBody} = require("./text")
@@ -73,9 +72,9 @@ const parseContainer = (block,pageIndex)=>{
 
             let str = svg.points.map(g=>{
                 if(g.t == "moveTo"){
-                    return `M ${g.x} ${g.y}`
+                    return `M${g.x},${g.y}`
                 }else if(g.t == "lnTo"){
-                    return `L ${g.x} ${g.y}`
+                    return `L${g.x},${g.y}`
                 }else if(g.t == "cubicBezTo"){
                     let pts = g.pts.map(({x,y})=>{
                         return `${x},${y}`
@@ -85,7 +84,7 @@ const parseContainer = (block,pageIndex)=>{
                 else if(g.t == "close"){
                     return ""
                 }
-            }).join(" ")
+            }).filter(i=>!!i).join(" ")
             let ps = ele.path(str)
             ps.fill(fill)
         })

@@ -29,7 +29,7 @@ class Path {
             pts.map(pt => {
                 r.pts.push({
                     x: Math.floor((+pt.attributes.x / 100 / 3) * 4),
-                    y: Math.floor((+pt.attributes.x / 100 / 3) * 4)
+                    y: Math.floor((+pt.attributes.y / 100 / 3) * 4)
                 })
             })
 
