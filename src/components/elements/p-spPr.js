@@ -75,7 +75,8 @@ module.exports = class SpPr {
         let pM = {
             pie: 1,
             roundRect: 1,
-            blockArc: 1
+            blockArc: 1,
+            arc: 1
         }
 
         if (pM[item.type] && this.avLst) {

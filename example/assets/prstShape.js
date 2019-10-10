@@ -1,12 +1,18 @@
 const SVG = require("svg.js")
 
+const toXY = (arc,r,c)=>{
+    return [
+        Math.round(c + r / 2 * Math.cos(arc/180 * Math.PI)),
+        Math.round(c - r / 2 * Math.sin(arc/180 * Math.PI))
+    ]
+}
 
 /**
  * 
  * @param {{prstShape:{type:"string"},fill:{type:"grad"|"solid",value},size:{width,height}}} block 
  * @param {HTMLElement} wrapper
  */
-const parse = (block, wrapper, stroke) => {
+const parse = (block, wrapper, stroke,pageIndex) => {
 
     let fill = "transparent"
 
@@ -91,25 +97,36 @@ const parse = (block, wrapper, stroke) => {
         }else if("blockArc" == block.prstShape.type){
             let avList = block.prstShape.avLst
             if(avList.length>1){
-                // let a1 = avList[0]
-                // let a2 = avList[avList.length - 1]
+                let a1 = avList[0]
+                let a2 = avList[avList.length - 1]
 
-                // let x1 = Math.round(width / 2 + width / 2 * Math.cos(a1))
-                // let y1 = Math.round(height / 2 - width / 2 * Math.sin(a1))
+                let [x1,y1] = toXY(a1,width,width/2)
+                let [x2,y2] = toXY(a2,width,width/2)
+                let [x11,y11] = toXY(a1,width / 3,width/2)
+                let [x22,y22] = toXY(a2,width / 3,width/2)
 
-                // let x2 = Math.round(width / 2 + width / 2 * Math.cos(a2))
-                // let y2 = Math.round(height / 2 - width / 2 * Math.sin(a2))
+                let str1 = `M${x1} ${y1} A${width/2} ${height/2} ${0} 0 1 ${x2} ${y2} L${x22} ${y22}`
+                let str2 = `A${width/6} ${height/6} ${0} 0 0 ${x11} ${y11} L${x1} ${y1}`
+                let str = str1 + " " + str2 + " "+ " Z"
 
-                // let str = `M${x1} ${y1} A${width/2},${height/2} ${a2 - a1} 1,0 ${x2},${y2}`
+                s.setAttribute("data-json",JSON.stringify(block.prstShape))
           
-                // ele.path(str).fill("transparent").stroke({ "color": fill, "width": 2, linecap: "round" })
+                ele.path(str).fill(fill)
             }
-            let arry = []
-            // avList.map((av,index)=>{
-            
-            // let arc = ele.arc()
-            // debugger
-        }else if("chevron" == block.prstShape.type){
+        }else if("arc" == block.prstShape.type){
+            let avList = block.prstShape.avLst
+            if(avList.length>1){
+                let a1 = avList[0]
+                let a2 = avList[avList.length - 1]
+                let [x1,y1] = toXY(a1,width,width/2)
+                let [x2,y2] = toXY(a2,width,width/2)
+                let str = `M${x1} ${y1} A${width/2} ${height/2} ${0} 0 1 ${x2} ${y2}`
+                s.setAttribute("data-json",JSON.stringify(block.prstShape))
+                ele.path(str).fill("transparent").stroke({color:fill,width:2})
+            }
+
+        }
+        else if("chevron" == block.prstShape.type){
             let strA = []
             strA.push(`M 0,0`)
             strA.push(`L ${width/2} 0`)
@@ -126,10 +143,9 @@ const parse = (block, wrapper, stroke) => {
             strA.push(`L 0 ${height}`)
             strA.push(`z`)
             ele.path(strA.join(" ")).fill(fill)
-
         }
         else {
-            console.warn("unsported", block.prstShape)
+            console.warn("unsported", block.prstShape,pageIndex)
         }
     }
 

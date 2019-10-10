@@ -51,7 +51,7 @@ const parseContainer = (block,pageIndex)=>{
             fill = block.fill.value
         }
     }
-    parsePrstShape(block,wrapper,stroke)
+    parsePrstShape(block,wrapper,stroke,pageIndex)
     if(block.svgs){
         block.svgs.map(svg=>{
             let s = document.createElementNS("http://www.w3.org/2000/svg","svg")
@@ -174,7 +174,7 @@ export default (block,el,pageIndex,currentSlideEl) =>{
     let element = null
 
     if(block.type == "container"){
-        element = parseContainer(block)
+        element = parseContainer(block,pageIndex)
     }else if(block.type == "image"){
         element = parseImage(block)
     }else if(block.type == "rect"){
