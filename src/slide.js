@@ -46,7 +46,10 @@ class SlideXML extends BaseSlide {
             ...this.parseElements()
         ]
 
+        let googleFonts = Object.assign({}, this.googleFonts, this.layout.googleFonts, this.master.googleFonts)
+
         obj.blocks = arry
+        obj.googleFonts = googleFonts
 
         this._json = obj
 

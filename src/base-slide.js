@@ -17,7 +17,7 @@ const Color = require('./components/elements/c-color')
 
 const GradFill = require('./components/elements/a-gradFill')
 
-const { mapFont, applyLumColor } = require('./utils')
+const { mapFont, applyLumColor, GOOGLE_FONTS } = require('./utils')
 
 const SlideFunctions = require('./components/slide-functions')
 
@@ -45,6 +45,8 @@ module.exports = class BaseSlide {
         if (trans) {
             this.transition = new Transition(trans)
         }
+
+        this.googleFonts = {}
 
         /**
          * @type {"slide"|"layout"|"master"}
@@ -247,6 +249,10 @@ module.exports = class BaseSlide {
                             }
 
                             if (fontFamily) {
+                                if (GOOGLE_FONTS[fontFamily]) {
+                                    fontFamily = GOOGLE_FONTS[fontFamily]
+                                    this.googleFonts[fontFamily] = true
+                                }
                                 fontFamily = mapFont(fontFamily)
                             }
 
@@ -656,16 +662,24 @@ module.exports = class BaseSlide {
 
     /**
      * @returns {Sp}
+     * @param {{type,idx}} params
      */
-    getPlaceholder(idx, type) {
-        if (!idx && !type) {
+    getPlaceholder(params) {
+        if (!params.idx && !params.type) {
             return
         }
 
-        let finded = this.placeholders.find(sp => sp.type == type)
+        let finded = this.placeholders.find(sp => sp.type == params.type)
 
-        if (idx) {
-            finded = this.placeholders.find(sp => sp.idx == idx) || finded
+        if (params.idx) {
+            finded = this.placeholders.find(sp => sp.idx == params.idx) || finded
+        }
+
+        if (finded) {
+            if (!params.type) {
+                params.type = finded.type
+            }
+            // params.idx = finded.idx || params.idx
         }
 
         return finded
@@ -677,11 +691,11 @@ module.exports = class BaseSlide {
         }
     }
 
-    getTxStyle({ type, idx }) {
-        if (!type && !idx) {
-            return
-        }
-        const finded = this.getPlaceholder(idx, type)
+    /**
+     * @param {{type,idx}} params
+     */
+    getTxStyle(params) {
+        const finded = this.getPlaceholder(params)
         return finded && finded.txBody && finded.txBody.textStyle
     }
 }

@@ -75,6 +75,16 @@ const FONT_MAP = {
     华文行楷: 'cursive'
 }
 
+const GOOGLE_FONTS = {
+    Corbel: 'Lato',
+    Calibri: 'Lato',
+    Muli: 'Muli',
+    'Muli Light': 'Muli:300,400',
+    Poppins: 'Poppins',
+    'Poppins Light': 'Poppins:300,400'
+
+}
+
 const mapFont = name => {
     return [name, 'Helvetica', 'cursive']
 }
@@ -104,4 +114,4 @@ const applyLumColor = ({ value, lumMod, lumOff, tint }) => {
     return hsl.hex()
 }
 
-module.exports = { searchXML, parseString, mapFont, applyLumColor }
+module.exports = { searchXML, parseString, mapFont, applyLumColor, GOOGLE_FONTS }

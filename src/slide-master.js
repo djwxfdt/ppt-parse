@@ -35,9 +35,9 @@ class SlideMasterXML extends BaseSlide {
         }
     }
 
-    getPlaceholder(idx, type) {
-        type = this.typeMap[type] || type
-        return super.getPlaceholder(idx, type)
+    getPlaceholder(params) {
+        params.type = this.typeMap[params.type] || params.type
+        return super.getPlaceholder(params)
     }
 
     getTitleColor() {

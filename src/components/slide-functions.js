@@ -9,14 +9,14 @@
  * @returns {(self:BaseSlide)=>import('./elements/a-xfrm')}
  */
 module.exports.getXfrm = (sp) => self => {
-    const { idx, type } = sp
+    let params = { idx: sp.idx, type: sp.type }
 
     while (self) {
         if (sp && sp.xfrm) {
             return sp.xfrm
         }
         if (self.next) {
-            sp = self.next.getPlaceholder(idx, type)
+            sp = self.next.getPlaceholder(params)
         }
         self = self.next
     }
@@ -26,14 +26,14 @@ module.exports.getXfrm = (sp) => self => {
  * @param {import('./elements/p-sp')} sp
  */
 module.exports.getPrstGeom = (sp) => self => {
-    const { idx, type } = sp
+    let params = { idx: sp.idx, type: sp.type }
 
     while (self) {
         if (sp && sp.prstGeom) {
             return sp.prstGeom
         }
         if (self.next) {
-            sp = self.next.getPlaceholder(idx, type)
+            sp = self.next.getPlaceholder(params)
         }
         self = self.next
     }
@@ -43,14 +43,14 @@ module.exports.getPrstGeom = (sp) => self => {
  * @param {import('./elements/p-sp')} sp
  */
 module.exports.getFill = sp => self => {
-    const { idx, type } = sp
+    let params = { idx: sp.idx, type: sp.type }
 
     while (self) {
         if (sp && sp.fill) {
             return sp.fill
         }
         if (self.next) {
-            sp = self.next.getPlaceholder(idx, type)
+            sp = self.next.getPlaceholder(params)
         }
         self = self.next
     }
@@ -60,14 +60,14 @@ module.exports.getFill = sp => self => {
  * @param {import('./elements/p-sp')} sp
  */
 module.exports.getLine = sp => self => {
-    const { idx, type } = sp
+    let params = { idx: sp.idx, type: sp.type }
 
     while (self) {
         if (sp && sp.line) {
             return sp.line
         }
         if (self.next) {
-            sp = self.next.getPlaceholder(idx, type)
+            sp = self.next.getPlaceholder(params)
         }
         self = self.next
     }
@@ -78,12 +78,12 @@ module.exports.getLine = sp => self => {
  * @returns {(self:BaseSlide)=>any}
  */
 const getStyle = (sp, key, lvl = '0') => self => {
-    const { idx, type } = sp
+    let params = { idx: sp.idx, type: sp.type }
     const master = self.master
 
     while (self) {
         let value = null
-        const style = self.getTxStyle({ idx, type })
+        const style = self.getTxStyle(params)
         if (style) {
             value = style.getValue(key, '0')
         }
@@ -93,7 +93,7 @@ const getStyle = (sp, key, lvl = '0') => self => {
         self = self.next
     }
 
-    const txStyle = master.getStyleFromTxStyles(type)
+    const txStyle = master.getStyleFromTxStyles(params.type)
     const value = txStyle && txStyle.getValue(key, lvl)
     if (value) {
         return value
@@ -123,7 +123,7 @@ module.exports.getBulletColor = (sp, lvl = '0') => self => getStyle(sp, 'bullet'
  * @returns {(self:BaseSlide)=>{anchor:string,padding:any}}
  */
 module.exports.getTxBodyPr = (sp) => self => {
-    const { idx, type } = sp
+    let params = { idx: sp.idx, type: sp.type }
     const list = []
 
     const res = {}
@@ -133,7 +133,7 @@ module.exports.getTxBodyPr = (sp) => self => {
             list.push(bodyPr)
         }
         if (self.next) {
-            sp = self.next.getPlaceholder(idx, type)
+            sp = self.next.getPlaceholder(params)
         }
         self = self.next
     }

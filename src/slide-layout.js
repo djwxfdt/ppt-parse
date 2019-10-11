@@ -12,11 +12,6 @@ class SlideLayoutXML extends BaseSlide {
 
         this.type = 'layout'
     }
-
-    getTxBody(idx, type) {
-        const finded = this.getPlaceholder(idx, type)
-        return finded && finded.txBody
-    }
 }
 
 module.exports = SlideLayoutXML

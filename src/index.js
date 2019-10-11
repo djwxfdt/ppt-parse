@@ -4,6 +4,8 @@ const path = require('path')
 
 const xml = require('./xml')
 
+const { GOOGLE_FONTS } = require('./utils')
+
 class PPTParseSDK {
     constructor() {
         this.outputPath = path.join(__dirname, '../example/pptOutput1')
@@ -59,7 +61,7 @@ class PPTParseSDK {
          */
         this.slideXmlS = []
         for (let i = 0; i < slideFiles.length; i++) {
-            if (i !== 5) {
+            if (i !== 22) {
                 // continue
             }
             const XML = await xml.parseSlideXML(slideFiles[i].data.toString())
@@ -134,12 +136,20 @@ class PPTParseSDK {
     }
 
     get json() {
+        let googleFonts = this.presentationXML.fonts.reduce((p, c) => {
+            if (GOOGLE_FONTS[c.name]) {
+                p[GOOGLE_FONTS[c.name]] = true
+            }
+            return p
+        }, {})
+
         return {
             size: this.presentationXML.slideSize,
             slides: this.slideXmlS.map(xml => {
+                googleFonts = Object.assign({}, googleFonts, xml.nodes.googleFonts)
                 return xml.nodes
             }),
-            fonts: this.presentationXML.fonts
+            fonts: googleFonts
         }
     }
 
