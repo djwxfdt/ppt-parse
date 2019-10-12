@@ -54,7 +54,7 @@ class PPTParseSDK {
          */
         this.slideXmlS = []
         for (let i = 0; i < slideFiles.length; i++) {
-            if (i !== 22) {
+            if (i !== 0) {
                 // continue
             }
             const XML = await xml.parseSlideXML(slideFiles[i].data.toString())

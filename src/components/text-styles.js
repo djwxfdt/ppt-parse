@@ -24,9 +24,40 @@ class LvpPr {
             this.lnSpc = new LnSpc(lnSpc)
         }
 
-        const buClr = node.selectFirst(['a:buClr', 'a:srgbClr'])
+        this.buNone = !!node.getSingle('a:buNone')
+
+        let buChar = node.getSingle('a:buChar')
+        if (buChar) {
+            /**
+             * This element specifies that a character be applied to a set of bullets. These bullets are allowed to be any character in any font that the system is able to support. If no bullet font is specified along with this element then the paragraph font will be used.
+             * @type {string}
+             */
+            this.buChar = buChar.attributes.char
+        }
+
+        let buAutoNum = node.getSingle('a:buAutoNum')
+        if (buAutoNum) {
+            this.buChar = '-'
+        }
+
+        let buSzPts = node.getSingle('a:buSzPts')
+        if (buSzPts && buSzPts.attributes.val) {
+            this.buSzPts = (+buSzPts.attributes.val / 100 / 3) * 4
+        }
+
+        let buSzPct = node.getSingle('a:buSzPct')
+        if (buSzPct && buSzPct.attributes.val) {
+            this.buSzPct = +buSzPct.attributes.val / 1000
+        }
+
+        let buClr = node.selectFirst(['a:buClr', 'a:srgbClr'])
         if (buClr) {
             this.buClr = buClr.attributes.val
+        }
+
+        let buFont = node.getSingle('a:buFont')
+        if (buFont) {
+            this.buFont = buFont
         }
     }
 
@@ -39,6 +70,16 @@ class LvpPr {
     get typeface() {
         if (this.defRpr) {
             return this.defRpr.typeface
+        }
+    }
+
+    get bullet() {
+        if (!this.buNone) {
+            return {
+                char: this.buChar,
+                sz: this.buSzPts,
+                color: this.buClr
+            }
         }
     }
 
@@ -120,10 +161,10 @@ class TextStyle {
         }
     }
 
-    getBulletColor(lvl) {
+    getBullet(lvl) {
         const ppr = this.find(lvl)
         if (ppr) {
-            return ppr.buClr
+            return ppr.bullet
         }
     }
 

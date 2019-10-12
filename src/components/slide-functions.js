@@ -113,10 +113,43 @@ module.exports.getTextSize = (sp, lvl = '0') => self => getStyle(sp, 'size', lvl
 module.exports.getTextColor = (sp, lvl = '0') => self => getStyle(sp, 'color', lvl)(self)
 
 /**
+ * 逻辑是先取得自身的显式属性，再获取lstStyle的属性，再循环获取上一层lstStyle的属性，最后获取txStyles的属性
  * @param {import('./elements/p-sp')} sp
- * @returns {(self:BaseSlide)=>number}
+ * @param {{sz,color,char}} bullet
+ * @returns {(self:BaseSlide)=>{sz,color,char}}
  */
-module.exports.getBulletColor = (sp, lvl = '0') => self => getStyle(sp, 'bullet', lvl)(self)
+module.exports.getBullet = (sp, bullet, lvl = '0') => self => {
+    let params = { idx: sp.idx, type: sp.type }
+    const master = self.master
+    let bullets = [bullet]
+    while (self) {
+        let value = null
+        const style = self.getTxStyle(params)
+        if (style) {
+            value = style.getBullet('0')
+        }
+        bullets.push(value)
+        self = self.next
+    }
+    const txStyle = master.getStyleFromTxStyles(params.type)
+    const value = txStyle && txStyle.getBullet(lvl)
+    bullets.push(value)
+    bullets = bullets.filter(i => !!i)
+
+    if (bullets.length) {
+        bullet = bullets.reduce((p, c) => {
+            p.sz = p.sz || c.sz
+            p.color = p.color || c.color
+            p.char = p.char || c.char
+            return p
+        }, {})
+        if (!bullet.char) {
+            return null
+        }
+        return bullet
+    }
+    return null
+}
 
 /**
  * @param {import('./elements/p-sp')} sp

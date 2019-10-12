@@ -39,8 +39,12 @@ module.exports = class P {
         }
     }
 
+    get hasBullet() {
+        return this.pPr && !this.pPr.buNone && !!this.pPr.buChar
+    }
+
     get bullet() {
-        if (this.pPr && !this.pPr.buNone && this.pPr.buChar) {
+        if (this.pPr && !this.pPr.buNone) {
             return {
                 char: this.pPr.buChar,
                 sz: this.pPr.buSzPts,
@@ -55,5 +59,9 @@ module.exports = class P {
 
     get align() {
         return this.pPr && this.pPr.algn
+    }
+
+    get lvl() {
+        return (this.pPr && this.pPr.lvl)
     }
 }

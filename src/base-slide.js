@@ -336,14 +336,10 @@ module.exports = class BaseSlide {
                 container.spcBef = p.spaceBofore
             }
 
-            if (p.bullet) {
-                container.bullet = p.bullet
-                if (!p.bullet.color) {
-                    if (sp.type) {
-                        container.bullet.color = SlideFunctions.getBulletColor(
-                            sp
-                        )(this)
-                    }
+            if (sp.type == 'body' || (p.hasBullet && sp.type != 'body')) {
+                let bullet = SlideFunctions.getBullet(sp, p.bullet, p.lvl)(this)
+                if (bullet) {
+                    container.bullet = bullet
                 }
             }
             // container.lnPt = p.lineSpacePercent || this.master.getLineSpacePercent(type)

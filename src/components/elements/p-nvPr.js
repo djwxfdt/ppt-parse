@@ -6,9 +6,13 @@ module.exports = class NvPr {
         let ph = node.getSingle('p:ph')
 
         if (ph) {
+            /**
+             * @type {"body"|"ctrTitle"|"title"|"pic"|"title"|"subTitle"|"tbl"|"dt"|"chart"}
+             */
+            let type = ph.attributes.type
             this.placeholder = {
                 idx: ph.attributes.idx,
-                type: ph.attributes.type,
+                type,
                 sz: ph.attributes.sz,
                 orient: ph.attributes.orient
             }
