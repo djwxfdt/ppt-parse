@@ -76,12 +76,13 @@ const FONT_MAP = {
 }
 
 const GOOGLE_FONTS = {
-    Corbel: 'Lato',
+    Corbel: 'Rubik',
     Calibri: 'Lato',
     Muli: 'Muli',
     'Muli Light': 'Muli:300,400',
     Poppins: 'Poppins',
-    'Poppins Light': 'Poppins:300,400'
+    'Poppins Light': 'Poppins:300,400',
+    'Stone Sans ITC TT-Semi': 'Handlee'
 
 }
 
@@ -89,7 +90,7 @@ const mapFont = name => {
     return [name, 'Helvetica', 'cursive']
 }
 
-const applyLumColor = ({ value, lumMod, lumOff, tint }) => {
+const applyLumColor = ({ value, lumMod, lumOff, tint, alpha }) => {
     if (!value) {
         return
     }
@@ -110,8 +111,12 @@ const applyLumColor = ({ value, lumMod, lumOff, tint }) => {
         rgb.b = rgb.b * tint / 100 + 255 * (1 - tint / 100)
         hsl = d3.hsl(rgb)
     }
-
-    return hsl.hex()
+    let hex = hsl.hex().replace('#', '')
+    if (alpha) {
+        hex = Math.floor(255 * alpha / 100).toString('16') + hex
+    }
+    return hex
+    // return hsl.rgb()
 }
 
 module.exports = { searchXML, parseString, mapFont, applyLumColor, GOOGLE_FONTS }

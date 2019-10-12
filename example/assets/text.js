@@ -1,3 +1,5 @@
+const {hexToRgba} = require("./utils")
+
 module.exports.parseTxBody = (p,index) =>{
     let pWrapper = document.createElement('div')
     pWrapper.style.zIndex = "1"
@@ -7,9 +9,7 @@ module.exports.parseTxBody = (p,index) =>{
     if( p.algn == "ctr"){
         pWrapper.style.textAlign = "center"
     }
-    if(p.color){
-        pWrapper.style.color = p.color
-    }
+    pWrapper.style.color = hexToRgba(p.color)
     if(p.lnPct){
         pWrapper.style.lineHeight = p.lnPct / 100
     }
@@ -32,11 +32,27 @@ module.exports.parseTxBody = (p,index) =>{
 
     if(p.bullet){
         let bullet = document.createElement("span")
-        bullet.innerHTML = p.bullet.char
-        bullet.style.fontSize = p.bullet.sz + "px"
-        if(p.bullet.color){
-            bullet.style.color = p.bullet.color
+        if(p.bullet.char == "-"){
+            p.bullet.char = index + 1 + "."
         }
+        bullet.innerHTML = p.bullet.char
+        if(!p.bullet.sz && p.children[0]){
+            p.bullet.sz = p.children[0].size
+        }
+
+        if(!p.bullet.font && p.children[0]){
+            p.bullet.font = p.children[0].fontFamily
+        }
+
+        bullet.style.fontSize = p.bullet.sz + "px"
+        
+        bullet.style.color = hexToRgba(p.bullet.color)
+
+
+        if(p.bullet.font){
+            bullet.style.fontFamily = p.bullet.font.join(",")
+        }
+
         pWrapper.style.display = "flex"
 
         let bulletWrapper = document.createElement("div")
@@ -68,9 +84,9 @@ module.exports.parseTxBody = (p,index) =>{
             span = document.createElement("a")
             span.setAttribute("href","#")
         }
-        if(t.color){
-            span.style.color =  t.color
-        }
+
+        span.style.color =  hexToRgba(t.color)
+
         let str = t.value.replace(/( )( )/g,"&nbsp&nbsp")
         
         span.innerHTML = str
@@ -106,7 +122,7 @@ module.exports.parseTxBody = (p,index) =>{
         }
 
         if(t.outerShadow){
-            span.style.textShadow = `${Math.cos(t.outerShadow.direction) * t.outerShadow.dist}px ${Math.sin(t.outerShadow.direction) * t.outerShadow.dist}px ${t.outerShadow.blurRad}px ${t.outerShadow.color}`
+            span.style.textShadow = `${Math.cos(t.outerShadow.direction) * t.outerShadow.dist}px ${Math.sin(t.outerShadow.direction) * t.outerShadow.dist}px ${t.outerShadow.blurRad}px ${hexToRgba(t.outerShadow.color)}`
         }
 
         textsEl.appendChild(span)

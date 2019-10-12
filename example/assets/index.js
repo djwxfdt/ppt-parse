@@ -1,4 +1,5 @@
 import parseBlock from "./parse-block"
+const {hexToRgba} = require("./utils")
 
 
 /**
@@ -8,6 +9,7 @@ let slideJson = window.jsonObj
 
 
 let app = document.getElementById('app')
+let scaleWrapper = document.getElementById('wapper')
 
 
 app.style.width = slideJson.size.width + "px"
@@ -16,6 +18,20 @@ app.style.height = slideJson.size.height + "px"
 let current = 0
 let total = slideJson.slides.length
 
+const resize = ()=>{
+    let w = window.innerWidth
+    let h = window.innerHeight
+
+    let scale = Math.min(w / slideJson.size.width,h /slideJson.size.height)
+
+    if(scale < 1){
+        scaleWrapper.style.transform = `scale(${scale})`
+        scaleWrapper.style.transformOrigin = "center"
+    }
+
+}
+
+resize()
 
 
 let currentSlideEl = null
@@ -153,11 +169,11 @@ for (let i = 0; i < slideJson.slides.length; i++) {
     if (slide.backgroundColor) {
         if (slide.backgroundColor.type == "grad") {
             let str = `linear-gradient(${(slide.backgroundColor.ang || 0) + 90}deg,${slide.backgroundColor.value.map(c => {
-                return `${c.value} ${c.pos}%`
+                return `${hexToRgba(c.value)} ${c.pos}%`
             }).join(",")})`
             wrapper.style.background = str
         } else {
-            wrapper.style.backgroundColor = slide.backgroundColor.value
+            wrapper.style.backgroundColor = hexToRgba(slide.backgroundColor.value)
         }
     }
     try {

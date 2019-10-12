@@ -225,167 +225,163 @@ module.exports = class BaseSlide {
 
         const typeface = SlideFunctions.getTypeface(sp)(this)
 
-        return sp.txBody.pList
-            .map(p => {
-                const container = {
-                    children: p.rList
-                        .map(r => {
-                            if (!r.text || r.text.length == '0') {
-                                return
-                            }
+        return sp.txBody.pList.map(p => {
+            const container = {
+                children: p.rList
+                    .map(r => {
+                        if (!r.text || r.text.length == '0') {
+                            return
+                        }
 
-                            let fontFamily = r.fontFamlily || typeface
-                            if (fontFamily && fontFamily.indexOf('+') == 0) {
-                                fontFamily = this.theme.fontScheme.getFont(
-                                    fontFamily
-                                )
-                            }
+                        let fontFamily = r.fontFamlily || typeface
+                        if (fontFamily && fontFamily.indexOf('+') == 0) {
+                            fontFamily = this.theme.fontScheme.getFont(
+                                fontFamily
+                            )
+                        }
 
-                            if (
-                                fontFamily &&
+                        if (
+                            fontFamily &&
                                 this.presentation.isEmbeddeFont(fontFamily)
-                            ) {
-                                // fontFamily = undefined
+                        ) {
+                            // fontFamily = undefined
+                        }
+
+                        if (fontFamily) {
+                            if (GOOGLE_FONTS[fontFamily]) {
+                                fontFamily = GOOGLE_FONTS[fontFamily]
+                                this.googleFonts[fontFamily] = true
                             }
+                            fontFamily = mapFont(fontFamily)
+                        }
 
-                            if (fontFamily) {
-                                if (GOOGLE_FONTS[fontFamily]) {
-                                    fontFamily = GOOGLE_FONTS[fontFamily]
-                                    this.googleFonts[fontFamily] = true
-                                }
-                                fontFamily = mapFont(fontFamily)
-                            }
+                        let color = this.getSolidFill(r.solidFill)
 
-                            let color = this.getSolidFill(r.solidFill)
-
-                            if (r.rPr && r.rPr.link) {
-                                color =
+                        if (r.rPr && r.rPr.link) {
+                            color =
                                     this.getSolidFill({
                                         type: 'schemeClr',
                                         value: 'hlink'
                                     }) || color
-                            }
+                        }
 
-                            const json = {
-                                type: 'span',
-                                value: r.text,
-                                bold: r.rPr && r.rPr.bold,
-                                italic: r.rPr && r.rPr.italic,
-                                underline: r.rPr && r.rPr.underline,
-                                strike: r.rPr && r.rPr.strike,
-                                link: r.rPr && r.rPr.link
-                                // valign:this.getTextVerticalAlign(r),
-                            }
+                        const json = {
+                            type: 'span',
+                            value: r.text,
+                            bold: r.rPr && r.rPr.bold,
+                            italic: r.rPr && r.rPr.italic,
+                            underline: r.rPr && r.rPr.underline,
+                            strike: r.rPr && r.rPr.strike,
+                            link: r.rPr && r.rPr.link
+                            // valign:this.getTextVerticalAlign(r),
+                        }
 
-                            json.size = r.fontSize || fontSize
+                        json.size = r.fontSize || fontSize
 
-                            if (r.rPr && r.rPr.baseline) {
-                                json.baseline = r.rPr.baseline
-                                if (json.size) {
-                                    json.size =
+                        if (r.rPr && r.rPr.baseline) {
+                            json.baseline = r.rPr.baseline
+                            if (json.size) {
+                                json.size =
                                         (json.size * (100 - json.baseline)) /
                                         100
-                                }
                             }
+                        }
 
-                            if (
-                                r.rPr &&
+                        if (
+                            r.rPr &&
                                 r.rPr.effectLst &&
                                 r.rPr.effectLst.outerShaw
-                            ) {
-                                const shaw = r.rPr.effectLst.outerShaw
-                                json.outerShadow = {
-                                    color: this.getSolidFill(shaw),
-                                    direction: shaw.dir,
-                                    blurRad: shaw.blurRad,
-                                    dist: shaw.dist
-                                }
+                        ) {
+                            const shaw = r.rPr.effectLst.outerShaw
+                            json.outerShadow = {
+                                color: this.getSolidFill(shaw),
+                                direction: shaw.dir,
+                                blurRad: shaw.blurRad,
+                                dist: shaw.dist
                             }
-
-                            if (fontFamily) {
-                                json.fontFamily = fontFamily
-                            }
-
-                            if (color) {
-                                json.color = color
-                            }
-
-                            if (r.rPr && r.rPr.highlight) {
-                                json.highlight = this.getSolidFill(
-                                    r.rPr.highlight
-                                )
-                            }
-
-                            return json
-                        })
-                        .filter(t => t)
-                }
-
-                if (sp.type != 'sldNum' && container.children.length == 0) {
-                    return
-                }
-
-                if (p.lineSpacePercent) {
-                    container.lnPct = p.lineSpacePercent
-                }
-
-                if (p.lineSpacePix) {
-                    container.lnPx = p.lineSpacePix
-                }
-
-                if (p.spaceBofore) {
-                    container.spcBef = p.spaceBofore
-                }
-
-                if (p.bullet) {
-                    container.bullet = p.bullet
-                    if (!p.bullet.color) {
-                        if (sp.type) {
-                            container.bullet.color = SlideFunctions.getBulletColor(
-                                sp
-                            )(this)
                         }
-                    }
-                    if (container.bullet && container.bullet.color) {
-                        container.bullet.color = '#' + container.bullet.color
+
+                        if (fontFamily) {
+                            json.fontFamily = fontFamily
+                        }
+
+                        if (color) {
+                            json.color = color
+                        }
+
+                        if (r.rPr && r.rPr.highlight) {
+                            json.highlight = this.getSolidFill(
+                                r.rPr.highlight
+                            )
+                        }
+
+                        return json
+                    })
+                    .filter(t => t)
+            }
+
+            if (sp.type != 'sldNum' && container.children.length == 0) {
+                return
+            }
+
+            if (p.lineSpacePercent) {
+                container.lnPct = p.lineSpacePercent
+            }
+
+            if (p.lineSpacePix) {
+                container.lnPx = p.lineSpacePix
+            }
+
+            if (p.spaceBofore) {
+                container.spcBef = p.spaceBofore
+            }
+
+            if (p.bullet) {
+                container.bullet = p.bullet
+                if (!p.bullet.color) {
+                    if (sp.type) {
+                        container.bullet.color = SlideFunctions.getBulletColor(
+                            sp
+                        )(this)
                     }
                 }
-                // container.lnPt = p.lineSpacePercent || this.master.getLineSpacePercent(type)
+            }
+            // container.lnPt = p.lineSpacePercent || this.master.getLineSpacePercent(type)
 
-                if (
-                    (sp.type == 'ctrTitle' || sp.type == 'title') &&
+            if (
+                (sp.type == 'ctrTitle' || sp.type == 'title') &&
                     titleColor
-                ) {
-                    container.color = titleColor
-                }
+            ) {
+                container.color = titleColor
+            }
 
-                if (sp.type == 'sldNum' && p.isSlideNum) {
-                    container.isSlideNum = true
-                }
+            if (sp.type == 'sldNum' && p.isSlideNum) {
+                container.isSlideNum = true
+            }
 
-                if (p.align) {
-                    container.algn = p.align
-                }
+            if (p.align) {
+                container.algn = p.align
+            }
 
-                if (p.pPr && p.pPr.marL) {
-                    container.marL = p.pPr.marL
-                }
+            if (p.pPr && p.pPr.marL) {
+                container.marL = p.pPr.marL
+            }
 
-                if (p.pPr && p.pPr.indent) {
-                    container.indent = p.pPr.indent
-                }
+            if (p.pPr && p.pPr.indent) {
+                container.indent = p.pPr.indent
+            }
 
-                if (p.pPr && p.pPr.lvl && p.pPr.lvl != '0') {
-                    const color = this.getSolidFill(
-                        SlideFunctions.getTextColor(sp, p.pPr.lvl)(this)
-                    )
-                    if (color) {
-                        container.color = color
-                    }
+            if (p.pPr && p.pPr.lvl && p.pPr.lvl != '0') {
+                const color = this.getSolidFill(
+                    SlideFunctions.getTextColor(sp, p.pPr.lvl)(this)
+                )
+                if (color) {
+                    container.color = color
                 }
+            }
 
-                return container
-            })
+            return container
+        })
             .filter(i => !!i)
     }
 

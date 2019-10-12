@@ -1,4 +1,5 @@
 const SVG = require("svg.js")
+const {hexToRgba} = require("./utils")
 
 const toXY = (arc,r,c)=>{
     return [
@@ -36,7 +37,7 @@ const parse = (block, wrapper, stroke,pageIndex) => {
 
 
         if (block.fill.type == "solid") {
-            fill = block.fill.value
+            fill = hexToRgba(block.fill.value)
         }
 
         let s = document.createElementNS("http://www.w3.org/2000/svg", "svg")

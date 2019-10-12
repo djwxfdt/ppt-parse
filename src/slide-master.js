@@ -16,6 +16,8 @@ class SlideMasterXML extends BaseSlide {
 
         this.type = 'master'
 
+        this.viewElements = []
+
         this.textStyles = new TextStyles(this.xml.getSingle('p:txStyles'))
 
         this.typeMap = {
@@ -68,7 +70,7 @@ class SlideMasterXML extends BaseSlide {
             return this.textStyles.bodyStyle
         }
         case 'other': {
-            return this.textStyles.bodyStyle
+            return this.textStyles.otherStyle
         }
         }
     }

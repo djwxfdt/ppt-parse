@@ -3,6 +3,7 @@ const WMF = require("./wmf")
 const SVG = require("svg.js")
 const {parseTxBody} = require("./text")
 const parsePrstShape = require("./prstShape")
+const {hexToRgba} = require("./utils")
 
 const valignMap = {
     "bottom":"flex-end"
@@ -30,7 +31,7 @@ const parseContainer = (block,pageIndex)=>{
         borderWidth = block.line.width || 1
         stroke = {
             width:borderWidth,
-            color: block.line.color,
+            color: hexToRgba(block.line.color),
             linejoin:"round",
             linecap:"but"
         }
@@ -43,12 +44,12 @@ const parseContainer = (block,pageIndex)=>{
         wrapper.style.fontSize = block.fontSize + "px"
     }
     if(block.color){
-        wrapper.style.color = block.color
+        wrapper.style.color = hexToRgba(block.color)
     }
     let fill =  "transparent"
     if(block.fill){
         if(block.fill.type == "solid"){
-            fill = block.fill.value
+            fill = hexToRgba(block.fill.value)
         }
     }
     parsePrstShape(block,wrapper,stroke,pageIndex)
@@ -216,7 +217,7 @@ export default (block,el,pageIndex,currentSlideEl) =>{
                     tdEl.appendChild(div)
                 })
                 if(tc.ln){
-                    tdEl.style.border = `dashed 1px ${tc.ln.color || "FFF"}`
+                    tdEl.style.border = `dashed 1px ${hexToRgba(tc.ln.color) || "#FFF"}`
                     tdEl.style.boxSizing = "border-box"
                     if(j != (block.table.trs.length - 1)){
                         tdEl.style.borderBottom = "none"

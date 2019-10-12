@@ -54,6 +54,11 @@ module.exports = class PPr {
             this.buChar = buChar.attributes.char
         }
 
+        let buAutoNum = node.getSingle('a:buAutoNum')
+        if (buAutoNum) {
+            this.buChar = '-'
+        }
+
         let buSzPts = node.getSingle('a:buSzPts')
         if (buSzPts && buSzPts.attributes.val) {
             this.buSzPts = (+buSzPts.attributes.val / 100 / 3) * 4
@@ -62,6 +67,11 @@ module.exports = class PPr {
         let buClr = node.selectFirst(['a:buClr', 'a:srgbClr'])
         if (buClr) {
             this.buClr = buClr.attributes.val
+        }
+
+        let buFont = node.getSingle('a:buFont')
+        if (buFont) {
+            this.buFont = buFont
         }
 
         /**
