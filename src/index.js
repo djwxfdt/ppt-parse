@@ -21,12 +21,6 @@ class PPTParseSDK {
         )
         const relXml = await xml.parseRelsXML(relsFile.data.toString())
 
-        const themePath = relXml.themePath
-        const themeFile = files.find(
-            item => item.type == 'file' && item.path == `ppt/${themePath}`
-        )
-        const themeXml = await xml.parseThemeXML(themeFile.data.toString())
-
         const presentaionFile = files.find(
             item => item.path == 'ppt/presentation.xml'
         )
@@ -54,7 +48,6 @@ class PPTParseSDK {
 
         this.presentationXML = presentationXML
         this.presentationXML.rel = relXml
-        this.themeXml = themeXml
 
         /**
          * @type {Array<import('./slide')>}
@@ -105,13 +98,19 @@ class PPTParseSDK {
                         'slideMasters/_rels/slideMaster'
                     ) + '.rels'
                 const masterRelFile = files.find(f => f.path == masterRelPath)
-                const masterRel = await xml.parseSlideLayoutRelXML(
+                const masterRel = await xml.parseMaterXml(
                     masterRelFile.data.toString()
                 )
-                XML.master.rel = masterRel
-            }
+                const themePath = masterRel.themePath
+                const themeFile = files.find(
+                    item => item.type == 'file' && item.path == themePath
+                )
+                const themeXml = await xml.parseThemeXML(themeFile.data.toString())
 
-            XML.theme = themeXml
+                XML.master.rel = masterRel
+
+                XML.theme = themeXml
+            }
 
             XML.presentation = presentationXML
 

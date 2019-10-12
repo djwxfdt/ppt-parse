@@ -78,5 +78,6 @@ module.exports = {
     parseSlideLayoutXML,
     parseSlideMaterXML,
     parseSlideLayoutRelXML,
+    parseMaterXml,
     parseVmlXML
 }

@@ -49,7 +49,11 @@ class PresentationRelXML extends BaseRelXML {
     }
 }
 
-class MasterRelXml extends BaseRelXML {}
+class MasterRelXml extends BaseRelXML {
+    get themePath() {
+        return this.getRelationByType('theme')
+    }
+}
 
 module.exports = BaseRelXML
 
