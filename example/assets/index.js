@@ -19,8 +19,8 @@ let current = 0
 let total = slideJson.slides.length
 
 const resize = ()=>{
-    let w = window.innerWidth
-    let h = window.innerHeight
+    let w = window.innerWidth - 20
+    let h = window.innerHeight - 20
 
     let scale = Math.min(w / slideJson.size.width,h /slideJson.size.height)
 
@@ -29,7 +29,10 @@ const resize = ()=>{
         scaleWrapper.style.transformOrigin = "center"
     }
 
+    scaleWrapper.style.border = "solid 1px gray"
 }
+
+window.addEventListener("resize",()=>resize())
 
 resize()
 

@@ -86,8 +86,13 @@ module.exports.parseTxBody = (p,index) =>{
         }
 
         span.style.color =  hexToRgba(t.color)
+        span.style.whiteSpace = "pre-wrap"
 
-        let str = t.value.replace(/( )( )/g,"&nbsp&nbsp")
+        if(t.value.indexOf("connected(") > -1){
+            // debugger
+        }
+
+        let str = t.value
         
         span.innerHTML = str
         if(t.size){

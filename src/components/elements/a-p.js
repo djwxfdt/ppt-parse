@@ -53,6 +53,10 @@ module.exports = class P {
         }
     }
 
+    get bullNone() {
+        return this.pPr && this.pPr.buNone
+    }
+
     get isSlideNum() {
         return this.fld && this.fld.isSlideNum
     }

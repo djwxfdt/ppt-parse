@@ -25,19 +25,20 @@ const parse = (block, wrapper, stroke,pageIndex) => {
 
 
 
-    if (block.prstShape && block.fill) {
+    if (block.prstShape) {
 
         if (block.prstShape.type == "line") {
-
-            wrapper.style.width = (width || 4) + "px"
-            wrapper.style.height = (height || 4) + "px"
-
+            width = Math.max(width ||0,4)
+            height = Math.max(height || 0,4)
+            wrapper.style.width = width + "px"
+            wrapper.style.height = height + "px"
             block.size = null;
-        }
-
-
-        if (block.fill.type == "solid") {
-            fill = hexToRgba(block.fill.value)
+            if(!block.fill){
+                block.fill = {
+                    value:"000",
+                    type:"solid"
+                }
+            }
         }
 
         let s = document.createElementNS("http://www.w3.org/2000/svg", "svg")
@@ -47,14 +48,20 @@ const parse = (block, wrapper, stroke,pageIndex) => {
         s.style.top = "0"
 
         let ele = SVG.adopt(s)
-        ele.size("100%", "100%").viewbox(0, 0, width || 4, height || 4)
+        ele.size("100%", "100%").viewbox(0, 0, width, height)
 
-        if (block.fill.type == "grad") {
-            fill = ele.gradient("linear", stop => {
-                block.fill.value.map(v => {
-                    stop.at(v.pos / 100, v.value)
+        if(block.fill){
+            if (block.fill.type == "solid") {
+                fill = hexToRgba(block.fill.value)
+            }
+    
+            if (block.fill.type == "grad") {
+                fill = ele.gradient("linear", stop => {
+                    block.fill.value.map(v => {
+                        stop.at(v.pos / 100, v.value)
+                    })
                 })
-            })
+            }
         }
 
         if (block.prstShape.type == "rect") {
@@ -94,7 +101,9 @@ const parse = (block, wrapper, stroke,pageIndex) => {
             let c = Math.PI * width
             pie.attr({ "stroke-dasharray": `${c / 4} ${c}`, "stroke": "white", "stroke-width": width, "stroke-dashoffset": c / 4 * 3 })
         } else if ("line" == block.prstShape.type) {
-            ele.line(0, 0, width, height).stroke({ "color": fill, "width": 2, linecap: "round" })
+            let dx = width == 4 ?0:width
+            let dy = height == 4 ?0:height
+            ele.line(0, 0, dx, dy).stroke({ "color": fill, "width": 2, linecap: "round" })
         }else if("blockArc" == block.prstShape.type){
             let avList = block.prstShape.avLst
             if(avList.length>1){

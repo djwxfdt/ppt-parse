@@ -336,12 +336,15 @@ module.exports = class BaseSlide {
                 container.spcBef = p.spaceBofore
             }
 
-            if (sp.type == 'body' || (p.hasBullet && sp.type != 'body')) {
-                let bullet = SlideFunctions.getBullet(sp, p.bullet, p.lvl)(this)
-                if (bullet) {
-                    container.bullet = bullet
+            if (!p.bullNone) {
+                if (sp.type == 'body' || (p.hasBullet && sp.type != 'body')) {
+                    let bullet = SlideFunctions.getBullet(sp, p.bullet, p.lvl)(this)
+                    if (bullet) {
+                        container.bullet = bullet
+                    }
                 }
             }
+
             // container.lnPt = p.lineSpacePercent || this.master.getLineSpacePercent(type)
 
             if (
