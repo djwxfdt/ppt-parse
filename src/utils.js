@@ -76,7 +76,8 @@ const FONT_MAP = {
 }
 
 const GOOGLE_FONTS = {
-    Corbel: 'Rubik',
+    Corbel: 'Inconsolata',
+    Consolas: 'Roboto',
     Calibri: 'Lato',
     Muli: 'Muli',
     'Muli Light': 'Muli:300,400',

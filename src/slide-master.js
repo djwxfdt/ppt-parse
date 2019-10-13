@@ -75,9 +75,9 @@ class SlideMasterXML extends BaseSlide {
         }
     }
 
-    getTxStyle({ type, idx }) {
-        type = this.typeMap[type] || type
-        return super.getTxStyle({ type, idx })
+    getTxStyle(params) {
+        params.type = this.typeMap[params.type] || params.type
+        return super.getTxStyle(params)
     }
 
     getTextFontOfType(type) {

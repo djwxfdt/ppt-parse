@@ -216,127 +216,138 @@ module.exports = class BaseSlide {
         if (!sp.txBody) {
             return
         }
-        return sp.txBody.pList.map(p => {
-            let defRpr = SlideFunctions.getDefRPr(sp, p.lvl)(this) || {}
-            let ppr = SlideFunctions.getPPr(sp, p.pPr, p.lvl)(this) || {}
-            if (defRpr.solidFill) {
-                defRpr.color = this.getSolidFill(defRpr.solidFill)
-                delete defRpr.solidFill
-            }
-
-            const container = {
-                children: p.rList
-                    .map(r => {
-                        if (!r.text || r.text.length == '0') {
-                            return
-                        }
-
-                        let fontFamily = r.fontFamlily || defRpr.typeface
-                        if (fontFamily && fontFamily.indexOf('+') == 0) {
-                            fontFamily = this.theme.fontScheme.getFont(
-                                fontFamily
-                            )
-                        }
-
-                        if (
-                            fontFamily &&
-                                this.presentation.isEmbeddeFont(fontFamily)
-                        ) {
-                            // fontFamily = undefined
-                        }
-
-                        if (fontFamily) {
-                            if (GOOGLE_FONTS[fontFamily]) {
-                                fontFamily = GOOGLE_FONTS[fontFamily]
-                                this.googleFonts[fontFamily] = true
+        return sp.txBody.pList
+            .map(p => {
+                let defRpr = SlideFunctions.getDefRPr(sp, p.lvl)(this) || {}
+                let ppr = SlideFunctions.getPPr(sp, p.pPr, p.lvl)(this) || {}
+                if (defRpr.solidFill) {
+                    defRpr.color = this.getSolidFill(defRpr.solidFill)
+                    delete defRpr.solidFill
+                }
+                const container = {
+                    children: p.rList
+                        .map(r => {
+                            if (!r.text || r.text.length == '0') {
+                                return
                             }
-                            fontFamily = mapFont(fontFamily)
-                        }
 
-                        let color = this.getSolidFill(r.solidFill)
+                            let fontFamily = r.fontFamlily || defRpr.typeface
+                            if (fontFamily && fontFamily.indexOf('+') == 0) {
+                                fontFamily = this.theme.fontScheme.getFont(
+                                    fontFamily
+                                )
+                            }
 
-                        if (r.rPr && r.rPr.link) {
-                            color =
+                            if (
+                                fontFamily &&
+                                this.presentation.isEmbeddeFont(fontFamily)
+                            ) {
+                                // fontFamily = undefined
+                            }
+
+                            if (fontFamily) {
+                                if (GOOGLE_FONTS[fontFamily]) {
+                                    fontFamily = GOOGLE_FONTS[fontFamily]
+                                    this.googleFonts[fontFamily] = true
+                                }
+                                fontFamily = mapFont(fontFamily)
+                            }
+
+                            let color = this.getSolidFill(r.solidFill)
+
+                            if (r.rPr && r.rPr.link) {
+                                color =
                                     this.getSolidFill({
                                         type: 'schemeClr',
                                         value: 'hlink'
                                     }) || color
-                        }
+                            }
 
-                        const json = {
-                            type: 'span',
-                            value: r.text,
-                            bold: r.rPr && r.rPr.bold,
-                            italic: r.rPr && r.rPr.italic,
-                            underline: r.rPr && r.rPr.underline,
-                            strike: r.rPr && r.rPr.strike,
-                            link: r.rPr && r.rPr.link
-                            // valign:this.getTextVerticalAlign(r),
-                        }
+                            const json = {
+                                type: 'span',
+                                value: r.text,
+                                bold: r.rPr && r.rPr.bold,
+                                italic: r.rPr && r.rPr.italic,
+                                underline: r.rPr && r.rPr.underline,
+                                strike: r.rPr && r.rPr.strike,
+                                link: r.rPr && r.rPr.link
+                                // valign:this.getTextVerticalAlign(r),
+                            }
 
-                        json.size = r.fontSize || defRpr.size
+                            json.size = r.fontSize || defRpr.size
 
-                        if (r.rPr && r.rPr.baseline) {
-                            json.baseline = r.rPr.baseline
-                            if (json.size) {
-                                json.size =
+                            if (r.rPr && r.rPr.baseline) {
+                                json.baseline = r.rPr.baseline
+                                if (json.size) {
+                                    json.size =
                                         (json.size * (100 - json.baseline)) /
                                         100
+                                }
                             }
-                        }
 
-                        if (
-                            r.rPr &&
+                            if (
+                                r.rPr &&
                                 r.rPr.effectLst &&
                                 r.rPr.effectLst.outerShaw
-                        ) {
-                            const shaw = r.rPr.effectLst.outerShaw
-                            json.outerShadow = {
-                                color: this.getSolidFill(shaw),
-                                direction: shaw.dir,
-                                blurRad: shaw.blurRad,
-                                dist: shaw.dist
+                            ) {
+                                const shaw = r.rPr.effectLst.outerShaw
+                                json.outerShadow = {
+                                    color: this.getSolidFill(shaw),
+                                    direction: shaw.dir,
+                                    blurRad: shaw.blurRad,
+                                    dist: shaw.dist
+                                }
                             }
+
+                            if (fontFamily) {
+                                json.fontFamily = fontFamily
+                            }
+
+                            if (color) {
+                                json.color = color
+                            }
+
+                            if (r.rPr && r.rPr.highlight) {
+                                json.highlight = this.getSolidFill(
+                                    r.rPr.highlight
+                                )
+                            }
+
+                            return json
+                        })
+                        .filter(t => t)
+                }
+                if (!p.bullNone) {
+                    if (
+                        sp.type == 'body' ||
+                        (p.hasBullet && sp.type != 'body')
+                    ) {
+                        let bullet = SlideFunctions.getBullet(
+                            sp,
+                            p.bullet,
+                            p.lvl
+                        )(this)
+                        if (bullet) {
+                            container.bullet = bullet
                         }
-
-                        if (fontFamily) {
-                            json.fontFamily = fontFamily
-                        }
-
-                        if (color) {
-                            json.color = color
-                        }
-
-                        if (r.rPr && r.rPr.highlight) {
-                            json.highlight = this.getSolidFill(
-                                r.rPr.highlight
-                            )
-                        }
-
-                        return json
-                    })
-                    .filter(t => t)
-            }
-
-            if (sp.type != 'sldNum' && container.children.length == 0) {
-                return
-            }
-
-            Object.assign(container, ppr, defRpr)
-
-            if (!p.bullNone) {
-                if (sp.type == 'body' || (p.hasBullet && sp.type != 'body')) {
-                    let bullet = SlideFunctions.getBullet(sp, p.bullet, p.lvl)(this)
-                    if (bullet) {
-                        container.bullet = bullet
                     }
                 }
-            }
-            if (sp.type == 'sldNum' && p.isSlideNum) {
-                container.isSlideNum = true
-            }
-            return container
-        })
+                if (
+                    container.children.length == 0 &&
+                    sp.txBody.pList.length != 1
+                ) {
+                    container.children.push({ value: '\n' })
+                    container.bullet = null
+                }
+                if (sp.type != 'sldNum' && container.children.length == 0) {
+                    return
+                }
+                Object.assign(container, ppr, defRpr)
+                if (sp.type == 'sldNum' && p.isSlideNum) {
+                    container.isSlideNum = true
+                }
+                return container
+            })
             .filter(i => !!i)
     }
 
@@ -623,7 +634,8 @@ module.exports = class BaseSlide {
         let finded = this.placeholders.find(sp => sp.type == params.type)
 
         if (params.idx) {
-            finded = this.placeholders.find(sp => sp.idx == params.idx) || finded
+            finded =
+                this.placeholders.find(sp => sp.idx == params.idx) || finded
         }
 
         if (finded) {
