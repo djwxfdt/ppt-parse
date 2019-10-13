@@ -64,6 +64,11 @@ module.exports = class PPr {
             this.buSzPts = (+buSzPts.attributes.val / 100 / 3) * 4
         }
 
+        let buSzPct = node.getSingle('a:buSzPct')
+        if (buSzPct && buSzPct.attributes.val) {
+            this.buSzPct = +buSzPct.attributes.val / 1000
+        }
+
         let buClr = node.selectFirst(['a:buClr', 'a:srgbClr'])
         if (buClr) {
             this.buClr = buClr.attributes.val
@@ -110,6 +115,17 @@ module.exports = class PPr {
     get spaceBefore() {
         if (this.spcBef) {
             return this.spcBef.spcPts
+        }
+    }
+
+    toJSON() {
+        return {
+            spcBef: this.spaceBefore,
+            // lnPct: this.lineSpacePercent,
+            lnPx: this.lineSpacePix,
+            algn: this.algn,
+            marL: this.marL,
+            indent: this.indent
         }
     }
 }

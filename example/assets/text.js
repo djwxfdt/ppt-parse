@@ -62,9 +62,6 @@ module.exports.parseTxBody = (p,index) =>{
         bulletWrapper.appendChild(bullet)
         pWrapper.appendChild(bulletWrapper)
     }
-
-    
-
     
     
     pWrapper.appendChild(textsEl)
@@ -132,8 +129,6 @@ module.exports.parseTxBody = (p,index) =>{
 
         textsEl.appendChild(span)
     })
-
-   
 
     return pWrapper
 }

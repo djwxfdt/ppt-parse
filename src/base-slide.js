@@ -216,16 +216,14 @@ module.exports = class BaseSlide {
         if (!sp.txBody) {
             return
         }
-
-        const fontSize = SlideFunctions.getTextSize(sp)(this)
-        // if (fontSize) {
-        //     container.fontSize = fontSize
-        // }
-        const titleColor = this.getSolidFill(this.getTitleColor())
-
-        const typeface = SlideFunctions.getTypeface(sp)(this)
-
         return sp.txBody.pList.map(p => {
+            let defRpr = SlideFunctions.getDefRPr(sp, p.lvl)(this) || {}
+            let ppr = SlideFunctions.getPPr(sp, p.pPr, p.lvl)(this) || {}
+            if (defRpr.solidFill) {
+                defRpr.color = this.getSolidFill(defRpr.solidFill)
+                delete defRpr.solidFill
+            }
+
             const container = {
                 children: p.rList
                     .map(r => {
@@ -233,7 +231,7 @@ module.exports = class BaseSlide {
                             return
                         }
 
-                        let fontFamily = r.fontFamlily || typeface
+                        let fontFamily = r.fontFamlily || defRpr.typeface
                         if (fontFamily && fontFamily.indexOf('+') == 0) {
                             fontFamily = this.theme.fontScheme.getFont(
                                 fontFamily
@@ -276,7 +274,7 @@ module.exports = class BaseSlide {
                             // valign:this.getTextVerticalAlign(r),
                         }
 
-                        json.size = r.fontSize || fontSize
+                        json.size = r.fontSize || defRpr.size
 
                         if (r.rPr && r.rPr.baseline) {
                             json.baseline = r.rPr.baseline
@@ -324,17 +322,7 @@ module.exports = class BaseSlide {
                 return
             }
 
-            if (p.lineSpacePercent) {
-                container.lnPct = p.lineSpacePercent
-            }
-
-            if (p.lineSpacePix) {
-                container.lnPx = p.lineSpacePix
-            }
-
-            if (p.spaceBofore) {
-                container.spcBef = p.spaceBofore
-            }
+            Object.assign(container, ppr, defRpr)
 
             if (!p.bullNone) {
                 if (sp.type == 'body' || (p.hasBullet && sp.type != 'body')) {
@@ -344,41 +332,9 @@ module.exports = class BaseSlide {
                     }
                 }
             }
-
-            // container.lnPt = p.lineSpacePercent || this.master.getLineSpacePercent(type)
-
-            if (
-                (sp.type == 'ctrTitle' || sp.type == 'title') &&
-                    titleColor
-            ) {
-                container.color = titleColor
-            }
-
             if (sp.type == 'sldNum' && p.isSlideNum) {
                 container.isSlideNum = true
             }
-
-            if (p.align) {
-                container.algn = p.align
-            }
-
-            if (p.pPr && p.pPr.marL) {
-                container.marL = p.pPr.marL
-            }
-
-            if (p.pPr && p.pPr.indent) {
-                container.indent = p.pPr.indent
-            }
-
-            if (p.pPr && p.pPr.lvl && p.pPr.lvl != '0') {
-                const color = this.getSolidFill(
-                    SlideFunctions.getTextColor(sp, p.pPr.lvl)(this)
-                )
-                if (color) {
-                    container.color = color
-                }
-            }
-
             return container
         })
             .filter(i => !!i)

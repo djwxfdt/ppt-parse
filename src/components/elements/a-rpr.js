@@ -84,4 +84,12 @@ module.exports = class RPr {
             this.effectLst = new EffectLst(effectLst)
         }
     }
+
+    toJSON() {
+        return {
+            solidFill: this.solidFill,
+            size: this.size,
+            typeface: this.typeface
+        }
+    }
 }

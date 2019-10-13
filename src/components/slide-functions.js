@@ -2,6 +2,8 @@
 /**
  *
  * @typedef {import('../base-slide')} BaseSlide
+ * @typedef {import('./elements/a-pPr')} PPr
+ * @typedef {import('./elements/a-rpr.js')} RPr
  */
 
 /**
@@ -104,12 +106,6 @@ const getStyle = (sp, key, lvl = '0') => self => {
  * @param {import('./elements/p-sp')} sp
  * @returns {(self:BaseSlide)=>number}
  */
-module.exports.getTextSize = (sp, lvl = '0') => self => getStyle(sp, 'size', lvl)(self)
-
-/**
- * @param {import('./elements/p-sp')} sp
- * @returns {(self:BaseSlide)=>number}
- */
 module.exports.getTextColor = (sp, lvl = '0') => self => getStyle(sp, 'color', lvl)(self)
 
 /**
@@ -147,6 +143,82 @@ module.exports.getBullet = (sp, bullet, lvl = '0') => self => {
             return null
         }
         return bullet
+    }
+    return null
+}
+
+/**
+ * @param {import('./elements/p-sp')} sp
+ * @param {PPr} ppr
+ * @returns {(self:BaseSlide)=>PPr}
+ */
+module.exports.getPPr = (sp, ppr, lvl = '0') => self => {
+    let params = { idx: sp.idx, type: sp.type }
+    const master = self.master
+    let pprs = [ppr]
+    while (self) {
+        let value = null
+        const style = self.getTxStyle(params)
+        if (style) {
+            value = style.find(lvl)
+        }
+        pprs.push(value)
+        self = self.next
+    }
+    const txStyle = master.getStyleFromTxStyles(params.type)
+    const value = txStyle && txStyle.find(lvl)
+    pprs.push(value)
+    pprs = pprs.filter(i => !!i)
+    if (pprs.length) {
+        ppr = pprs.reduce((p, c) => {
+            let obj = c.toJSON()
+            for (let k in obj) {
+                if (p[k] == undefined) {
+                    p[k] = obj[k]
+                }
+            }
+            return p
+        }, {})
+        return ppr
+    }
+    return null
+}
+
+/**
+ * @param {import('./elements/p-sp')} sp
+ * @returns {(self:BaseSlide)=>RPr}
+ */
+module.exports.getDefRPr = (sp, lvl = '0') => self => {
+    let params = { idx: sp.idx, type: sp.type }
+    const master = self.master
+    /**
+     * @type {Array<RPr>}
+     */
+    let rprs = []
+    while (self) {
+        let value = null
+        const style = self.getTxStyle(params)
+        if (style) {
+            value = style.find(lvl)
+        }
+        rprs.push(value && value.defRpr)
+        self = self.next
+    }
+    const txStyle = master.getStyleFromTxStyles(params.type)
+    const value = txStyle && txStyle.find(lvl)
+    rprs.push(value && value.defRpr)
+    rprs = rprs.filter(i => !!i)
+    if (rprs.length) {
+        let rpr = rprs.reduce((p, c) => {
+            let obj = c.toJSON()
+            for (let k in obj) {
+                if (p[k] == undefined) {
+                    p[k] = obj[k]
+                }
+            }
+            return p
+        }, {})
+        return rpr
     }
     return null
 }
