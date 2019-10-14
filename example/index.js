@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 
 
-const PPTParseSDK = require('../src/index')
+const PPTParseSDK = require('../packages/server/src/index')
 
 const path = require('path')
 

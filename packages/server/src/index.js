@@ -8,11 +8,11 @@ const { GOOGLE_FONTS } = require('./utils')
 
 class PPTParseSDK {
     constructor() {
-        this.outputPath = path.join(__dirname, '../example/pptOutput1')
+        this.outputPath = path.join(__dirname, './pptOutput1')
     }
 
-    async parsePPT(pptname) {
-        const files = await decompress(pptname, this.outputPath)
+    async parsePPT(pptname, outputPath) {
+        const files = await decompress(pptname, outputPath || this.outputPath)
 
         const relsFile = files.find(
             item =>

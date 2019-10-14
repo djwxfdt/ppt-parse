@@ -1,0 +1,7 @@
+.tmp/
+.vscode/
+build/
+docs/
+example/
+node_modules
+webpack.config.js

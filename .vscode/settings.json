@@ -1,4 +1,6 @@
 {
+    "javascript.validate.enable": false,
+    "typescript.validate.enable": false,
     "files.associations": {
         "*.css": "scss",
         "*.jsx": "javascriptreact",
