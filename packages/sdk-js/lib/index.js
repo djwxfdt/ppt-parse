@@ -10,10 +10,17 @@ type PPTJSON = {
     slides: Array<any>
 }
 
-const Library = (props: {jsonObj: PPTJSON}) => {
+const Library = (props: {jsonObj: PPTJSON, currentPage: number}) => {
     const { slides, size } = props.jsonObj
+
+    let page = props.currentPage || 0
+    if (page < 0) {
+        page = 0
+    } else if (page >= slides.length) {
+        page = slides.length - 1
+    }
     return <div className="pptx_container" style={{ width: size.width, height: size.height, background: 'black', position: 'relative', overflow: 'hidden' }}>
-        {slides.map((slide, index) => <Slide {...slide} key={index} pageIndex={index} ></Slide>)}
+        <Slide {...slides[page]} key={page} pageIndex={page} ></Slide>)
     </div>
 }
 

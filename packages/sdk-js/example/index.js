@@ -15,22 +15,58 @@ document.body.style.justifyContent = 'center'
 document.body.style.width = '100vw'
 document.body.style.height = '100vh'
 
-const resize = () => {
-    const w = window.innerWidth - 20
-    const h = window.innerHeight - 20
 
-    const scale = Math.min(w / slideJson.size.width, h / slideJson.size.height)
 
-    if (scale < 1) {
-        scaleWrapper.style.transform = `scale(${scale})`
-        scaleWrapper.style.transformOrigin = 'center'
+
+class App extends React.Component{
+
+    constructor(){
+        super()
+        this.state = {page:0}
     }
 
-    scaleWrapper.style.border = 'solid 1px gray'
-}
+    componentDidMount(){
+        window.addEventListener("keyup", e => {
+            if (e.keyCode == 39) {
+                e.preventDefault()
+                this.setState({page:this.state.page+1})
+            } else if (e.keyCode == 37) {
+                e.preventDefault()
+                this.setState({page:this.state.page-1})
+            }
+        })
+        
+        document.body.addEventListener("click", e => {
+            this.setState({page:this.state.page+1})
+        })
 
-window.addEventListener('resize', () => resize())
+        let scaleWrapper = this.refs.wrapper
 
-resize()
+        const resize = () => {
+            const w = window.innerWidth - 20
+            const h = window.innerHeight - 20
+        
+            const scale = Math.min(w / slideJson.size.width, h / slideJson.size.height)
+        
+            if (scale < 1) {
+                scaleWrapper.style.transform = `scale(${scale})`
+                scaleWrapper.style.transformOrigin = 'center'
+            }
+        
+            scaleWrapper.style.border = 'solid 1px gray'
+        }
+        
+        window.addEventListener('resize', () => resize())
 
-ReactDOM.render(<Library jsonObj={slideJson} />, scaleWrapper)
+        resize()
+
+    }
+    
+    render(){
+        return <div ref="wrapper">
+            <Library jsonObj={slideJson} currentPage={this.state.page} />
+        </div>
+    }
+} 
+
+ReactDOM.render(<App />, scaleWrapper)

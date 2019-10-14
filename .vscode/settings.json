@@ -1,6 +1,7 @@
 {
     "javascript.validate.enable": false,
     "typescript.validate.enable": false,
+    "eslint.workingDirectories": ["./packages/sdk-js","./packages/server"],
     "files.associations": {
         "*.css": "scss",
         "*.jsx": "javascriptreact",
