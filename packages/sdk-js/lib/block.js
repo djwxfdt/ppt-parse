@@ -5,6 +5,7 @@ import React, { useEffect, useRef } from 'react'
 import type { BlockType } from './export'
 import GroupElement from './group'
 import ContainerElement from './container'
+import ImageElement from './image'
 
 export default (props: {block: BlockType}) => {
     const block = props.block
@@ -25,6 +26,9 @@ export default (props: {block: BlockType}) => {
     switch (props.block.type) {
     case 'group': {
         return <GroupElement {...props.block} />
+    }
+    case 'image': {
+        return <ImageElement block={props.block} style={style}/>
     }
     case 'container': {
         return <ContainerElement block={props.block} style={style} />

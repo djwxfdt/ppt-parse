@@ -17,7 +17,7 @@ module.exports = {
         ]
     },
     devServer: {
-
+        contentBase: path.join(__dirname, '../../example/pptOutput1')
     },
     plugins: [new HtmlWebpackPlugin()]
 }

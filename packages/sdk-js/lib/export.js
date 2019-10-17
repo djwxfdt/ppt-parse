@@ -27,6 +27,13 @@ export type Text = {
     outerShadow: {direction: number, dist: number, blurRad: number, color: string}
 }
 
+export type Bullet = {
+    char: string,
+    font: ?Array<string>,
+    sz: ?number,
+    color: ?string
+}
+
 export type TextCotainer = {
     algn: ?'ctr' | 'r',
     color: Color,
@@ -34,7 +41,8 @@ export type TextCotainer = {
     spcBef: ?number,
     marL: ?number,
     indent: ?number,
-    children: Array<Text>
+    children: Array<Text>,
+    bullet: ?Bullet
 }
 
 export type BlockType = {
@@ -48,5 +56,6 @@ export type BlockType = {
     line: ?Line,
     rot: ?number,
     valign: ?'top',
-    text: ?Array<TextCotainer>
+    text: ?Array<TextCotainer>,
+    src: ?string
 }

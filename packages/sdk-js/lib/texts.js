@@ -2,7 +2,7 @@
 // @flow
 
 import React, { useEffect, useRef } from 'react'
-import type { BlockType, TextCotainer, Text } from './export'
+import type { BlockType, TextCotainer, Text, Bullet } from './export'
 import { hexToRgba } from './utils'
 
 const valignMap = {
@@ -10,7 +10,7 @@ const valignMap = {
     center: 'center'
 }
 
-const TextSpan = (props: {text: Text}) => {
+const TextSpan = (props: { text: Text }) => {
     const style = {}
     const t = props.text
     if (t.link) {
@@ -47,15 +47,35 @@ const TextSpan = (props: {text: Text}) => {
         style.verticalAlign = t.baseline + '%'
     }
     if (t.outerShadow) {
-        style.textShadow = `${Math.cos(t.outerShadow.direction) * t.outerShadow.dist}px ${Math.sin(t.outerShadow.direction) * t.outerShadow.dist}px ${t.outerShadow.blurRad}px ${hexToRgba(t.outerShadow.color)}`
+        style.textShadow = `${Math.cos(t.outerShadow.direction) *
+            t.outerShadow.dist}px ${Math.sin(t.outerShadow.direction) *
+            t.outerShadow.dist}px ${t.outerShadow.blurRad}px ${hexToRgba(
+            t.outerShadow.color
+        )}`
     }
 
-    return <span style={style}>
-        {t.value}
-    </span>
+    return <span style={style}>{t.value}</span>
 }
 
-const TextContainer = (props: {text: TextCotainer, index: number}) => {
+const BulletWrapper = (props: {bullet: ?Bullet, color: ?string, sz: ?number}) => {
+    if (!props.bullet) {
+        return null
+    }
+    if (props.bullet.char === '-') {
+        props.bullet.char = 1 + '.'
+    }
+    const style = {}
+    style.fontSize = props.bullet.sz || props.sz
+    style.color = props.bullet.color || props.color
+    if (props.bullet.font) {
+        style.fontFamily = props.bullet.font.join(',')
+    }
+    return <div data-type="bullet-wrapper" style={style}>
+        <span>{props.bullet.char || ''}</span>
+    </div>
+}
+
+const TextContainer = (props: { text: TextCotainer, index: number }) => {
     const style = {}
     const p = props.text
     if (p.algn === 'ctr') {
@@ -74,30 +94,49 @@ const TextContainer = (props: {text: TextCotainer, index: number}) => {
     }
     const marL = (p.marL || 0) + (p.indent || 0)
     if (marL) {
-        innerStyle.marginLeft = (marL) + 'px'
+        innerStyle.marginLeft = marL + 'px'
+    }
+    if ((p.children || []).length === 0) {
+        return null
     }
 
-    return <div data-type="text-container"
-        style={{ position: 'relative', zIndex: 1, ...style }}>
-        <div style={innerStyle}>
-            {(p.children || []).map((r, index) => {
-                return <TextSpan text={r} key={index} />
-            })}
+    return (
+        <div
+            data-type="text-container"
+            style={{ position: 'relative', zIndex: 1, ...style, display: 'flex' }}
+        >
+            <BulletWrapper bullet={props.text.bullet} color={p.children[0].color} sz={p.children[0].size}></BulletWrapper>
+            <div style={innerStyle}>
+                {(p.children || []).map((r, index) => {
+                    return <TextSpan text={r} key={index} />
+                })}
+            </div>
         </div>
-    </div>
+    )
 }
 
-export default (props: {block: BlockType}) => {
+export default (props: { block: BlockType }) => {
     const style = {}
     if (props.block.valign !== 'top') {
         style.display = 'flex'
         style.flexDirection = 'column'
         style.justifyContent = valignMap[props.block.valign || 'center']
     }
-    return <div data-type="texts-wrapper"
-        style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', ...style }}>
-        {(props.block.text || []).map((text, index) => {
-            return <TextContainer text={text} index={index} key={index} />
-        })}
-    </div>
+    return (
+        <div
+            data-type="texts-wrapper"
+            style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                ...style
+            }}
+        >
+            {(props.block.text || []).map((text, index) => {
+                return <TextContainer text={text} index={index} key={index} />
+            })}
+        </div>
+    )
 }
