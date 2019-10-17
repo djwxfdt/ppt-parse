@@ -20,7 +20,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/example/index.js"
+            "program": "${workspaceFolder}/packages/server/example/index.js"
         }
     ]
 }

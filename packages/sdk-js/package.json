@@ -1,6 +1,6 @@
 {
   "name": "pptx-sdk-js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "pptx-parse browser sdk",
   "main": "index.js",
   "scripts": {
