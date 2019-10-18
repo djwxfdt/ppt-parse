@@ -17,7 +17,7 @@ const setSlideBackground = (target: ?HTMLElement, color: Color, url: ?string) =>
         return
     }
     if (url) {
-        target.style.backgroundImage = `url(${url.replace('ppt', '')})`
+        target.style.backgroundImage = `url(${url})`
         target.style.backgroundSize = 'cover'
     }
     if (color.type === 'grad' && Array.isArray(color.value)) {

@@ -6,6 +6,7 @@ import type { BlockType } from './export'
 import GroupElement from './group'
 import ContainerElement from './container'
 import ImageElement from './image'
+import TableElement from './table'
 
 export default (props: {block: BlockType}) => {
     const block = props.block
@@ -32,6 +33,9 @@ export default (props: {block: BlockType}) => {
     }
     case 'container': {
         return <ContainerElement block={props.block} style={style} />
+    }
+    case 'table': {
+        return <TableElement block={props.block} style={style}/>
     }
     default: {
         return <div></div>

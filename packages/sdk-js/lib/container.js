@@ -6,6 +6,7 @@ import type { BlockType } from './export'
 import { hexToRgba } from './utils'
 import ShapeElement from './prstShape'
 import TextListElement from './texts'
+import SvgElement from './custShape'
 
 export default (props: {block: BlockType, style: any}) => {
     const style = Object.assign({}, props.style)
@@ -38,6 +39,9 @@ export default (props: {block: BlockType, style: any}) => {
 
     return <div data-type="container" style={style}>
         <ShapeElement block={block} stroke={stroke} />
+        {(block.svgs || []).map((svg, i) => {
+            return <SvgElement svg={svg} stroke={stroke} key={i} block={block}/>
+        })}
         {block.text ? <TextListElement block={block} /> : null}
     </div>
 }

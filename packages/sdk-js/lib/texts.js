@@ -75,7 +75,7 @@ const BulletWrapper = (props: {bullet: ?Bullet, color: ?string, sz: ?number}) =>
     </div>
 }
 
-const TextContainer = (props: { text: TextCotainer, index: number }) => {
+export const TextContainer = (props: { text: TextCotainer, index: number }) => {
     const style = {}
     const p = props.text
     if (p.algn === 'ctr') {

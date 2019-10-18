@@ -45,6 +45,17 @@ export type TextCotainer = {
     bullet: ?Bullet
 }
 
+export type Table = {
+    trs: Array<{tcs: Array<{body: ?Array<TextCotainer>, ln: Line}>, height: number}>,
+    cols: Array<number>
+}
+
+export type Svg = {
+    width: number,
+    height: number,
+    points: Array<{t: 'moveTo' | 'lnTo' | 'cubicBezTo' | 'close', x: number, y: number, pts: Array<{x: number, y: number}>}>
+}
+
 export type BlockType = {
     type: 'group' | 'container' | 'image' | 'rect' | 'table' | 'oleObj',
     position: {x: number, y: number},
@@ -57,5 +68,7 @@ export type BlockType = {
     rot: ?number,
     valign: ?'top',
     text: ?Array<TextCotainer>,
-    src: ?string
+    src: ?string,
+    table: ?Table,
+    svgs: ?Array<Svg>
 }
