@@ -6,9 +6,11 @@ import type { BlockType } from './export'
 
 import BlockElement from './block'
 
-export default (props: BlockType) => {
+export default (props: {block: BlockType, style: any, pageIndex: number}) => {
     return <div data-type="group"
-        style={{ position: 'absolute', left: props.position.x, top: props.position.y, ...props.size }}>
-
+        style={{ position: 'absolute', ...props.style }}>
+        {(props.block.children || []).map((block, index) => {
+            return <BlockElement block={block} key={index} pageIndex={props.pageIndex}/>
+        })}
     </div>
 }

@@ -42,7 +42,8 @@ export type TextCotainer = {
     marL: ?number,
     indent: ?number,
     children: Array<Text>,
-    bullet: ?Bullet
+    bullet: ?Bullet,
+    isSlideNum: ?Boolean
 }
 
 export type Table = {
@@ -70,5 +71,6 @@ export type BlockType = {
     text: ?Array<TextCotainer>,
     src: ?string,
     table: ?Table,
-    svgs: ?Array<Svg>
+    svgs: ?Array<Svg>,
+    children: ?Array<BlockType>
 }

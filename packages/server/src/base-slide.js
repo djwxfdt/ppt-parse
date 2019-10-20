@@ -238,20 +238,12 @@ module.exports = class BaseSlide {
                                 )
                             }
 
-                            if (
-                                fontFamily &&
-                                this.presentation.isEmbeddeFont(fontFamily)
-                            ) {
-                                // fontFamily = undefined
+                            if (fontFamily && GOOGLE_FONTS[fontFamily]) {
+                                const googleFont = GOOGLE_FONTS[fontFamily]
+                                fontFamily = googleFont.name || googleFont.url
+                                this.googleFonts[googleFont.url] = true
                             }
-
-                            if (fontFamily) {
-                                if (GOOGLE_FONTS[fontFamily]) {
-                                    fontFamily = GOOGLE_FONTS[fontFamily]
-                                    this.googleFonts[fontFamily] = true
-                                }
-                                fontFamily = mapFont(fontFamily)
-                            }
+                            fontFamily = mapFont(fontFamily)
 
                             let color = this.getSolidFill(r.solidFill)
 

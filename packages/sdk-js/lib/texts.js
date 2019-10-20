@@ -54,7 +54,7 @@ const TextSpan = (props: { text: Text }) => {
         )}`
     }
 
-    return <span style={style}>{t.value}</span>
+    return <span style={style} dangerouslySetInnerHTML={{ __html: t.value }}></span>
 }
 
 const BulletWrapper = (props: {bullet: ?Bullet, color: ?string, sz: ?number}) => {
@@ -67,6 +67,9 @@ const BulletWrapper = (props: {bullet: ?Bullet, color: ?string, sz: ?number}) =>
     const style = {}
     style.fontSize = props.bullet.sz || props.sz
     style.color = props.bullet.color || props.color
+    if (style.color) {
+        style.color = hexToRgba(style.color)
+    }
     if (props.bullet.font) {
         style.fontFamily = props.bullet.font.join(',')
     }
@@ -75,7 +78,7 @@ const BulletWrapper = (props: {bullet: ?Bullet, color: ?string, sz: ?number}) =>
     </div>
 }
 
-export const TextContainer = (props: { text: TextCotainer, index: number }) => {
+export const TextContainer = (props: { text: TextCotainer, index: number, pageIndex: number }) => {
     const style = {}
     const p = props.text
     if (p.algn === 'ctr') {
@@ -90,32 +93,36 @@ export const TextContainer = (props: { text: TextCotainer, index: number }) => {
 
     const innerStyle = {}
     if (p.spcBef && props.index !== 0) {
-        innerStyle.marginTop = p.spcBef + 'px'
+        style.marginTop = p.spcBef + 'px'
     }
     const marL = (p.marL || 0) + (p.indent || 0)
     if (marL) {
         innerStyle.marginLeft = marL + 'px'
     }
-    if ((p.children || []).length === 0) {
-        return null
+    if (p.bullet) {
+        style.display = 'flex'
     }
+    // if ((p.children || []).length === 0) {
+    //     return null
+    // }
 
     return (
         <div
             data-type="text-container"
-            style={{ position: 'relative', zIndex: 1, ...style, display: 'flex' }}
+            style={{ position: 'relative', zIndex: 1, ...style }}
         >
-            <BulletWrapper bullet={props.text.bullet} color={p.children[0].color} sz={p.children[0].size}></BulletWrapper>
+            {!!p.children.length && <BulletWrapper bullet={props.text.bullet} color={p.children[0].color} sz={p.children[0].size}></BulletWrapper> }
             <div style={innerStyle}>
                 {(p.children || []).map((r, index) => {
                     return <TextSpan text={r} key={index} />
                 })}
             </div>
+            {p.isSlideNum && <span data-type="span-slide-num">{props.pageIndex + 1}</span>}
         </div>
     )
 }
 
-export default (props: { block: BlockType }) => {
+export default (props: { block: BlockType, pageIndex: number}) => {
     const style = {}
     if (props.block.valign !== 'top') {
         style.display = 'flex'
@@ -135,7 +142,7 @@ export default (props: { block: BlockType }) => {
             }}
         >
             {(props.block.text || []).map((text, index) => {
-                return <TextContainer text={text} index={index} key={index} />
+                return <TextContainer text={text} index={index} key={index} pageIndex={props.pageIndex}/>
             })}
         </div>
     )

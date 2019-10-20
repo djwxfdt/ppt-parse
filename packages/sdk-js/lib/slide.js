@@ -9,7 +9,8 @@ import Block from './block'
 type SlideObj = {
     backgroundColor: Color,
     backgroundImage: string,
-    blocks: Array<any>
+    blocks: Array<any>,
+    pageIndex: number
 }
 
 const setSlideBackground = (target: ?HTMLElement, color: Color, url: ?string) => {
@@ -38,6 +39,6 @@ export default (props: SlideObj) => {
     }, [])
 
     return <div ref={ slideEl } className="pptx_slide" style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%' }}>
-        {props.blocks.map((block, index) => <Block block={block} key={index} />)}
+        {props.blocks.map((block, index) => <Block block={block} key={index} pageIndex={props.pageIndex} />)}
     </div>
 }

@@ -8,7 +8,7 @@ import ContainerElement from './container'
 import ImageElement from './image'
 import TableElement from './table'
 
-export default (props: {block: BlockType}) => {
+export default (props: {block: BlockType, pageIndex: number}) => {
     const block = props.block
     const style = {}
     style.position = 'absolute'
@@ -26,16 +26,16 @@ export default (props: {block: BlockType}) => {
 
     switch (props.block.type) {
     case 'group': {
-        return <GroupElement {...props.block} />
+        return <GroupElement block={props.block} style={style} pageIndex={props.pageIndex}/>
     }
     case 'image': {
         return <ImageElement block={props.block} style={style}/>
     }
     case 'container': {
-        return <ContainerElement block={props.block} style={style} />
+        return <ContainerElement block={props.block} style={style} pageIndex={props.pageIndex} />
     }
     case 'table': {
-        return <TableElement block={props.block} style={style}/>
+        return <TableElement block={props.block} style={style} pageIndex={props.pageIndex}/>
     }
     default: {
         return <div></div>

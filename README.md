@@ -15,7 +15,7 @@ sdk.parsePPT('xxxx.pptx','outputFolder').then(()=>{
 ```
     
 
-### 客户端（重构中...）
+### 客户端
 
 1. 安装： `npm install pptx-sdk-js --save`
 
@@ -29,3 +29,5 @@ sdk.parsePPT('xxxx.pptx','outputFolder').then(()=>{
     </div>
 
 ```
+
+3. 具体使用方式参考packages/sdk-js/example

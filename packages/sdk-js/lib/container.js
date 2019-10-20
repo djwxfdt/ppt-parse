@@ -8,7 +8,7 @@ import ShapeElement from './prstShape'
 import TextListElement from './texts'
 import SvgElement from './custShape'
 
-export default (props: {block: BlockType, style: any}) => {
+export default (props: {block: BlockType, style: any, pageIndex: number}) => {
     const style = Object.assign({}, props.style)
     const block = props.block
     if (block.fontSize) {
@@ -42,6 +42,6 @@ export default (props: {block: BlockType, style: any}) => {
         {(block.svgs || []).map((svg, i) => {
             return <SvgElement svg={svg} stroke={stroke} key={i} block={block}/>
         })}
-        {block.text ? <TextListElement block={block} /> : null}
+        {block.text ? <TextListElement block={block} pageIndex={props.pageIndex}/> : null}
     </div>
 }

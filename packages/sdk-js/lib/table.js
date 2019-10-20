@@ -6,7 +6,7 @@ import type { BlockType } from './export'
 import { TextContainer } from './texts'
 import { hexToRgba } from './utils'
 
-export default (props: {block: BlockType, style: any}) => {
+export default (props: {block: BlockType, style: any, pageIndex: number}) => {
     if (!props.block.table) {
         return null
     }
@@ -29,7 +29,7 @@ export default (props: {block: BlockType, style: any}) => {
                         }
                         return <td style={{ width: table.cols[i] }} key={i} style={tdStyle}>
                             {tc.body && tc.body.map((p, k) => {
-                                return <TextContainer text={p} index={k} key={k}/>
+                                return <TextContainer text={p} index={k} key={k} pageIndex={props.pageIndex}/>
                             })}
                         </td>
                     })}

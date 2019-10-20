@@ -75,19 +75,28 @@ const FONT_MAP = {
     华文行楷: 'cursive'
 }
 
+/**
+ * url 代表googlefont的地址
+ * @type {{[key:string]:{url:string,name?:string}}}
+ */
 const GOOGLE_FONTS = {
-    Corbel: 'Inconsolata',
-    Consolas: 'Roboto',
-    Calibri: 'Lato',
-    Muli: 'Muli',
-    'Muli Light': 'Muli:300,400',
-    Poppins: 'Poppins',
-    'Poppins Light': 'Poppins:300,400',
-    'Stone Sans ITC TT-Semi': 'Handlee'
+    Corbel: {
+        url: 'Inconsolata'
+    },
+    Consolas: { url: 'Roboto' },
+    Calibri: { url: 'Lato' },
+    Muli: { url: 'Muli' },
+    'Muli Light': { url: 'Muli:300,400', name: 'Muli Light' },
+    Poppins: { url: 'Poppins' },
+    'Poppins Light': { url: 'Poppins:300,400', name: 'Poppins Light' },
+    'Stone Sans ITC TT-Semi': { url: 'Handlee' }
 
 }
 
 const mapFont = name => {
+    if (!name) {
+        return undefined
+    }
     return [name, 'Helvetica', 'cursive']
 }
 

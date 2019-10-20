@@ -137,7 +137,7 @@ class PPTParseSDK {
     get json() {
         let googleFonts = this.presentationXML.fonts.reduce((p, c) => {
             if (GOOGLE_FONTS[c.name]) {
-                p[GOOGLE_FONTS[c.name]] = true
+                p[GOOGLE_FONTS[c.name].url] = true
             }
             return p
         }, {})
