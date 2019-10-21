@@ -72,7 +72,28 @@ const Round2SameRect = (props: {block: BlockType, stroke: ?any}) => {
     const { width, height } = props.block.size
     return BaseSvg(props)((svg, fill, stroke) => {
         svg.rect(width, height).fill(fill)
-        svg.style({ borderTopLeftRadius: '10px', borderTopRightRadius: '10px' })
+        svg.node.style.borderTopLeftRadius = '10px'
+        svg.node.style.borderTopRightRadius = '10px'
+    })
+}
+
+const Ellipse = (props: {block: BlockType, stroke: ?any}) => {
+    const { width, height } = props.block.size
+    return BaseSvg(props)((svg, fill, stroke) => {
+        svg.ellipse(width, height).fill(fill)
+    })
+}
+
+const Pie = (props: {block: BlockType, stroke: ?any}) => {
+    const { width, height } = props.block.size
+    return BaseSvg(props)((svg, fill, stroke) => {
+        const pie = svg.circle(width).fill(fill)
+        const c = Math.PI * width
+        svg.node.style.borderRadius = '50%'
+        /**
+         * TODO 这里需要重新写
+         */
+        pie.attr({ 'stroke-dasharray': `${c / 4} ${c}`, stroke: 'white', 'stroke-width': width, 'stroke-dashoffset': c / 4 * 3 })
     })
 }
 
@@ -83,6 +104,12 @@ export default (props: {block: BlockType, stroke: any}) => {
     switch (props.block.prstShape.type) {
     case 'rect': {
         return <RectSvg block={props.block} stroke={props.stroke} />
+    }
+    case 'ellipse': {
+        return <Ellipse block={props.block} stroke={props.stroke} />
+    }
+    case 'pie': {
+        return <Pie block={props.block} stroke={props.stroke} />
     }
     case 'roundRect': {
         return <RoundRectSvg block={props.block} stroke={props.stroke} />

@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@babel/preset-react": "^7.6.3",
+    "@emotion/core": "^10.0.21",
     "svg.js": "^2.7.1"
   }
 }
